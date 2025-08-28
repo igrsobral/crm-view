@@ -1,11 +1,17 @@
 <template>
   <!-- Mobile sidebar -->
-  <div 
-    :class="[
-      'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden',
-      open ? 'translate-x-0' : '-translate-x-full'
-    ]"
+  <Transition
+    enter-active-class="transition-transform duration-300 ease-out"
+    enter-from-class="-translate-x-full"
+    enter-to-class="translate-x-0"
+    leave-active-class="transition-transform duration-300 ease-in"
+    leave-from-class="translate-x-0"
+    leave-to-class="-translate-x-full"
   >
+    <div 
+      v-if="open"
+      class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl lg:hidden"
+    >
     <div class="flex h-16 items-center justify-between px-6 border-b border-gray-200">
       <div class="flex items-center">
         <div class="h-8 w-8 rounded bg-blue-600 flex items-center justify-center">
@@ -53,7 +59,8 @@
         </li>
       </ul>
     </nav>
-  </div>
+    </div>
+  </Transition>
 
   <!-- Desktop sidebar -->
   <div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:bg-white lg:border-r lg:border-gray-200">
@@ -98,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+// No additional imports needed
 import { useRoute } from 'vue-router'
 
 defineProps<{
@@ -138,4 +145,3 @@ const isActiveRoute = (href: string) => {
   return route.path === href
 }
 </script>
-</template>

@@ -5,8 +5,9 @@
         <!-- Mobile menu button -->
         <button
           type="button"
-          class="lg:hidden -m-2.5 p-2.5 text-gray-700 hover:text-gray-900"
+          class="lg:hidden -m-2.5 p-2.5 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md transition-colors duration-150"
           @click="$emit('toggle-sidebar')"
+          aria-label="Open navigation menu"
         >
           <span class="sr-only">Open sidebar</span>
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -25,8 +26,11 @@
         <div class="relative">
           <button
             type="button"
-            class="flex items-center gap-x-2 rounded-full bg-white p-1.5 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="flex items-center gap-x-2 rounded-full bg-white p-1.5 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150"
             @click="userMenuOpen = !userMenuOpen"
+            @keydown.escape="userMenuOpen = false"
+            :aria-expanded="userMenuOpen"
+            aria-haspopup="true"
           >
             <span class="sr-only">Open user menu</span>
             <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
@@ -45,11 +49,11 @@
           <!-- User dropdown menu -->
           <div
             v-if="userMenuOpen"
-            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-            @click.away="userMenuOpen = false"
+            ref="userMenuRef"
+            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200 ease-out"
           >
             <button
-              class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
               @click="handleSignOut"
             >
               Sign out
@@ -65,6 +69,7 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useClickAway } from '@/composables/useClickAway'
 
 defineEmits<{
   'toggle-sidebar': []
@@ -73,6 +78,11 @@ defineEmits<{
 const route = useRoute()
 const authStore = useAuthStore()
 const userMenuOpen = ref(false)
+
+// Click away functionality for user menu
+const userMenuRef = useClickAway(() => {
+  userMenuOpen.value = false
+})
 
 const currentPageTitle = computed(() => {
   return route.meta.title as string || 'Dashboard'
@@ -98,4 +108,3 @@ const handleSignOut = async () => {
   await authStore.signOut()
 }
 </script>
-</template>
