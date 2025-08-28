@@ -59,6 +59,16 @@
           </div>
         </div>
 
+        <div v-if="sessionExpiredMessage" class="rounded-md bg-yellow-50 p-4">
+          <div class="flex">
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">
+                {{ sessionExpiredMessage }}
+              </h3>
+            </div>
+          </div>
+        </div>
+
         <div v-if="error" class="rounded-md bg-red-50 p-4">
           <div class="flex">
             <div class="ml-3">
@@ -137,11 +147,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
 const router = useRouter()
+const route = useRoute()
 const { signIn, resetPassword, loading, error } = useAuth()
 
 const form = reactive({
@@ -159,6 +170,14 @@ const resetEmail = ref('')
 const resetLoading = ref(false)
 const resetError = ref('')
 const resetSuccess = ref(false)
+const sessionExpiredMessage = ref('')
+
+onMounted(() => {
+  // Check if user was redirected due to session expiration
+  if (route.query.expired === 'true') {
+    sessionExpiredMessage.value = 'Your session has expired. Please sign in again.'
+  }
+})
 
 const validateForm = () => {
   errors.email = ''
@@ -193,7 +212,13 @@ const handleSubmit = async () => {
   const { error: signInError } = await signIn(form.email, form.password)
   
   if (!signInError) {
-    router.push('/dashboard')
+    // Redirect to intended destination or dashboard
+    const redirectTo = route.query.redirect as string
+    if (redirectTo && redirectTo !== '/login' && redirectTo !== '/register') {
+      router.push(redirectTo)
+    } else {
+      router.push('/dashboard')
+    }
   }
 }
 
