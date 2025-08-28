@@ -85,7 +85,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      redirect: (to) => {
+      redirect: () => {
         // This will be handled by the auth middleware
         // If user is authenticated, they'll go to dashboard
         // If not authenticated, they'll go to login

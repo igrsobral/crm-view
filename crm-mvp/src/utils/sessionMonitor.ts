@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
+import type { Router } from 'vue-router'
 
 /**
  * Session monitor for handling automatic session expiration
@@ -8,7 +8,7 @@ export class SessionMonitor {
   private static instance: SessionMonitor | null = null
   private checkInterval: NodeJS.Timeout | null = null
   private readonly CHECK_INTERVAL = 60 * 1000 // Check every minute
-  private router: any = null
+  private router: Router | null = null
 
   private constructor() {}
 
@@ -22,7 +22,7 @@ export class SessionMonitor {
   /**
    * Initialize the session monitor
    */
-  initialize(router: any) {
+  initialize(router: Router) {
     this.router = router
     this.startMonitoring()
   }
