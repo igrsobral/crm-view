@@ -3,16 +3,21 @@ import { useAuthStore } from '@/stores/auth'
 
 /**
  * Authentication middleware for route protection
+ * Handles authentication requirements and redirects for protected routes
  */
 export async function authMiddleware(
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
   const authStore = useAuthStore()
 
   if (!authStore.user && !authStore.loading) {
-    await authStore.initialize()
+    try {
+      await authStore.initialize()
+    } catch (error) {
+      console.error('Failed to initialize auth store:', error)
+    }
   }
 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
@@ -20,7 +25,7 @@ export async function authMiddleware(
 
   if (requiresAuth) {
     if (!authStore.isAuthenticated) {
-      const redirectPath = to.fullPath !== '/dashboard' ? to.fullPath : null
+      const redirectPath = to.fullPath !== '/dashboard' && to.fullPath !== '/' ? to.fullPath : null
       next({
         path: '/login',
         query: redirectPath ? { redirect: redirectPath } : {}
@@ -29,15 +34,22 @@ export async function authMiddleware(
     }
     
     if (authStore.isSessionExpired) {
+      console.log('Session expired, attempting refresh...')
       const { error } = await authStore.refreshSession()
+      
       if (error) {
+        console.log('Session refresh failed, redirecting to login')
         await authStore.signOut()
         next({
           path: '/login',
-          query: { redirect: to.fullPath, expired: 'true' }
+          query: { 
+            redirect: to.fullPath !== '/dashboard' ? to.fullPath : undefined,
+            expired: 'true' 
+          }
         })
         return
       }
+      console.log('Session refreshed successfully')
     }
   }
 
@@ -56,10 +68,11 @@ export async function authMiddleware(
 
 /**
  * Session validation middleware
+ * Proactively refreshes sessions that are about to expire
  */
 export async function sessionMiddleware(
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
   const authStore = useAuthStore()
@@ -69,9 +82,16 @@ export async function sessionMiddleware(
     return
   }
 
-  if (authStore.needsRefresh) {
+  if (authStore.needsRefresh && authStore.isAuthenticated) {
     try {
-      await authStore.refreshSession()
+      console.log('Session needs refresh, refreshing proactively...')
+      const { error } = await authStore.refreshSession()
+      
+      if (error) {
+        console.warn('Proactive session refresh failed:', error.message)
+      } else {
+        console.log('Session refreshed proactively')
+      }
     } catch (error) {
       console.error('Failed to refresh session:', error)
     }
@@ -82,10 +102,11 @@ export async function sessionMiddleware(
 
 /**
  * Role-based access control middleware (for future use)
+ * Currently allows all authenticated users access to all routes
  */
 export async function roleMiddleware(
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
   const authStore = useAuthStore()
@@ -96,10 +117,13 @@ export async function roleMiddleware(
     return
   }
 
-  // For now, all authenticated users have access
+  // For MVP, all authenticated users have access to all routes
   if (authStore.isAuthenticated) {
     next()
   } else {
-    next('/login')
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
   }
 }

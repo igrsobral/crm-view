@@ -30,8 +30,15 @@ export function useRouteGuard() {
     }
 
     if (isSessionExpired.value) {
-      const { error } = await refreshSession()
-      if (error) {
+      try {
+        const { error } = await refreshSession()
+        if (error) {
+          await signOut()
+          await redirectToLogin(true)
+          return false
+        }
+      } catch (error) {
+        console.error('Error refreshing session:', error)
         await signOut()
         await redirectToLogin(true)
         return false
@@ -110,15 +117,26 @@ export function useRouteGuard() {
     }
 
     if (isSessionExpired.value) {
-      const { error } = await refreshSession()
-      if (error) {
+      try {
+        const { error } = await refreshSession()
+        if (error) {
+          await handleSessionExpiration()
+          return false
+        }
+      } catch (error) {
+        console.error('Error refreshing session during navigation:', error)
         await handleSessionExpiration()
         return false
       }
     }
 
-    await router.push(path)
-    return true
+    try {
+      await router.push(path)
+      return true
+    } catch (error) {
+      console.error('Error navigating to protected route:', error)
+      return false
+    }
   }
 
   return {
