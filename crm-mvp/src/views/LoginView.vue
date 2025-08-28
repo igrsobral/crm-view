@@ -1,144 +1,225 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Or
-          <router-link to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
-            create a new account
-          </router-link>
-        </p>
+  <div class="min-h-screen flex">
+    <!-- Left Panel - Brand/Marketing -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 relative overflow-hidden">
+      <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+      <div class="relative z-10 flex flex-col justify-center px-12 text-white">
+        <div class="mb-8">
+          <div class="flex items-center mb-6">
+            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold">ContactlyPro</h1>
+          </div>
+        </div>
+        
+        <div class="max-w-md">
+          <h2 class="text-4xl font-bold mb-4 leading-tight">
+            Delight Your Customers Effortlessly
+          </h2>
+          <p class="text-xl text-blue-100 leading-relaxed">
+            Simplify every experience and put customers back in control by offering the support they expect
+          </p>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-20 right-20 w-32 h-32 bg-white bg-opacity-10 rounded-full"></div>
+        <div class="absolute bottom-20 right-32 w-20 h-20 bg-white bg-opacity-10 rounded-full"></div>
+        <div class="absolute top-1/2 right-10 w-16 h-16 bg-white bg-opacity-10 rounded-full"></div>
       </div>
-      
-      <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label for="email" class="sr-only">Email address</label>
-            <input
-              id="email"
-              v-model="form.email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              :class="{ 'border-red-300': errors.email }"
-              placeholder="Email address"
-            />
-            <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            <input
-              id="password"
-              v-model="form.password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              :class="{ 'border-red-300': errors.password }"
-              placeholder="Password"
-            />
-            <p v-if="errors.password" class="mt-1 text-sm text-red-600">{{ errors.password }}</p>
-          </div>
-        </div>
+    </div>
 
-        <div class="flex items-center justify-between">
-          <div class="text-sm">
-            <button
-              type="button"
-              @click="showResetPassword = true"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              Forgot your password?
-            </button>
-          </div>
-        </div>
-
-        <div v-if="sessionExpiredMessage" class="rounded-md bg-yellow-50 p-4">
-          <div class="flex">
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-yellow-800">
-                {{ sessionExpiredMessage }}
-              </h3>
+    <!-- Right Panel - Login Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center px-8 py-12 bg-white">
+      <div class="max-w-md w-full space-y-8">
+        <!-- Mobile Logo -->
+        <div class="lg:hidden text-center mb-8">
+          <div class="inline-flex items-center">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+              </svg>
             </div>
-          </div>
-        </div>
-
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
-          <div class="flex">
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
-                {{ error }}
-              </h3>
-            </div>
+            <h1 class="text-2xl font-bold text-gray-900">ContactlyPro</h1>
           </div>
         </div>
 
         <div>
-          <button
-            type="submit"
-            :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span v-if="loading" class="absolute left-0 inset-y-0 flex items-center pl-3">
-              <svg class="animate-spin h-5 w-5 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            Welcome back
+          </h2>
+          <p class="text-gray-600">
+            Please sign in to your account
+          </p>
+        </div>
+        
+        <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                id="email"
+                v-model="form.email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                :class="{ 'border-red-300 focus:ring-red-500': errors.email }"
+                placeholder="Enter your email"
+              />
+              <p v-if="errors.email" class="mt-2 text-sm text-red-600">{{ errors.email }}</p>
+            </div>
+            
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div class="relative">
+                <input
+                  id="password"
+                  v-model="form.password"
+                  name="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  autocomplete="current-password"
+                  required
+                  class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  :class="{ 'border-red-300 focus:ring-red-500': errors.password }"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
+                  </svg>
+                </button>
+              </div>
+              <p v-if="errors.password" class="mt-2 text-sm text-red-600">{{ errors.password }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-sm">
+              <button
+                type="button"
+                @click="showResetPassword = true"
+                class="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+              >
+                Forgot Password?
+              </button>
+            </div>
+          </div>
+
+          <div v-if="sessionExpiredMessage" class="rounded-lg bg-amber-50 border border-amber-200 p-4">
+            <div class="flex">
+              <svg class="w-5 h-5 text-amber-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <p class="text-sm text-amber-800">{{ sessionExpiredMessage }}</p>
+            </div>
+          </div>
+
+          <div v-if="error" class="rounded-lg bg-red-50 border border-red-200 p-4">
+            <div class="flex">
+              <svg class="w-5 h-5 text-red-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+              <p class="text-sm text-red-800">{{ error }}</p>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              :disabled="loading"
+              class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-            </span>
-            {{ loading ? 'Signing in...' : 'Sign in' }}
-          </button>
-        </div>
-      </form>
+              {{ loading ? 'Signing in...' : 'LOGIN' }}
+            </button>
+          </div>
 
-      <!-- Password Reset Modal -->
-      <div v-if="showResetPassword" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-          <div class="mt-3">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Reset Password</h3>
-            <form @submit.prevent="handleResetPassword">
-              <div class="mb-4">
-                <label for="reset-email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input
-                  id="reset-email"
-                  v-model="resetEmail"
-                  type="email"
-                  required
-                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Enter your email"
-                />
-              </div>
-              
-              <div v-if="resetError" class="mb-4 text-sm text-red-600">
-                {{ resetError }}
-              </div>
-              
-              <div v-if="resetSuccess" class="mb-4 text-sm text-green-600">
-                Password reset email sent! Check your inbox.
-              </div>
-              
-              <div class="flex justify-end space-x-3">
+          <div class="text-center">
+            <p class="text-sm text-gray-600">
+              Don't have an account?
+              <router-link to="/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                Sign up
+              </router-link>
+            </p>
+          </div>
+        </form>
+
+        <!-- Password Reset Modal -->
+        <div v-if="showResetPassword" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+          <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Reset Password</h3>
                 <button
-                  type="button"
                   @click="closeResetModal"
-                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  class="text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  :disabled="resetLoading"
-                  class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                >
-                  {{ resetLoading ? 'Sending...' : 'Send Reset Email' }}
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
                 </button>
               </div>
-            </form>
+              
+              <form @submit.prevent="handleResetPassword">
+                <div class="mb-4">
+                  <label for="reset-email" class="block text-sm font-medium text-gray-700 mb-2">
+                    Email address
+                  </label>
+                  <input
+                    id="reset-email"
+                    v-model="resetEmail"
+                    type="email"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                
+                <div v-if="resetError" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+                  <p class="text-sm text-red-800">{{ resetError }}</p>
+                </div>
+                
+                <div v-if="resetSuccess" class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200">
+                  <p class="text-sm text-green-800">Password reset email sent! Check your inbox.</p>
+                </div>
+                
+                <div class="flex space-x-3">
+                  <button
+                    type="button"
+                    @click="closeResetModal"
+                    class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="resetLoading"
+                    class="flex-1 px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 border border-transparent rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all duration-200"
+                  >
+                    {{ resetLoading ? 'Sending...' : 'Send Reset Email' }}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -166,6 +247,7 @@ const errors = reactive({
 })
 
 const showResetPassword = ref(false)
+const showPassword = ref(false)
 const resetEmail = ref('')
 const resetLoading = ref(false)
 const resetError = ref('')
