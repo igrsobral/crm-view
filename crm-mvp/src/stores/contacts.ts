@@ -37,7 +37,7 @@ export const useContactsStore = defineStore('contacts', () => {
   const searchQuery = ref('')
   const statusFilter = ref<ContactStatus | 'all'>('all')
   const tagFilter = ref<string[]>([])
-  
+
   let realtimeChannel: RealtimeChannel | null = null
 
   const filteredContacts = computed(() => {
@@ -45,7 +45,7 @@ export const useContactsStore = defineStore('contacts', () => {
 
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase()
-      filtered = filtered.filter(contact => 
+      filtered = filtered.filter(contact =>
         contact.name.toLowerCase().includes(query) ||
         contact.email?.toLowerCase().includes(query) ||
         contact.company?.toLowerCase().includes(query) ||
@@ -58,7 +58,7 @@ export const useContactsStore = defineStore('contacts', () => {
     }
 
     if (tagFilter.value.length > 0) {
-      filtered = filtered.filter(contact => 
+      filtered = filtered.filter(contact =>
         tagFilter.value.some(tag => contact.tags.includes(tag))
       )
     }
@@ -133,15 +133,15 @@ export const useContactsStore = defineStore('contacts', () => {
         error.value = 'Supabase not configured. Please add your Supabase credentials to .env file.'
         return
       }
-      
+
       const result = await ContactsService.getContacts()
-      
+
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       contacts.value = result.data || []
-      
+
       setupRealtimeSubscription()
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch contacts'
@@ -163,15 +163,15 @@ export const useContactsStore = defineStore('contacts', () => {
       }
 
       const result = await ContactsService.createContact(contactData)
-      
+
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       if (result.data && !contacts.value.find(c => c.id === result.data!.id)) {
         contacts.value.unshift(result.data)
       }
-      
+
       return result
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to create contact'
@@ -190,18 +190,18 @@ export const useContactsStore = defineStore('contacts', () => {
       }
 
       const result = await ContactsService.updateContact(id, updates)
-      
+
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       if (result.data) {
         const index = contacts.value.findIndex(c => c.id === id)
         if (index !== -1) {
           contacts.value[index] = result.data
         }
       }
-      
+
       return result
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to update contact'
@@ -220,13 +220,13 @@ export const useContactsStore = defineStore('contacts', () => {
       }
 
       const result = await ContactsService.deleteContact(id)
-      
+
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       contacts.value = contacts.value.filter(c => c.id !== id)
-      
+
       return result
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to delete contact'
@@ -263,24 +263,43 @@ export const useContactsStore = defineStore('contacts', () => {
       }
 
       const result = await ContactsService.bulkUpdateStatus(contactIds, status)
-      
+
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       result.data?.forEach(updatedContact => {
         const index = contacts.value.findIndex(c => c.id === updatedContact.id)
         if (index !== -1) {
           contacts.value[index] = updatedContact
         }
       })
-      
+
       return result
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to bulk update contacts'
       return { data: null, error: error.value }
     } finally {
       loading.value = false
+    }
+  }
+
+  const searchContacts = async (query: string, limit = 10) => {
+    try {
+      if (!isSupabaseConfigured()) {
+        throw new Error('Supabase not configured')
+      }
+
+      const result = await ContactsService.searchContacts(query, limit)
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
+      return result
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to search contacts'
+      return { data: null, error: errorMessage }
     }
   }
 
@@ -303,12 +322,12 @@ export const useContactsStore = defineStore('contacts', () => {
     searchQuery,
     statusFilter,
     tagFilter,
-    
+
     // Computed
     filteredContacts,
     contactsByStatus,
     allTags,
-    
+
     // Actions
     fetchContacts,
     getContactById,
@@ -316,13 +335,14 @@ export const useContactsStore = defineStore('contacts', () => {
     updateContact,
     deleteContact,
     bulkUpdateStatus,
-    
+    searchContacts,
+
     // Search and filter
     setSearchQuery,
     setStatusFilter,
     setTagFilter,
     clearFilters,
-    
+
     // Utilities
     setupRealtimeSubscription,
     cleanup
