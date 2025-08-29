@@ -172,7 +172,7 @@ export class DealsService {
             }
 
             if (updates.notes !== undefined) {
-                cleanUpdates.notes = updates.notes?.trim() || null
+                cleanUpdates.notes = updates.notes?.trim() || undefined
             }
 
             const { data, error } = await supabase
