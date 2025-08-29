@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useContactsStore } from './contacts'
 import { useDealsStore } from './deals'
 import { useActivitiesStore } from './activities'
@@ -201,8 +201,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
                 type: activity.type,
                 subject: activity.subject,
                 description: activity.description,
-                contact_name: activity.contact?.name,
-                deal_name: activity.deal?.name,
+                contact_name: activity.contact ? (activity.contact as any).name : undefined,
+                deal_name: activity.deal ? (activity.deal as any).name : undefined,
                 created_at: activity.created_at,
                 completed: activity.completed
             }))

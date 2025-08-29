@@ -66,10 +66,10 @@
                                     ]">
                                         {{ task.type }}
                                     </span>
-                                    <span v-if="task.contact_name || task.deal_name">•</span>
-                                    <span v-if="task.contact_name">{{ task.contact_name }}</span>
-                                    <span v-if="task.contact_name && task.deal_name">•</span>
-                                    <span v-if="task.deal_name">{{ task.deal_name }}</span>
+                                    <span v-if="task.contact?.name || task.deal?.name">•</span>
+                                    <span v-if="task.contact?.name">{{ task.contact.name }}</span>
+                                    <span v-if="task.contact?.name && task.deal?.name">•</span>
+                                    <span v-if="task.deal?.name">{{ task.deal.name }}</span>
                                 </div>
 
                                 <p v-if="task.description" class="mt-1 text-sm text-gray-600 line-clamp-2">
