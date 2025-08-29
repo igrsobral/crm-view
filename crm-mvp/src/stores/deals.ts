@@ -81,6 +81,10 @@ export const useDealsStore = defineStore('deals', () => {
     return deals.value.filter(deal => deal.stage === 'closed_lost')
   })
 
+  const filteredDeals = computed(() => {
+    return deals.value
+  })
+
   const fetchDeals = async (filters?: DealFilters) => {
     loading.value = true
     error.value = null
@@ -310,6 +314,7 @@ export const useDealsStore = defineStore('deals', () => {
     totalPipelineValue,
     wonDeals,
     lostDeals,
+    filteredDeals,
 
     // Actions
     fetchDeals,
