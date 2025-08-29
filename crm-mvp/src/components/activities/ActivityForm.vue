@@ -114,12 +114,15 @@ import type { Activity, ActivityInput } from '@/stores/activities'
 import type { ActivityType } from '@/utils/constants'
 
 interface Props {
-  contactId: string
+  contactId?: string
+  dealId?: string
   activity?: Activity | null
   mode?: 'create' | 'edit'
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  contactId: undefined,
+  dealId: undefined,
   activity: null,
   mode: 'create'
 })
@@ -219,7 +222,8 @@ const handleSubmit = async () => {
 
   try {
     const activityData: ActivityInput = {
-      contact_id: props.contactId,
+      contact_id: props.contactId || undefined,
+      deal_id: props.dealId || undefined,
       type: formData.value.type,
       subject: formData.value.subject.trim() || undefined,
       description: formData.value.description.trim() || undefined,

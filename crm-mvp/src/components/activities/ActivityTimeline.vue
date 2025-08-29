@@ -171,11 +171,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
+import { ref, h, defineAsyncComponent } from 'vue'
 import { useActivitiesStore } from '@/stores/activities'
-import ActivityForm from './ActivityForm.vue'
 import type { Activity, ActivityInput } from '@/stores/activities'
 import type { ActivityType } from '@/utils/constants'
+
+// Import ActivityForm component
+const ActivityForm = defineAsyncComponent(() => import('./ActivityForm.vue'))
 
 interface Props {
   contactId: string
