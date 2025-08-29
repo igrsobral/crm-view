@@ -30,6 +30,17 @@
                     </option>
                 </select>
 
+                <!-- Export Button -->
+                <router-link
+                    to="/export"
+                    class="bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center"
+                >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 10l5 5 5-5M7 14l5 5 5-5" />
+                    </svg>
+                    Export
+                </router-link>
+
                 <!-- Add Deal Button -->
                 <button @click="$emit('createDeal')"
                     class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
