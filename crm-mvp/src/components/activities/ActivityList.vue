@@ -60,7 +60,7 @@
             </h3>
             <p class="text-gray-600 mb-4">
                 {{ hasFilters ? 'Try adjusting your filters to see more activities.' : 'Start tracking your interactions
-                and follow-ups.' }}
+                and follow - ups.' }}
             </p>
             <button v-if="!hasFilters" @click="$emit('create-activity')"
                 class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -200,7 +200,7 @@
             <div v-if="totalPages > 1" class="flex items-center justify-between pt-4">
                 <div class="text-sm text-gray-700">
                     Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
-                    filteredActivities.length) }}
+                        filteredActivities.length) }}
                     of {{ filteredActivities.length }} activities
                 </div>
                 <div class="flex items-center space-x-2">
@@ -289,7 +289,6 @@ const emit = defineEmits<{
 
 const activitiesStore = useActivitiesStore()
 
-// Local state
 const filters = ref({
     type: '' as ActivityType | '',
     status: '' as 'completed' | 'pending' | 'overdue' | 'upcoming' | ''
@@ -298,7 +297,6 @@ const currentPage = ref(1)
 const editingActivity = ref<Activity | null>(null)
 const activityToDelete = ref<Activity | null>(null)
 
-// Computed properties
 const hasFilters = computed(() => {
     return filters.value.type !== '' || filters.value.status !== ''
 })
@@ -306,12 +304,10 @@ const hasFilters = computed(() => {
 const filteredActivities = computed(() => {
     let filtered = [...props.activities]
 
-    // Filter by type
     if (filters.value.type) {
         filtered = filtered.filter(activity => activity.type === filters.value.type)
     }
 
-    // Filter by status
     if (filters.value.status) {
         const now = new Date()
         filtered = filtered.filter(activity => {
@@ -343,7 +339,6 @@ const paginatedActivities = computed(() => {
     return filteredActivities.value.slice(start, end)
 })
 
-// Methods
 const getActivityIcon = (type: ActivityType) => {
     const icons = {
         call: () => h('svg', { fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
