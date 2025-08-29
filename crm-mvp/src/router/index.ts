@@ -64,6 +64,24 @@ const router = createRouter({
       }
     },
     {
+      path: '/contacts/import',
+      name: 'contacts-import',
+      component: () => import('../components/contacts/ContactImport.vue'),
+      meta: { 
+        requiresAuth: true,
+        title: 'Import Contacts'
+      }
+    },
+    {
+      path: '/export',
+      name: 'export',
+      component: () => import('../components/contacts/ContactExport.vue'),
+      meta: { 
+        requiresAuth: true,
+        title: 'Export Data'
+      }
+    },
+    {
       path: '/deals',
       name: 'deals',
       component: () => import('../views/DealsView.vue'),
