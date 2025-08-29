@@ -96,8 +96,7 @@
                     :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.scheduledAt }" />
                 <p v-if="errors.scheduledAt" class="mt-1 text-sm text-red-600">{{ errors.scheduledAt }}</p>
                 <p class="mt-1 text-sm text-gray-500">
-                    {{ formData.scheduledAt ? `Scheduled for ${formatScheduledTime(formData.scheduledAt)}` : 'Select
-                    date and time for follow-up' }}
+                    {{ formData.scheduledAt ? `Scheduled for ${formatScheduledTime(formData.scheduledAt)}` : 'Select date and time for follow-up' }}
                 </p>
             </div>
 
