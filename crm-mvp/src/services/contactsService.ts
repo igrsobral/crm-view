@@ -82,7 +82,14 @@ export class ContactsService {
         throw new Error('Contact name is required')
       }
 
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+      if (authError || !user) {
+        throw new Error('User must be authenticated to create contacts')
+      }
+
       const cleanData = {
+        user_id: user.id,
         name: contactData.name.trim(),
         email: contactData.email?.trim() || undefined,
         phone: contactData.phone?.trim() || undefined,
@@ -112,34 +119,34 @@ export class ContactsService {
   static async updateContact(id: string, updates: Partial<ContactInput>): Promise<ContactsServiceResponse<Contact>> {
     try {
       const cleanUpdates: Partial<ContactInput> = {}
-      
+
       if (updates.name !== undefined) {
         cleanUpdates.name = updates.name.trim()
         if (!cleanUpdates.name) {
           throw new Error('Contact name cannot be empty')
         }
       }
-      
+
       if (updates.email !== undefined) {
         cleanUpdates.email = updates.email?.trim() || undefined
       }
-      
+
       if (updates.phone !== undefined) {
         cleanUpdates.phone = updates.phone?.trim() || undefined
       }
-      
+
       if (updates.company !== undefined) {
         cleanUpdates.company = updates.company?.trim() || undefined
       }
-      
+
       if (updates.status !== undefined) {
         cleanUpdates.status = updates.status
       }
-      
+
       if (updates.tags !== undefined) {
         cleanUpdates.tags = updates.tags
       }
-      
+
       if (updates.notes !== undefined) {
         cleanUpdates.notes = updates.notes?.trim() || undefined
       }

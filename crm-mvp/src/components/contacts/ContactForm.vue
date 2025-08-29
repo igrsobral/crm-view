@@ -6,10 +6,7 @@
         <h2 class="text-xl font-semibold text-gray-900">
           {{ isEditing ? 'Edit Contact' : 'Add New Contact' }}
         </h2>
-        <button
-          @click="$emit('cancel')"
-          class="text-gray-400 hover:text-gray-600 focus:outline-none"
-        >
+        <button @click="$emit('cancel')" class="text-gray-400 hover:text-gray-600 focus:outline-none">
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -24,14 +21,9 @@
         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
           Name <span class="text-red-500">*</span>
         </label>
-        <input
-          id="name"
-          v-model="formData.name"
-          type="text"
-          placeholder="Enter contact name"
+        <input id="name" v-model="formData.name" type="text" placeholder="Enter contact name"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.name }"
-        />
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.name }" />
         <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
       </div>
 
@@ -40,14 +32,9 @@
         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
           Email
         </label>
-        <input
-          id="email"
-          v-model="formData.email"
-          type="email"
-          placeholder="Enter email address"
+        <input id="email" v-model="formData.email" type="email" placeholder="Enter email address"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.email }"
-        />
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.email }" />
         <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
       </div>
 
@@ -56,14 +43,9 @@
         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
           Phone
         </label>
-        <input
-          id="phone"
-          v-model="formData.phone"
-          type="tel"
-          placeholder="Enter phone number"
+        <input id="phone" v-model="formData.phone" type="tel" placeholder="Enter phone number"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.phone }"
-        />
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.phone }" />
         <p v-if="errors.phone" class="mt-1 text-sm text-red-600">{{ errors.phone }}</p>
       </div>
 
@@ -72,14 +54,9 @@
         <label for="company" class="block text-sm font-medium text-gray-700 mb-1">
           Company
         </label>
-        <input
-          id="company"
-          v-model="formData.company"
-          type="text"
-          placeholder="Enter company name"
+        <input id="company" v-model="formData.company" type="text" placeholder="Enter company name"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.company }"
-        />
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.company }" />
         <p v-if="errors.company" class="mt-1 text-sm text-red-600">{{ errors.company }}</p>
       </div>
 
@@ -88,12 +65,9 @@
         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
           Status <span class="text-red-500">*</span>
         </label>
-        <select
-          id="status"
-          v-model="formData.status"
+        <select id="status" v-model="formData.status"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.status }"
-        >
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.status }">
           <option value="lead">Lead</option>
           <option value="prospect">Prospect</option>
           <option value="customer">Customer</option>
@@ -109,52 +83,36 @@
         </label>
         <div class="relative">
           <!-- Tag Input -->
-          <div class="w-full min-h-[42px] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 flex flex-wrap gap-1 items-center"
-               :class="{ 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500': errors.tags }">
+          <div
+            class="w-full min-h-[42px] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 flex flex-wrap gap-1 items-center"
+            :class="{ 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500': errors.tags }">
             <!-- Selected Tags -->
-            <span
-              v-for="(tag, index) in formData.tags"
-              :key="index"
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-            >
+            <span v-for="(tag, index) in formData.tags" :key="index"
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {{ tag }}
-              <button
-                type="button"
-                @click="removeTag(index)"
-                class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none"
-              >
+              <button type="button" @click="removeTag(index)"
+                class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none">
                 <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
                 </svg>
               </button>
             </span>
-            
+
             <!-- Tag Input -->
-            <input
-              ref="tagInput"
-              v-model="tagInputValue"
-              @keydown="handleTagKeydown"
-              @focus="showTagSuggestions = true"
-              @blur="handleTagBlur"
-              type="text"
-              placeholder="Add tags..."
-              class="flex-1 min-w-[120px] border-none outline-none focus:ring-0 p-0"
-            />
+            <input ref="tagInput" v-model="tagInputValue" @keydown="handleTagKeydown" @focus="showTagSuggestions = true"
+              @blur="handleTagBlur" type="text" placeholder="Add tags..."
+              class="flex-1 min-w-[120px] border-none outline-none focus:ring-0 p-0" />
           </div>
-          
+
           <!-- Tag Suggestions Dropdown -->
-          <div
-            v-if="showTagSuggestions && filteredTagSuggestions.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto"
-          >
-            <button
-              v-for="(suggestion, index) in filteredTagSuggestions"
-              :key="suggestion"
-              type="button"
+          <div v-if="showTagSuggestions && filteredTagSuggestions.length > 0"
+            class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+            <button v-for="(suggestion, index) in filteredTagSuggestions" :key="suggestion" type="button"
               @mousedown="addTagFromSuggestion(suggestion)"
               class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-              :class="{ 'bg-gray-100': index === selectedSuggestionIndex }"
-            >
+              :class="{ 'bg-gray-100': index === selectedSuggestionIndex }">
               {{ suggestion }}
             </button>
           </div>
@@ -170,14 +128,10 @@
         <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
           Notes
         </label>
-        <textarea
-          id="notes"
-          v-model="formData.notes"
-          rows="4"
+        <textarea id="notes" v-model="formData.notes" rows="4"
           placeholder="Add any additional notes about this contact..."
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.notes }"
-        ></textarea>
+          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.notes }"></textarea>
         <p v-if="errors.notes" class="mt-1 text-sm text-red-600">{{ errors.notes }}</p>
         <p class="mt-1 text-sm text-gray-500">
           {{ (formData.notes?.length || 0) }}/1000 characters
@@ -186,22 +140,18 @@
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-        <button
-          type="button"
-          @click="$emit('cancel')"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
+        <button type="button" @click="$emit('cancel')"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Cancel
         </button>
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" :disabled="isSubmitting"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
           <span v-if="isSubmitting" class="flex items-center">
             <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             {{ isEditing ? 'Updating...' : 'Creating...' }}
           </span>
@@ -262,15 +212,34 @@ const filteredTagSuggestions = computed(() => {
   if (!tagInputValue.value.trim()) {
     return contactsStore.allTags.filter(tag => !formData.value.tags.includes(tag)).slice(0, 10)
   }
-  
+
   const query = tagInputValue.value.toLowerCase().trim()
   return contactsStore.allTags
-    .filter(tag => 
-      tag.toLowerCase().includes(query) && 
+    .filter(tag =>
+      tag.toLowerCase().includes(query) &&
       !formData.value.tags.includes(tag)
     )
     .slice(0, 10)
 })
+
+const resetForm = () => {
+  formData.value = {
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    status: 'lead',
+    tags: [],
+    notes: ''
+  }
+  errors.value = {}
+  clearTagInput()
+}
+
+const clearTagInput = () => {
+  tagInputValue.value = ''
+  selectedSuggestionIndex.value = -1
+}
 
 watch(() => props.contact, (newContact) => {
   if (newContact) {
@@ -306,11 +275,6 @@ const addTagFromSuggestion = (tag: string) => {
 
 const removeTag = (index: number) => {
   formData.value.tags.splice(index, 1)
-}
-
-const clearTagInput = () => {
-  tagInputValue.value = ''
-  selectedSuggestionIndex.value = -1
 }
 
 const handleTagKeydown = (event: KeyboardEvent) => {
@@ -349,7 +313,7 @@ const handleTagBlur = () => {
 
 const validateForm = () => {
   const result = contactSchema.safeParse(formData.value)
-  
+
   if (!result.success) {
     const newErrors: Partial<Record<keyof ContactFormData, string>> = {}
     result.error.issues.forEach((issue) => {
@@ -359,7 +323,7 @@ const validateForm = () => {
     errors.value = newErrors
     return false
   }
-  
+
   errors.value = {}
   return true
 }
@@ -368,9 +332,9 @@ const handleSubmit = async () => {
   if (!validateForm()) {
     return
   }
-  
+
   isSubmitting.value = true
-  
+
   try {
     const cleanedData: ContactInput = {
       name: formData.value.name.trim(),
@@ -381,25 +345,11 @@ const handleSubmit = async () => {
       tags: formData.value.tags.filter(tag => tag.trim()),
       notes: formData.value.notes?.trim() || undefined
     }
-    
+
     emit('save', cleanedData)
   } finally {
     isSubmitting.value = false
   }
-}
-
-const resetForm = () => {
-  formData.value = {
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    status: 'lead',
-    tags: [],
-    notes: ''
-  }
-  errors.value = {}
-  clearTagInput()
 }
 
 watch(() => formData.value.name, () => {

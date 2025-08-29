@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CONTACT_STATUSES } from './constants'
+import { CONTACT_STATUSES, ACTIVITY_TYPES } from './constants'
 
 export const contactSchema = z.object({
   name: z.string()
@@ -42,4 +42,34 @@ export type ContactFormData = z.infer<typeof contactSchema>
 
 export const validateContact = (data: unknown) => {
   return contactSchema.safeParse(data)
+}
+
+export const activitySchema = z.object({
+  type: z.enum([
+    ACTIVITY_TYPES.CALL,
+    ACTIVITY_TYPES.EMAIL,
+    ACTIVITY_TYPES.MEETING,
+    ACTIVITY_TYPES.NOTE
+  ]),
+  
+  subject: z.string()
+    .max(200, 'Subject must be less than 200 characters')
+    .optional()
+    .or(z.literal('')),
+  
+  description: z.string()
+    .max(1000, 'Description must be less than 1000 characters')
+    .optional()
+    .or(z.literal('')),
+  
+  scheduled_at: z.string()
+    .datetime({ message: 'Please enter a valid date and time' })
+    .optional()
+    .or(z.literal(''))
+})
+
+export type ActivityFormData = z.infer<typeof activitySchema>
+
+export const validateActivity = (data: unknown) => {
+  return activitySchema.safeParse(data)
 }
