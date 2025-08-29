@@ -2,6 +2,9 @@ import { defineStore } from 'pinia'
 import { ref, computed, onUnmounted } from 'vue'
 import { supabase, isSupabaseConfigured } from '@/utils/supabase'
 import { ContactsService } from '@/services/contactsService'
+import { useErrorHandler } from '@/composables/useErrorHandler'
+import { useLoadingState } from '@/composables/useLoadingState'
+import { useToastStore } from '@/stores/toast'
 import type { ContactStatus } from '@/utils/constants'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 
@@ -32,13 +35,20 @@ export interface ContactInput {
 
 export const useContactsStore = defineStore('contacts', () => {
   const contacts = ref<Contact[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
   const searchQuery = ref('')
   const statusFilter = ref<ContactStatus | 'all'>('all')
   const tagFilter = ref<string[]>([])
 
+  const { error, hasError, clearError, withErrorHandling } = useErrorHandler()
+  const { isLoadingKey, withLoading } = useLoadingState()
+  const toast = useToastStore()
+
   let realtimeChannel: RealtimeChannel | null = null
+
+  const loading = computed(() => isLoadingKey('fetch'))
+  const creating = computed(() => isLoadingKey('create'))
+  const updating = computed(() => isLoadingKey('update'))
+  const deleting = computed(() => isLoadingKey('delete'))
 
   const filteredContacts = computed(() => {
     let filtered = contacts.value
@@ -126,28 +136,26 @@ export const useContactsStore = defineStore('contacts', () => {
   }
 
   const fetchContacts = async () => {
-    loading.value = true
-    error.value = null
-    try {
-      if (!isSupabaseConfigured()) {
-        error.value = 'Supabase not configured. Please add your Supabase credentials to .env file.'
-        return
-      }
+    const result = await withLoading('fetch', async () => {
+      return await withErrorHandling(async () => {
+        if (!isSupabaseConfigured()) {
+          throw new Error('Supabase not configured. Please add your Supabase credentials to .env file.')
+        }
 
-      const result = await ContactsService.getContacts()
+        const result = await ContactsService.getContacts()
 
-      if (result.error) {
-        throw new Error(result.error)
-      }
+        if (result.error) {
+          throw new Error(result.error)
+        }
 
-      contacts.value = result.data || []
+        contacts.value = result.data || []
+        setupRealtimeSubscription()
+        
+        return result.data
+      })
+    })
 
-      setupRealtimeSubscription()
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to fetch contacts'
-    } finally {
-      loading.value = false
-    }
+    return result
   }
 
   const getContactById = async (id: string) => {
@@ -155,85 +163,83 @@ export const useContactsStore = defineStore('contacts', () => {
   }
 
   const createContact = async (contactData: ContactInput) => {
-    loading.value = true
-    error.value = null
-    try {
-      if (!isSupabaseConfigured()) {
-        throw new Error('Supabase not configured')
-      }
+    const result = await withLoading('create', async () => {
+      return await withErrorHandling(async () => {
+        if (!isSupabaseConfigured()) {
+          throw new Error('Supabase not configured')
+        }
 
-      const result = await ContactsService.createContact(contactData)
+        const result = await ContactsService.createContact(contactData)
 
-      if (result.error) {
-        throw new Error(result.error)
-      }
+        if (result.error) {
+          throw new Error(result.error)
+        }
 
-      if (result.data && !contacts.value.find(c => c.id === result.data!.id)) {
-        contacts.value.unshift(result.data)
-      }
+        if (result.data && !contacts.value.find(c => c.id === result.data!.id)) {
+          contacts.value.unshift(result.data)
+          toast.success(`Contact "${result.data.name}" created successfully`)
+        }
 
-      return result
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to create contact'
-      return { data: null, error: error.value }
-    } finally {
-      loading.value = false
-    }
+        return result
+      })
+    })
+
+    return result || { data: null, error: error.value?.message || 'Failed to create contact' }
   }
 
   const updateContact = async (id: string, updates: Partial<ContactInput>) => {
-    loading.value = true
-    error.value = null
-    try {
-      if (!isSupabaseConfigured()) {
-        throw new Error('Supabase not configured')
-      }
-
-      const result = await ContactsService.updateContact(id, updates)
-
-      if (result.error) {
-        throw new Error(result.error)
-      }
-
-      if (result.data) {
-        const index = contacts.value.findIndex(c => c.id === id)
-        if (index !== -1) {
-          contacts.value[index] = result.data
+    const result = await withLoading('update', async () => {
+      return await withErrorHandling(async () => {
+        if (!isSupabaseConfigured()) {
+          throw new Error('Supabase not configured')
         }
-      }
 
-      return result
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to update contact'
-      return { data: null, error: error.value }
-    } finally {
-      loading.value = false
-    }
+        const result = await ContactsService.updateContact(id, updates)
+
+        if (result.error) {
+          throw new Error(result.error)
+        }
+
+        if (result.data) {
+          const index = contacts.value.findIndex(c => c.id === id)
+          if (index !== -1) {
+            contacts.value[index] = result.data
+            toast.success(`Contact "${result.data.name}" updated successfully`)
+          }
+        }
+
+        return result
+      })
+    })
+
+    return result || { data: null, error: error.value?.message || 'Failed to update contact' }
   }
 
   const deleteContact = async (id: string) => {
-    loading.value = true
-    error.value = null
-    try {
-      if (!isSupabaseConfigured()) {
-        throw new Error('Supabase not configured')
-      }
+    const result = await withLoading('delete', async () => {
+      return await withErrorHandling(async () => {
+        if (!isSupabaseConfigured()) {
+          throw new Error('Supabase not configured')
+        }
 
-      const result = await ContactsService.deleteContact(id)
+        const result = await ContactsService.deleteContact(id)
 
-      if (result.error) {
-        throw new Error(result.error)
-      }
+        if (result.error) {
+          throw new Error(result.error)
+        }
 
-      contacts.value = contacts.value.filter(c => c.id !== id)
+        const deletedContact = contacts.value.find(c => c.id === id)
+        contacts.value = contacts.value.filter(c => c.id !== id)
+        
+        if (deletedContact) {
+          toast.success(`Contact "${deletedContact.name}" deleted successfully`)
+        }
 
-      return result
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to delete contact'
-      return { error: error.value }
-    } finally {
-      loading.value = false
-    }
+        return result
+      })
+    })
+
+    return result || { error: error.value?.message || 'Failed to delete contact' }
   }
 
   const setSearchQuery = (query: string) => {
@@ -317,11 +323,20 @@ export const useContactsStore = defineStore('contacts', () => {
   return {
     // State
     contacts,
-    loading,
-    error,
     searchQuery,
     statusFilter,
     tagFilter,
+
+    // Loading states
+    loading,
+    creating,
+    updating,
+    deleting,
+
+    // Error handling
+    error,
+    hasError,
+    clearError,
 
     // Computed
     filteredContacts,
