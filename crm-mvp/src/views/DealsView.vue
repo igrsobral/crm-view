@@ -50,7 +50,7 @@
       </div>
 
       <!-- Loading Overlay -->
-      <div v-if="dealsStore.loading" class="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-40">
+      <div v-if="dealsStore.loading" class="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-40">
         <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
           <svg class="animate-spin h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
