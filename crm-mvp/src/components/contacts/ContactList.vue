@@ -129,31 +129,21 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="bg-white rounded-lg shadow p-8">
-      <div class="flex items-center justify-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span class="ml-3 text-gray-600">Loading contacts...</span>
-      </div>
+    <div v-if="loading">
+      <SkeletonLoader type="list" :count="6" class="space-y-4" />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="bg-white rounded-lg shadow p-6">
-      <div class="text-center">
-        <div class="text-red-600 mb-2">
-          <svg class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Error Loading Contacts</h3>
-        <p class="text-gray-600 mb-4">{{ error }}</p>
-        <button
-          @click="retryLoad"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Try Again
-        </button>
-      </div>
-    </div>
+    <ErrorDisplay
+      v-else-if="hasError"
+      :message="error?.message || 'Failed to load contacts'"
+      title="Error Loading Contacts"
+      :details="error?.details"
+      :show-retry="true"
+      :show-details="!!error?.details"
+      :retrying="loading"
+      @retry="retryLoad"
+    />
 
     <!-- Empty State -->
     <div v-else-if="filteredContacts.length === 0 && !loading" class="bg-white rounded-lg shadow p-8">
@@ -207,6 +197,9 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useContactsStore } from '@/stores/contacts'
 import ContactCard from './ContactCard.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
+import ErrorDisplay from '@/components/common/ErrorDisplay.vue'
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import type { Contact } from '@/stores/contacts'
 import type { ContactStatus } from '@/utils/constants'
 
@@ -243,7 +236,7 @@ watch([selectedStatus, selectedTag], () => {
   currentPage.value = 1
 })
 
-const { contacts, loading, error, filteredContacts, allTags } = contactsStore
+const { contacts, loading, error, hasError, filteredContacts, allTags } = contactsStore
 
 const totalContacts = computed(() => contacts.length)
 
