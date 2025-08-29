@@ -29,6 +29,18 @@
         </div>
       </div>
 
+      <!-- Contact Details Modal -->
+      <div v-if="showContactDetails && selectedContact"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl max-h-[90vh] overflow-y-auto" @click.stop>
+          <ContactDetails 
+            :contact="selectedContact" 
+            @close="closeContactDetails"
+            @edit="handleEditFromDetails"
+          />
+        </div>
+      </div>
+
       <!-- Success/Error Notification -->
       <div v-if="notification" class="fixed top-4 right-4 z-50">
         <div class="max-w-sm w-full shadow-lg rounded-lg pointer-events-auto" :class="{
@@ -116,12 +128,14 @@ import { ref } from 'vue'
 import AppLayout from '@/components/common/AppLayout.vue'
 import ContactList from '@/components/contacts/ContactList.vue'
 import ContactForm from '@/components/contacts/ContactForm.vue'
+import ContactDetails from '@/components/contacts/ContactDetails.vue'
 import { useContactsStore } from '@/stores/contacts'
 import type { Contact, ContactInput } from '@/stores/contacts'
 
 const contactsStore = useContactsStore()
 
 const showContactForm = ref(false)
+const showContactDetails = ref(false)
 const selectedContact = ref<Contact | null>(null)
 const formMode = ref<'create' | 'edit'>('create')
 
@@ -144,6 +158,17 @@ const handleEditContact = (contact: Contact) => {
 const closeContactForm = () => {
   showContactForm.value = false
   selectedContact.value = null
+}
+
+const closeContactDetails = () => {
+  showContactDetails.value = false
+  selectedContact.value = null
+}
+
+const handleEditFromDetails = () => {
+  showContactDetails.value = false
+  formMode.value = 'edit'
+  showContactForm.value = true
 }
 
 const handleSaveContact = async (contactData: ContactInput) => {
@@ -176,8 +201,8 @@ const handleDeleteContact = (contact: Contact) => {
 }
 
 const handleViewContact = (contact: Contact) => {
-  // TODO: Implement contact details view in future task
-  console.log('View contact:', contact)
+  selectedContact.value = contact
+  showContactDetails.value = true
 }
 
 const confirmDelete = async () => {
