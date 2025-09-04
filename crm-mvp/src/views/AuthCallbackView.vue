@@ -85,8 +85,8 @@ onMounted(async () => {
         throw new Error('Invalid verification link')
       }
     }
-  } catch (err: any) {
-    error.value = err.message || 'An error occurred during verification'
+  } catch (err: unknown) {
+    error.value = err instanceof Error ? err.message : 'An error occurred during verification'
   } finally {
     loading.value = false
   }

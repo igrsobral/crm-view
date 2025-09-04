@@ -297,9 +297,7 @@ export const useDealsStore = defineStore('deals', () => {
     return currentIndex > 0 ? stages[currentIndex - 1] : null
   }
 
-  const canMoveToStage = (fromStage: DealStage, toStage: DealStage): boolean => {
-    return true
-  }
+ 
 
   return {
     // State
@@ -332,6 +330,5 @@ export const useDealsStore = defineStore('deals', () => {
     getStageOrder,
     getNextStage,
     getPreviousStage,
-    canMoveToStage
   }
 })

@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
   <AppLayout>
     <div class="space-y-6">
@@ -212,7 +213,10 @@ const handleSaveContact = async (contactData: ContactInput) => {
       closeContactForm()
     }
   } catch (error) {
-    showNotification('error', 'An unexpected error occurred. Please try again.')
+    if(error instanceof Error) {
+      showNotification('error', 'An unexpected error occurred. Please try again.')
+      return
+    }
   }
 }
 

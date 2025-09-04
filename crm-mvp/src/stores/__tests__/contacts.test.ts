@@ -128,7 +128,7 @@ describe('Contacts Store', () => {
 
       try {
         await contactsStore.fetchContacts()
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 
@@ -166,7 +166,7 @@ describe('Contacts Store', () => {
 
       try {
         await contactsStore.createContact(contactInput)
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 
@@ -207,11 +207,9 @@ describe('Contacts Store', () => {
         error: 'Failed to update contact'
       })
 
-      try {
-        await contactsStore.updateContact(existingContact.id, updates)
-      } catch (error) {
-        // Expected to throw
-      }
+      await expect(contactsStore.updateContact(existingContact.id, updates))
+        .rejects
+        .toThrow('Failed to update contact')
 
       expect(contactsStore.contacts[0]).toEqual(existingContact) // Should remain unchanged
     })
@@ -247,7 +245,7 @@ describe('Contacts Store', () => {
 
       try {
         await contactsStore.deleteContact(existingContact.id)
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 

@@ -1,7 +1,7 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { vi } from 'vitest'
-import type { Component } from 'vue'
+import { vi, beforeEach, afterEach } from 'vitest'
+import type { Component, ComponentPublicInstance } from 'vue'
+import { createPinia, setActivePinia } from 'pinia'
 
 export function createTestPinia() {
   const pinia = createPinia()
@@ -9,10 +9,10 @@ export function createTestPinia() {
   return pinia
 }
 
-export function mountComponent<T extends Component>(
-  component: T,
-  options: any = {}
-): VueWrapper<any> {
+export function mountComponent(
+  component: Component,
+  options: Record<string, unknown> = {}
+): VueWrapper<ComponentPublicInstance> {
   const pinia = createTestPinia()
   
   return mount(component, {

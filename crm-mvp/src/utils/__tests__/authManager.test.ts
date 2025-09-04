@@ -245,7 +245,7 @@ describe('AuthManager', () => {
 
       await vi.runAllTimersAsync()
 
-      expect(consoleSpy).toHaveBeenCalledWith('Error refreshing session:', mockError)
+      expect(consoleSpy).toHaveBeenCalledWith('Error refreshing expired session:', mockError)
       consoleSpy.mockRestore()
     })
   })

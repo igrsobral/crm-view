@@ -3,12 +3,18 @@ import { ref, computed } from 'vue'
 import { CSVImportService, type CSVRow, type FieldMapping, type ImportPreviewRow, type ImportResult } from '@/services/csvImportService'
 import { DuplicateDetectionService, type DuplicateDetectionResult, type DuplicateMatch } from '@/services/duplicateDetectionService'
 import { useContactsStore } from '@/stores/contacts'
-import type { ContactInput } from '@/stores/contacts'
+import type { Contact, ContactInput } from '@/stores/contacts'
 
 export interface ImportStep {
   id: 'upload' | 'mapping' | 'preview' | 'duplicates' | 'import' | 'complete'
   title: string
   description: string
+}
+
+export interface DuplicateResolution {
+  duplicateMatch: DuplicateMatch
+  action: 'skip' | 'replace' | 'merge' | 'import_as_new'
+  mergedData?: ContactInput
 }
 
 export const useCSVImportStore = defineStore('csvImport', () => {
@@ -25,7 +31,7 @@ export const useCSVImportStore = defineStore('csvImport', () => {
   const fileName = ref('')
   const importOptions = ref({ skipInvalid: true, skipDuplicates: true })
   const duplicateDetectionResult = ref<DuplicateDetectionResult | null>(null)
-  const duplicateResolutions = ref<any[]>([])
+  const duplicateResolutions = ref<DuplicateResolution[]>([])
 
   // Import steps configuration
   const steps: ImportStep[] = [
@@ -188,7 +194,7 @@ export const useCSVImportStore = defineStore('csvImport', () => {
     }
   }
 
-  const resolveDuplicates = (resolutions: any[]) => {
+  const resolveDuplicates = (resolutions: DuplicateResolution[]) => {
     duplicateResolutions.value = resolutions
     currentStep.value = 'import'
   }
@@ -205,7 +211,7 @@ export const useCSVImportStore = defineStore('csvImport', () => {
         return row.isValid || !options.skipInvalid
       })
       
-      const successful: any[] = []
+      const successful: Contact[] = []
       const failed: ImportPreviewRow[] = []
       const duplicates: ImportPreviewRow[] = []
       

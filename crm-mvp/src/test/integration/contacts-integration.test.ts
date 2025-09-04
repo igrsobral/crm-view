@@ -113,7 +113,7 @@ describe('Contacts Integration Tests', () => {
 
       // Verify the save event was emitted with updated data
       expect(wrapper.emitted('save')).toBeTruthy()
-      const saveEvent = wrapper.emitted('save')?.[0]?.[0]
+      const saveEvent = wrapper.emitted('save')?.[0]?.[0] as { name: string }
       expect(saveEvent.name).toBe('Updated Name')
     })
 
@@ -203,6 +203,7 @@ describe('Contacts Integration Tests', () => {
       contactsStore.contacts = [existingContact]
 
       vi.mocked(ContactsService.deleteContact).mockResolvedValue({
+        data: null,
         error: null
       })
 
@@ -326,7 +327,7 @@ describe('Contacts Integration Tests', () => {
 
       try {
         await contactsStore.fetchContacts()
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 
@@ -345,7 +346,7 @@ describe('Contacts Integration Tests', () => {
 
       try {
         await contactsStore.createContact(contactInput)
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 

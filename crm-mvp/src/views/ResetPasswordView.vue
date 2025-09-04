@@ -93,11 +93,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
 const router = useRouter()
-const route = useRoute()
 const { updatePassword, loading, error } = useAuth()
 
 const form = reactive({

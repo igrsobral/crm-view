@@ -255,11 +255,6 @@ describe('Deals Store', () => {
       expect(dealsStore.getPreviousStage('proposal')).toBe('qualified')
       expect(dealsStore.getPreviousStage('lead')).toBeNull()
     })
-
-    it('should allow moving to any stage', () => {
-      expect(dealsStore.canMoveToStage('lead', 'closed_won')).toBe(true)
-      expect(dealsStore.canMoveToStage('qualified', 'lead')).toBe(true)
-    })
   })
 
   describe('searchDeals', () => {

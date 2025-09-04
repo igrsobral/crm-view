@@ -111,7 +111,11 @@ export const useContactsStore = defineStore('contacts', () => {
       .subscribe()
   }
 
-  const handleRealtimeEvent = (payload: any) => {
+  const handleRealtimeEvent = (payload: {
+    eventType: string
+    new?: Contact
+    old?: Contact
+  }) => {
     const { eventType, new: newRecord, old: oldRecord } = payload
 
     switch (eventType) {
