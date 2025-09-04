@@ -126,5 +126,12 @@ export default defineConfig({
     preprocessorOptions: {
       // Add any CSS preprocessor options here
     }
+  },
+
+  // Test configuration
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts']
   }
 })

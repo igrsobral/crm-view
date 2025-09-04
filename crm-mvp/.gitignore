@@ -30,4 +30,7 @@ coverage
 *.tsbuildinfo
 
 
-.env
+.
+
+playwright-report
+test-results

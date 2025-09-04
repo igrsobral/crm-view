@@ -38,6 +38,7 @@ export const useContactsStore = defineStore('contacts', () => {
   const searchQuery = ref('')
   const statusFilter = ref<ContactStatus | 'all'>('all')
   const tagFilter = ref<string[]>([])
+  const initialized = ref(false)
 
   const { error, hasError, clearError, withErrorHandling } = useErrorHandler()
   const { isLoadingKey, withLoading } = useLoadingState()
@@ -149,6 +150,7 @@ export const useContactsStore = defineStore('contacts', () => {
         }
 
         contacts.value = result.data || []
+        initialized.value = true
         setupRealtimeSubscription()
         
         return result.data
@@ -326,6 +328,7 @@ export const useContactsStore = defineStore('contacts', () => {
     searchQuery,
     statusFilter,
     tagFilter,
+    initialized,
 
     // Loading states
     loading,

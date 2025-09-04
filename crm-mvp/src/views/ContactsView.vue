@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import AppLayout from '@/components/common/AppLayout.vue'
 import ContactList from '@/components/contacts/ContactList.vue'
 import ContactForm from '@/components/contacts/ContactForm.vue'
@@ -245,4 +245,8 @@ const showNotification = (type: 'success' | 'error', message: string) => {
     notification.value = null
   }, 5000)
 }
+
+onMounted(async () => {
+  await contactsStore.fetchContacts()
+})
 </script>

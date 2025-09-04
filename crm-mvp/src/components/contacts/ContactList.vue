@@ -194,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useContactsStore } from '@/stores/contacts'
 import ContactCard from './ContactCard.vue'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
@@ -236,7 +236,7 @@ watch([selectedStatus, selectedTag], () => {
   currentPage.value = 1
 })
 
-const { contacts, loading, error, hasError, filteredContacts, allTags } = contactsStore
+const { contacts, loading, error, hasError, filteredContacts, allTags, initialized } = contactsStore
 
 const totalContacts = computed(() => contacts.length)
 
@@ -296,8 +296,8 @@ const clearAllFilters = () => {
   currentPage.value = 1
 }
 
-const retryLoad = () => {
-  contactsStore.fetchContacts()
+const retryLoad = async () => {
+  await contactsStore.fetchContacts()
 }
 
 watch(selectedStatus, (newStatus) => {
@@ -306,11 +306,5 @@ watch(selectedStatus, (newStatus) => {
 
 watch(selectedTag, (newTag) => {
   contactsStore.setTagFilter(newTag ? [newTag] : [])
-})
-
-onMounted(() => {
-  if (contacts.length === 0) {
-    contactsStore.fetchContacts()
-  }
 })
 </script>

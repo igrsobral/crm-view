@@ -20,10 +20,10 @@
         </div>
 
         <!-- User menu -->
-        <div class="relative">
+        <div class="relative" ref="userMenuContainer">
           <button type="button"
             class="flex items-center gap-x-2 rounded-full bg-white p-1.5 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150"
-            @click="userMenuOpen = !userMenuOpen" @keydown.escape="userMenuOpen = false" :aria-expanded="userMenuOpen"
+            @click="toggleUserMenu" @keydown.escape="userMenuOpen = false" :aria-expanded="userMenuOpen"
             aria-haspopup="true">
             <span class="sr-only">Open user menu</span>
             <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
@@ -40,8 +40,11 @@
           </button>
 
           <!-- User dropdown menu -->
-          <div v-if="userMenuOpen" ref="userMenuRef"
-            class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200 ease-out">
+          <div v-if="userMenuOpen"
+            class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            @click.stop
+            style="border: 2px solid red; background-color: white !important;"
+            data-testid="user-menu-dropdown">
             <!-- User Info -->
             <div class="px-4 py-3 border-b border-gray-100">
               <p class="text-sm font-medium text-gray-900 truncate">{{ userEmail }}</p>
@@ -104,7 +107,6 @@ import { ref, computed, inject, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
-import { useClickAway } from '@/composables/useClickAway'
 import type { useConfirmation } from '@/composables/useConfirmation'
 
 defineEmits<{
@@ -116,11 +118,22 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const confirmation = inject<ReturnType<typeof useConfirmation>>('confirmation')
 const userMenuOpen = ref(false)
+const userMenuContainer = ref<HTMLElement>()
 
-// Click away functionality for user menu
-const userMenuRef = useClickAway(() => {
-  userMenuOpen.value = false
-})
+// Toggle user menu
+const toggleUserMenu = (event: Event) => {
+  event.stopPropagation()
+  console.log('Toggle user menu clicked, current state:', userMenuOpen.value)
+  userMenuOpen.value = !userMenuOpen.value
+  console.log('New state:', userMenuOpen.value)
+}
+
+// Close menu when clicking outside
+const handleClickOutside = (event: Event) => {
+  if (userMenuContainer.value && !userMenuContainer.value.contains(event.target as Node)) {
+    userMenuOpen.value = false
+  }
+}
 
 const currentPageTitle = computed(() => {
   return route.meta.title as string || 'Dashboard'
@@ -199,6 +212,12 @@ const showKeyboardShortcuts = () => {
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
+  // Escape key to close menu
+  if (event.key === 'Escape' && userMenuOpen.value) {
+    userMenuOpen.value = false
+    return
+  }
+  
   // Cmd/Ctrl + Shift + Q for logout
   if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'Q') {
     event.preventDefault()
@@ -208,9 +227,11 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
+  document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
