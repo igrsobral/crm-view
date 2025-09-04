@@ -1,0 +1,130 @@
+# Netlify Configuration for CRM MVP
+# This file configures deployment settings for Netlify
+
+[build]
+  # Build command
+  command = "npm run build"
+  
+  # Directory to publish (build output)
+  publish = "dist"
+  
+  # Node.js version
+  [build.environment]
+    NODE_VERSION = "20"
+    NPM_USE_PRODUCTION = "false"
+
+# Production build settings
+[context.production]
+  command = "npm run build"
+  
+  [context.production.environment]
+    NODE_ENV = "production"
+    VITE_ENABLE_PWA = "true"
+    VITE_ENABLE_ANALYTICS = "true"
+    VITE_ENABLE_ERROR_TRACKING = "true"
+
+# Preview/staging build settings  
+[context.deploy-preview]
+  command = "npm run build"
+  
+  [context.deploy-preview.environment]
+    NODE_ENV = "staging"
+    VITE_ENABLE_PWA = "false"
+    VITE_ENABLE_ANALYTICS = "false"
+    VITE_ENABLE_ERROR_TRACKING = "true"
+
+# Branch deploy settings
+[context.branch-deploy]
+  command = "npm run build"
+
+# Redirect rules for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # HTTPS redirect
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    
+    # XSS Protection
+    X-XSS-Protection = "1; mode=block"
+    
+    # Content Type Options
+    X-Content-Type-Options = "nosniff"
+    
+    # Frame Options
+    X-Frame-Options = "DENY"
+    
+    # Referrer Policy
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Content Security Policy
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://*.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none';"
+
+# Caching headers for static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Service worker caching
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Prerender configuration (for SEO)
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+# Error page
+[[redirects]]
+  from = "/404"
+  to = "/index.html"
+  status = 404
+
+# Functions (if using Netlify Functions)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  
+  [plugins.inputs.audits]
+    performance = true
+    accessibility = true
+    best-practices = true
+    seo = true
+    pwa = true
+
+# Form handling (if using Netlify Forms)
+[forms]
+  settings = true

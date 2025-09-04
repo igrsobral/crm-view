@@ -1,0 +1,162 @@
+# Docker Compose for CRM MVP
+# Supports development and production environments
+
+version: '3.8'
+
+services:
+  # Main application
+  crm-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: crm-mvp-app
+    ports:
+      - \"8080:8080\"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Mount nginx config if you want to customize it
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:8080/health\"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - crm-network
+
+  # Optional: Reverse proxy with SSL termination
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: crm-mvp-proxy
+    ports:
+      - \"80:80\"
+      - \"443:443\"
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - crm-app
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - with-proxy
+
+  # Optional: Local Supabase for development
+  supabase-db:
+    image: supabase/postgres:14.1.0.75
+    container_name: crm-mvp-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - \"54322:5432\"
+    volumes:
+      - supabase_db_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/enhanced_schema.sql:/docker-entrypoint-initdb.d/02-enhanced-schema.sql:ro
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - development
+      - local-db
+
+  # Optional: Supabase services for local development
+  supabase-auth:
+    image: supabase/gotrue:v2.43.1
+    container_name: crm-mvp-auth
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:postgres@supabase-db:5432/postgres
+      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_URI_ALLOW_LIST: \"*\"
+      GOTRUE_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+    ports:
+      - \"9999:9999\"
+    depends_on:
+      - supabase-db
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - development
+      - local-supabase
+
+  supabase-realtime:
+    image: supabase/realtime:v2.10.1
+    container_name: crm-mvp-realtime
+    environment:
+      DB_HOST: supabase-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      PORT: 4000
+      JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+    ports:
+      - \"4000:4000\"
+    depends_on:
+      - supabase-db
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - development
+      - local-supabase
+
+  # Optional: Monitoring with Grafana and Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: crm-mvp-prometheus
+    ports:
+      - \"9090:9090\"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: crm-mvp-grafana
+    ports:
+      - \"3001:3000\"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - crm-network
+    profiles:
+      - monitoring
+
+volumes:
+  supabase_db_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  crm-network:
+    driver: bridge
