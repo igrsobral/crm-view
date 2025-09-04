@@ -5,8 +5,8 @@ import { ActivitiesService } from '@/services/activitiesService'
 import { ContactFactory, DealFactory, ActivityFactory } from '@/test/factories'
 
 // Mock Supabase client
-const mockSupabaseClient = {
-  from: vi.fn(() => ({
+vi.mock('@/utils/supabase', () => {
+  const mockQuery = {
     select: vi.fn().mockReturnThis(),
     insert: vi.fn().mockReturnThis(),
     update: vi.fn().mockReturnThis(),
@@ -24,32 +24,95 @@ const mockSupabaseClient = {
     limit: vi.fn().mockReturnThis(),
     single: vi.fn(),
     maybeSingle: vi.fn()
-  }))
-}
-
-vi.mock('@/utils/supabase', () => ({
-  supabase: mockSupabaseClient,
-  isSupabaseConfigured: vi.fn(() => true)
-}))
+  }
+  
+  return {
+    supabase: {
+      from: vi.fn(() => mockQuery)
+    },
+    isSupabaseConfigured: vi.fn(() => true)
+  }
+})
 
 describe('Supabase Integration Tests', () => {
-  beforeEach(() => {
+  let mockSupabase: {
+    from: ReturnType<typeof vi.fn>
+    auth?: {
+      getUser: ReturnType<typeof vi.fn>
+    }
+  }
+  let mockQuery: {
+    select: ReturnType<typeof vi.fn>
+    insert: ReturnType<typeof vi.fn>
+    update: ReturnType<typeof vi.fn>
+    delete: ReturnType<typeof vi.fn>
+    eq: ReturnType<typeof vi.fn>
+    neq: ReturnType<typeof vi.fn>
+    gt: ReturnType<typeof vi.fn>
+    gte: ReturnType<typeof vi.fn>
+    lt: ReturnType<typeof vi.fn>
+    lte: ReturnType<typeof vi.fn>
+    like: ReturnType<typeof vi.fn>
+    ilike: ReturnType<typeof vi.fn>
+    in: ReturnType<typeof vi.fn>
+    order: ReturnType<typeof vi.fn>
+    limit: ReturnType<typeof vi.fn>
+    single: ReturnType<typeof vi.fn>
+    maybeSingle: ReturnType<typeof vi.fn>
+    or: ReturnType<typeof vi.fn>
+    not: ReturnType<typeof vi.fn>
+  }
+
+  beforeEach(async () => {
     vi.clearAllMocks()
+    
+    // Get the mocked supabase client
+    const supabaseModule = await import('@/utils/supabase')
+    mockSupabase = supabaseModule.supabase as unknown as {
+      from: ReturnType<typeof vi.fn>
+      auth?: {
+        getUser: ReturnType<typeof vi.fn>
+      }
+    }
+    
+    // Create a fresh mock query for each test
+    mockQuery = {
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      neq: vi.fn().mockReturnThis(),
+      gt: vi.fn().mockReturnThis(),
+      gte: vi.fn().mockReturnThis(),
+      lt: vi.fn().mockReturnThis(),
+      lte: vi.fn().mockReturnThis(),
+      like: vi.fn().mockReturnThis(),
+      ilike: vi.fn().mockReturnThis(),
+      in: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
+      single: vi.fn(),
+      maybeSingle: vi.fn(),
+      or: vi.fn().mockReturnThis(),
+      not: vi.fn().mockReturnThis()
+    }
+    
+    mockSupabase.from.mockReturnValue(mockQuery)
   })
 
   describe('ContactsService', () => {
     it('should fetch contacts with proper query', async () => {
       const mockContacts = ContactFactory.buildMany(3)
-      const mockQuery = mockSupabaseClient.from().select()
       
-      vi.mocked(mockQuery.order).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockContacts,
         error: null
       })
 
       const result = await ContactsService.getContacts()
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('contacts')
+      expect(mockSupabase.from).toHaveBeenCalledWith('contacts')
       expect(mockQuery.select).toHaveBeenCalledWith('*')
       expect(mockQuery.order).toHaveBeenCalledWith('created_at', { ascending: false })
       expect(result.data).toEqual(mockContacts)
@@ -59,18 +122,37 @@ describe('Supabase Integration Tests', () => {
     it('should create contact with proper data', async () => {
       const contactInput = ContactFactory.buildInput()
       const createdContact = ContactFactory.build(contactInput)
-      const mockQuery = mockSupabaseClient.from().insert()
 
-      vi.mocked(mockQuery.select).mockResolvedValue({
-        data: [createdContact],
+      mockQuery.single.mockResolvedValue({
+        data: createdContact,
         error: null
       })
 
+      // Mock auth.getUser for create contact
+      const mockAuth = {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+          error: null
+        })
+      }
+      
+      // Add auth to the mocked supabase
+      mockSupabase.auth = mockAuth
+
       const result = await ContactsService.createContact(contactInput)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('contacts')
-      expect(mockQuery.insert).toHaveBeenCalledWith(contactInput)
-      expect(mockQuery.select).toHaveBeenCalledWith('*')
+      expect(mockSupabase.from).toHaveBeenCalledWith('contacts')
+      expect(mockQuery.insert).toHaveBeenCalledWith([{
+        user_id: 'user-123',
+        name: contactInput.name,
+        email: contactInput.email,
+        phone: contactInput.phone,
+        company: contactInput.company,
+        status: contactInput.status,
+        tags: contactInput.tags,
+        notes: contactInput.notes
+      }])
+      expect(mockQuery.select).toHaveBeenCalledWith()
       expect(result.data).toEqual(createdContact)
     })
 
@@ -78,16 +160,15 @@ describe('Supabase Integration Tests', () => {
       const contactId = 'contact-1'
       const updates = { name: 'Updated Name' }
       const updatedContact = ContactFactory.build({ id: contactId, ...updates })
-      const mockQuery = mockSupabaseClient.from().update()
 
-      vi.mocked(mockQuery.single).mockResolvedValue({
+      mockQuery.single.mockResolvedValue({
         data: updatedContact,
         error: null
       })
 
       const result = await ContactsService.updateContact(contactId, updates)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('contacts')
+      expect(mockSupabase.from).toHaveBeenCalledWith('contacts')
       expect(mockQuery.update).toHaveBeenCalledWith(updates)
       expect(mockQuery.eq).toHaveBeenCalledWith('id', contactId)
       expect(result.data).toEqual(updatedContact)
@@ -95,29 +176,24 @@ describe('Supabase Integration Tests', () => {
 
     it('should delete contact with proper ID', async () => {
       const contactId = 'contact-1'
-      const mockQuery = mockSupabaseClient.from().delete()
 
-      vi.mocked(mockQuery.eq).mockResolvedValue({
+      mockQuery.eq.mockResolvedValue({
         data: null,
         error: null
       })
 
       const result = await ContactsService.deleteContact(contactId)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('contacts')
+      expect(mockSupabase.from).toHaveBeenCalledWith('contacts')
       expect(mockQuery.delete).toHaveBeenCalled()
       expect(mockQuery.eq).toHaveBeenCalledWith('id', contactId)
       expect(result.error).toBeNull()
     })
 
     it('should handle Supabase errors properly', async () => {
-      const mockError = { message: 'Database error', code: '23505' }
-      const mockQuery = mockSupabaseClient.from().select()
+      const mockError = new Error('Database error')
 
-      vi.mocked(mockQuery.order).mockResolvedValue({
-        data: null,
-        error: mockError
-      })
+      mockQuery.order.mockRejectedValue(mockError)
 
       const result = await ContactsService.getContacts()
 
@@ -128,18 +204,17 @@ describe('Supabase Integration Tests', () => {
     it('should search contacts with proper query', async () => {
       const searchQuery = 'john'
       const mockContacts = ContactFactory.buildMany(2)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.limit).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockContacts,
         error: null
       })
 
       const result = await ContactsService.searchContacts(searchQuery, 10)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('contacts')
+      expect(mockSupabase.from).toHaveBeenCalledWith('contacts')
       expect(mockQuery.select).toHaveBeenCalledWith('*')
-      expect(mockQuery.ilike).toHaveBeenCalledWith('name', `%${searchQuery}%`)
+      expect(mockQuery.or).toHaveBeenCalledWith(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,company.ilike.%${searchQuery}%`)
       expect(mockQuery.limit).toHaveBeenCalledWith(10)
       expect(result.data).toEqual(mockContacts)
     })
@@ -148,37 +223,53 @@ describe('Supabase Integration Tests', () => {
   describe('DealsService', () => {
     it('should fetch deals with contact information', async () => {
       const mockDeals = DealFactory.buildMany(3)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.order).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockDeals,
         error: null
       })
 
       const result = await DealsService.getDeals()
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('deals')
+      expect(mockSupabase.from).toHaveBeenCalledWith('deals')
       expect(mockQuery.select).toHaveBeenCalledWith(`
-        *,
-        contact:contacts(id, name, email, company)
-      `)
+          *,
+          contact:contacts(*)
+        `)
       expect(result.data).toEqual(mockDeals)
     })
 
     it('should create deal with proper data', async () => {
       const dealInput = DealFactory.buildInput()
       const createdDeal = DealFactory.build(dealInput)
-      const mockQuery = mockSupabaseClient.from().insert()
 
-      vi.mocked(mockQuery.single).mockResolvedValue({
+      mockQuery.single.mockResolvedValue({
         data: createdDeal,
         error: null
       })
 
+      // Mock auth.getUser for create deal
+      const mockAuth = {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+          error: null
+        })
+      }
+      
+            mockSupabase.auth = mockAuth
+
       const result = await DealsService.createDeal(dealInput)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('deals')
-      expect(mockQuery.insert).toHaveBeenCalledWith(dealInput)
+      expect(mockSupabase.from).toHaveBeenCalledWith('deals')
+      expect(mockQuery.insert).toHaveBeenCalledWith([{
+        user_id: 'user-123',
+        contact_id: dealInput.contact_id,
+        name: dealInput.name,
+        value: dealInput.value || null,
+        stage: dealInput.stage || 'lead',
+        expected_close_date: dealInput.expected_close_date || null,
+        notes: dealInput.notes || null
+      }])
       expect(result.data).toEqual(createdDeal)
     })
 
@@ -186,16 +277,15 @@ describe('Supabase Integration Tests', () => {
       const dealId = 'deal-1'
       const newStage = 'qualified'
       const updatedDeal = DealFactory.build({ id: dealId, stage: newStage })
-      const mockQuery = mockSupabaseClient.from().update()
 
-      vi.mocked(mockQuery.single).mockResolvedValue({
+      mockQuery.single.mockResolvedValue({
         data: updatedDeal,
         error: null
       })
 
       const result = await DealsService.moveDealToStage(dealId, newStage)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('deals')
+      expect(mockSupabase.from).toHaveBeenCalledWith('deals')
       expect(mockQuery.update).toHaveBeenCalledWith({ stage: newStage })
       expect(mockQuery.eq).toHaveBeenCalledWith('id', dealId)
       expect(result.data).toEqual(updatedDeal)
@@ -203,23 +293,21 @@ describe('Supabase Integration Tests', () => {
 
     it('should fetch overdue deals with proper date filter', async () => {
       const mockOverdueDeals = DealFactory.buildMany(2)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.order).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockOverdueDeals,
         error: null
       })
 
       const result = await DealsService.getOverdueDeals()
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('deals')
+      expect(mockSupabase.from).toHaveBeenCalledWith('deals')
       expect(mockQuery.select).toHaveBeenCalledWith(`
-        *,
-        contact:contacts(id, name, email, company)
-      `)
+          *,
+          contact:contacts(*)
+        `)
       expect(mockQuery.lt).toHaveBeenCalledWith('expected_close_date', expect.any(String))
-      expect(mockQuery.neq).toHaveBeenCalledWith('stage', 'closed_won')
-      expect(mockQuery.neq).toHaveBeenCalledWith('stage', 'closed_lost')
+      expect(mockQuery.not).toHaveBeenCalledWith('stage', 'in', '(closed_won,closed_lost)')
       expect(result.data).toEqual(mockOverdueDeals)
     })
   })
@@ -227,54 +315,72 @@ describe('Supabase Integration Tests', () => {
   describe('ActivitiesService', () => {
     it('should fetch activities with related data', async () => {
       const mockActivities = ActivityFactory.buildMany(3)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.order).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockActivities,
         error: null
       })
 
       const result = await ActivitiesService.getActivities()
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
       expect(mockQuery.select).toHaveBeenCalledWith(`
-        *,
-        contact:contacts(id, name, email, company),
-        deal:deals(id, name, value, stage)
-      `)
+          *,
+          contact:contacts(*),
+          deal:deals(*)
+        `)
       expect(result.data).toEqual(mockActivities)
     })
 
     it('should create activity with proper data', async () => {
       const activityInput = ActivityFactory.buildInput()
       const createdActivity = ActivityFactory.build(activityInput)
-      const mockQuery = mockSupabaseClient.from().insert()
 
-      vi.mocked(mockQuery.single).mockResolvedValue({
+      mockQuery.single.mockResolvedValue({
         data: createdActivity,
         error: null
       })
 
+      // Mock auth.getUser for create activity
+      const mockAuth = {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+          error: null
+        })
+      }
+      
+            mockSupabase.auth = mockAuth
+
       const result = await ActivitiesService.createActivity(activityInput)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
-      expect(mockQuery.insert).toHaveBeenCalledWith(activityInput)
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
+      expect(mockQuery.insert).toHaveBeenCalledWith([{
+        user_id: 'user-123',
+        contact_id: activityInput.contact_id || null,
+        deal_id: activityInput.deal_id || null,
+        type: activityInput.type,
+        subject: activityInput.subject || null,
+        description: activityInput.description || null,
+        scheduled_at: activityInput.scheduled_at || null,
+        completed: false
+      }])
       expect(result.data).toEqual(createdActivity)
     })
 
     it('should fetch upcoming activities with date filter', async () => {
       const mockUpcomingActivities = ActivityFactory.buildMany(5)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.limit).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockUpcomingActivities,
         error: null
       })
 
       const result = await ActivitiesService.getUpcomingActivities(5)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
+      expect(mockQuery.not).toHaveBeenCalledWith('scheduled_at', 'is', null)
       expect(mockQuery.gte).toHaveBeenCalledWith('scheduled_at', expect.any(String))
+      expect(mockQuery.lte).toHaveBeenCalledWith('scheduled_at', expect.any(String))
       expect(mockQuery.eq).toHaveBeenCalledWith('completed', false)
       expect(mockQuery.limit).toHaveBeenCalledWith(5)
       expect(result.data).toEqual(mockUpcomingActivities)
@@ -282,16 +388,16 @@ describe('Supabase Integration Tests', () => {
 
     it('should fetch overdue activities with date filter', async () => {
       const mockOverdueActivities = ActivityFactory.buildMany(3)
-      const mockQuery = mockSupabaseClient.from().select()
 
-      vi.mocked(mockQuery.limit).mockResolvedValue({
+      mockQuery.order.mockResolvedValue({
         data: mockOverdueActivities,
         error: null
       })
 
       const result = await ActivitiesService.getOverdueActivities(3)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
+      expect(mockQuery.not).toHaveBeenCalledWith('scheduled_at', 'is', null)
       expect(mockQuery.lt).toHaveBeenCalledWith('scheduled_at', expect.any(String))
       expect(mockQuery.eq).toHaveBeenCalledWith('completed', false)
       expect(mockQuery.limit).toHaveBeenCalledWith(3)
@@ -313,12 +419,20 @@ describe('Supabase Integration Tests', () => {
         description
       })
       
-      const mockQuery = mockSupabaseClient.from().insert()
-
-      vi.mocked(mockQuery.single).mockResolvedValue({
+      mockQuery.single.mockResolvedValue({
         data: scheduledActivity,
         error: null
       })
+
+      // Mock auth.getUser for create activity
+      const mockAuth = {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+          error: null
+        })
+      }
+      
+            mockSupabase.auth = mockAuth
 
       const result = await ActivitiesService.scheduleFollowUp(
         contactId,
@@ -328,31 +442,32 @@ describe('Supabase Integration Tests', () => {
         description
       )
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
-      expect(mockQuery.insert).toHaveBeenCalledWith({
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
+      expect(mockQuery.insert).toHaveBeenCalledWith([{
+        user_id: 'user-123',
         contact_id: contactId,
-        deal_id: undefined,
+        deal_id: null,
         type,
         subject,
         description,
-        scheduled_at: scheduledAt
-      })
+        scheduled_at: scheduledAt,
+        completed: false
+      }])
       expect(result.data).toEqual(scheduledActivity)
     })
 
     it('should bulk complete activities', async () => {
       const activityIds = ['activity-1', 'activity-2', 'activity-3']
       const completedActivities = ActivityFactory.buildMany(3, { completed: true })
-      const mockQuery = mockSupabaseClient.from().update()
 
-      vi.mocked(mockQuery.select).mockResolvedValue({
+      mockQuery.select.mockResolvedValue({
         data: completedActivities,
         error: null
       })
 
       const result = await ActivitiesService.bulkCompleteActivities(activityIds)
 
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('activities')
+      expect(mockSupabase.from).toHaveBeenCalledWith('activities')
       expect(mockQuery.update).toHaveBeenCalledWith({ completed: true })
       expect(mockQuery.in).toHaveBeenCalledWith('id', activityIds)
       expect(result.data).toEqual(completedActivities)
@@ -361,8 +476,7 @@ describe('Supabase Integration Tests', () => {
 
   describe('Error handling', () => {
     it('should handle network errors', async () => {
-      const mockQuery = mockSupabaseClient.from().select()
-      vi.mocked(mockQuery.order).mockRejectedValue(new Error('Network error'))
+      mockQuery.order.mockRejectedValue(new Error('Network error'))
 
       const result = await ContactsService.getContacts()
 
@@ -371,16 +485,19 @@ describe('Supabase Integration Tests', () => {
     })
 
     it('should handle Supabase constraint violations', async () => {
-      const mockError = { 
-        message: 'duplicate key value violates unique constraint',
-        code: '23505'
-      }
-      const mockQuery = mockSupabaseClient.from().insert()
+      const mockError = new Error('duplicate key value violates unique constraint')
+      
+      mockQuery.single.mockRejectedValue(mockError)
 
-      vi.mocked(mockQuery.select).mockResolvedValue({
-        data: null,
-        error: mockError
-      })
+      // Mock auth.getUser
+      const mockAuth = {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+          error: null
+        })
+      }
+      
+            mockSupabase.auth = mockAuth
 
       const contactInput = ContactFactory.buildInput()
       const result = await ContactsService.createContact(contactInput)
@@ -390,11 +507,9 @@ describe('Supabase Integration Tests', () => {
     })
 
     it('should handle missing records', async () => {
-      const mockQuery = mockSupabaseClient.from().select()
-      vi.mocked(mockQuery.single).mockResolvedValue({
-        data: null,
-        error: { message: 'No rows returned', code: 'PGRST116' }
-      })
+      const mockError = new Error('No rows returned')
+      
+      mockQuery.single.mockRejectedValue(mockError)
 
       const result = await ContactsService.getContactById('non-existent-id')
 

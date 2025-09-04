@@ -192,16 +192,37 @@ export default defineConfig(({ mode }) => {
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
       
+      // Include only unit and integration test files from src directory
+      include: [
+        'src/**/*.{test,spec}.{js,ts}'
+      ],
+      
+      // Exclude e2e tests and other non-unit test files
+      exclude: [
+        'node_modules/',
+        'e2e/**/*',
+        'test-results/**/*',
+        'playwright-report/**/*',
+        '**/*.d.ts',
+        'dist/**/*',
+        'build/**/*'
+      ],
+      
       // Coverage configuration
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html'],
         exclude: [
           'node_modules/',
+          'e2e/**/*',
+          'test-results/**/*',
+          'playwright-report/**/*',
           'src/test/',
           '**/*.d.ts',
           '**/*.test.{ts,js}',
-          '**/*.spec.{ts,js}'
+          '**/*.spec.{ts,js}',
+          'dist/**/*',
+          'build/**/*'
         ]
       }
     },
