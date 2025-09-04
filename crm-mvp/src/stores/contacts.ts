@@ -113,22 +113,22 @@ export const useContactsStore = defineStore('contacts', () => {
 
   const handleRealtimeEvent = (payload: {
     eventType: string
-    new?: Contact
-    old?: Contact
+    new?: Record<string, unknown>
+    old?: Record<string, unknown>
   }) => {
     const { eventType, new: newRecord, old: oldRecord } = payload
 
     switch (eventType) {
       case 'INSERT':
         if (newRecord && !contacts.value.find(c => c.id === newRecord.id)) {
-          contacts.value.unshift(newRecord)
+          contacts.value.unshift(newRecord as unknown as Contact)
         }
         break
       case 'UPDATE':
         if (newRecord) {
           const index = contacts.value.findIndex(c => c.id === newRecord.id)
           if (index !== -1) {
-            contacts.value[index] = newRecord
+            contacts.value[index] = newRecord as unknown as Contact
           }
         }
         break
@@ -267,33 +267,30 @@ export const useContactsStore = defineStore('contacts', () => {
   }
 
   const bulkUpdateStatus = async (contactIds: string[], status: ContactStatus) => {
-    loading.value = true
-    error.value = null
-    try {
-      if (!isSupabaseConfigured()) {
-        throw new Error('Supabase not configured')
-      }
-
-      const result = await ContactsService.bulkUpdateStatus(contactIds, status)
-
-      if (result.error) {
-        throw new Error(result.error)
-      }
-
-      result.data?.forEach(updatedContact => {
-        const index = contacts.value.findIndex(c => c.id === updatedContact.id)
-        if (index !== -1) {
-          contacts.value[index] = updatedContact
+    const result = await withLoading('update', async () => {
+      return await withErrorHandling(async () => {
+        if (!isSupabaseConfigured()) {
+          throw new Error('Supabase not configured')
         }
-      })
 
-      return result
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to bulk update contacts'
-      return { data: null, error: error.value }
-    } finally {
-      loading.value = false
-    }
+        const result = await ContactsService.bulkUpdateStatus(contactIds, status)
+
+        if (result.error) {
+          throw new Error(result.error)
+        }
+
+        result.data?.forEach(updatedContact => {
+          const index = contacts.value.findIndex(c => c.id === updatedContact.id)
+          if (index !== -1) {
+            contacts.value[index] = updatedContact
+          }
+        })
+
+        return result
+      })
+    })
+
+    return result || { data: null, error: error.value?.message || 'Failed to bulk update contacts' }
   }
 
   const searchContacts = async (query: string, limit = 10) => {

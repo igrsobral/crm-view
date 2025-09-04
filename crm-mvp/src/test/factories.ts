@@ -16,7 +16,7 @@ export const ContactFactory = {
     status: 'lead',
     tags: ['test', 'sample'],
     notes: 'Test notes',
-    last_contact_date: null,
+    last_contact_date:  undefined,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     ...overrides
@@ -77,7 +77,7 @@ export const ActivityFactory = {
     id: `activity-${idCounter++}`,
     user_id: 'user-1',
     contact_id: 'contact-1',
-    deal_id: null,
+    deal_id:  undefined,
     type: 'call',
     subject: `Test Activity ${idCounter}`,
     description: 'Test activity description',
@@ -89,7 +89,7 @@ export const ActivityFactory = {
 
   buildInput: (overrides?: Partial<ActivityInput>): ActivityInput => ({
     contact_id: 'contact-1',
-    deal_id: null,
+    deal_id: undefined,
     type: 'call',
     subject: `Test Activity ${idCounter++}`,
     description: 'Test activity description',
