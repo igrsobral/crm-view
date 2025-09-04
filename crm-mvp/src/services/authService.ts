@@ -1,7 +1,7 @@
 import { supabase } from '@/utils/supabase'
 import type { AuthError, User, Session } from '@supabase/supabase-js'
 
-export interface AuthResponse<T = any> {
+export interface AuthResponse<T = unknown> {
   data: T | null
   error: AuthError | null
 }

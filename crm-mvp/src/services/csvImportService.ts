@@ -137,9 +137,6 @@ export class CSVImportService {
     fieldMapping: FieldMapping[],
     existingContacts: Contact[] = []
   ): ImportValidationResult {
-    const errors: string[] = []
-    const preview: ImportPreviewRow[] = []
-
     const mappingErrors = this.validateFieldMapping(fieldMapping)
     if (mappingErrors.length > 0) {
       return {
@@ -212,7 +209,7 @@ export class CSVImportService {
     field: keyof ContactInput,
     value: string,
     errors: string[]
-  ): any {
+  ): unknown {
     const trimmedValue = value.trim()
 
     switch (field) {

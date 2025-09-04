@@ -190,7 +190,7 @@ export class ActivitiesService {
      */
     static async updateActivity(id: string, updates: Partial<ActivityInput & { completed: boolean }>): Promise<ActivitiesServiceResponse<Activity>> {
         try {
-            const cleanUpdates: any = {}
+            const cleanUpdates: Record<string, unknown> = {}
 
             if (updates.type !== undefined) {
                 cleanUpdates.type = updates.type

@@ -227,7 +227,7 @@ export class DuplicateDetectionService {
       switch (strategy.strategy) {
         case 'keep_existing':
           if (existingValue !== undefined && existingValue !== null && existingValue !== '') {
-            (merged as any)[field] = existingValue
+            (merged as Record<string, unknown>)[field] = existingValue
           }
           break
 
