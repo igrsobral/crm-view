@@ -112,9 +112,12 @@ export const useAuthStore = defineStore('auth', () => {
       const { error: signOutError } = await AuthService.signOut()
       if (signOutError) throw signOutError
       
-      // Session and user will be cleared automatically by the auth state change listener
+      // Clear auth state
       session.value = null
       user.value = null
+      
+      // Clear all application data from other stores
+      await clearApplicationData()
       
       return { error: null }
     } catch (err) {
@@ -124,6 +127,56 @@ export const useAuthStore = defineStore('auth', () => {
       return { error: authError }
     } finally {
       loading.value = false
+    }
+  }
+
+  const clearApplicationData = async () => {
+    try {
+      const { useContactsStore } = await import('./contacts')
+      const { useDealsStore } = await import('./deals')
+      const { useActivitiesStore } = await import('./activities')
+      const { useDashboardStore } = await import('./dashboard')
+      const { useToastStore } = await import('./toast')
+
+      const contactsStore = useContactsStore()
+      const dealsStore = useDealsStore()
+      const activitiesStore = useActivitiesStore()
+      const dashboardStore = useDashboardStore()
+      const toastStore = useToastStore()
+
+      contactsStore.contacts = []
+      contactsStore.error = null
+
+      dealsStore.deals = []
+      dealsStore.error = null
+
+      activitiesStore.activities = []
+      activitiesStore.upcomingActivities = []
+      activitiesStore.overdueActivities = []
+      activitiesStore.error = null
+
+      dashboardStore.recentActivities = []
+      dashboardStore.error = null
+      dashboardStore.cleanup()
+
+      toastStore.clearAllToasts()
+
+      try {
+        const keysToRemove = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key && (key.startsWith('crm-') || key.startsWith('app-'))) {
+            keysToRemove.push(key)
+          }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key))
+      } catch (storageError) {
+        console.warn('Error clearing localStorage:', storageError)
+      }
+
+      console.log('Application data cleared successfully')
+    } catch (error) {
+      console.error('Error clearing application data:', error)
     }
   }
 
@@ -190,6 +243,7 @@ export const useAuthStore = defineStore('auth', () => {
     signOut,
     resetPassword,
     updatePassword,
-    refreshSession
+    refreshSession,
+    clearApplicationData
   }
 })
