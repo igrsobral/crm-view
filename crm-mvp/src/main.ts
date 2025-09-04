@@ -9,7 +9,7 @@ import { AuthManager } from './utils/authManager'
 import { SessionMonitor } from './utils/sessionMonitor'
 import { 
   preloadCriticalResources, 
-  registerServiceWorker, 
+  // registerServiceWorker, 
   startPerformanceMonitoring 
 } from './utils/performance'
 
@@ -25,9 +25,9 @@ AuthManager.initialize()
 SessionMonitor.getInstance().initialize(router)
 
 if (import.meta.env.PROD) {
-  preloadCriticalResources()
+  // preloadCriticalResources()
   
-  registerServiceWorker()
+  // registerServiceWorker()
 }
 
 if (import.meta.env.DEV) {
