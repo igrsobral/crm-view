@@ -8,37 +8,45 @@
 
     <!-- Progress Steps -->
     <div class="mb-8">
-      <div class="flex items-center justify-between">
+      <div class="flex items-start">
         <div 
           v-for="(step, index) in csvImportStore.steps" 
           :key="step.id"
-          class="flex items-center"
-          :class="{ 'flex-1': index < csvImportStore.steps.length - 1 }"
+          class="flex-1 relative"
         >
-          <!-- Step Circle -->
-          <div class="flex items-center">
-            <div 
-              class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-              :class="{
-                'bg-blue-600 text-white': index <= csvImportStore.currentStepIndex,
-                'bg-gray-200 text-gray-600': index > csvImportStore.currentStepIndex
-              }"
-            >
-              {{ index + 1 }}
+          <!-- Step Content -->
+          <div class="flex items-start">
+            <!-- Step Circle -->
+            <div class="flex-shrink-0">
+              <div 
+                class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2"
+                :class="{
+                  'bg-blue-600 border-blue-600 text-white': index <= csvImportStore.currentStepIndex,
+                  'bg-white border-gray-300 text-gray-600': index > csvImportStore.currentStepIndex
+                }"
+              >
+                <svg v-if="index < csvImportStore.currentStepIndex" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span v-else>{{ index + 1 }}</span>
+              </div>
             </div>
-            <div class="ml-3">
-              <p class="text-sm font-medium text-gray-900">{{ step.title }}</p>
-              <p class="text-xs text-gray-500">{{ step.description }}</p>
+            
+            <!-- Step Text -->
+            <div class="ml-4 min-w-0 flex-1">
+              <p class="text-sm font-medium text-gray-900 whitespace-nowrap">{{ step.title }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ step.description }}</p>
             </div>
           </div>
           
           <!-- Connector Line -->
           <div 
             v-if="index < csvImportStore.steps.length - 1"
-            class="flex-1 h-px mx-4"
+            class="absolute top-5 left-5 w-full h-0.5 -ml-5"
+            style="width: calc(100% - 20px); margin-left: 40px;"
             :class="{
               'bg-blue-600': index < csvImportStore.currentStepIndex,
-              'bg-gray-200': index >= csvImportStore.currentStepIndex
+              'bg-gray-300': index >= csvImportStore.currentStepIndex
             }"
           ></div>
         </div>
@@ -114,7 +122,7 @@
       <div class="flex space-x-3">
         <button
           v-if="csvImportStore.currentStep !== 'complete'"
-          @click="csvImportStore.reset()"
+          @click="handleCancel"
           :disabled="csvImportStore.loading"
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -157,6 +165,7 @@
 
 <script setup lang="ts">
 import { useCSVImportStore } from '@/stores/csvImport'
+import { useRouter } from 'vue-router'
 import ContactImportUpload from './ContactImportUpload.vue'
 import ContactImportMapping from './ContactImportMapping.vue'
 import ContactImportPreview from './ContactImportPreview.vue'
@@ -165,4 +174,10 @@ import ContactImportExecute from './ContactImportExecute.vue'
 import ContactImportComplete from './ContactImportComplete.vue'
 
 const csvImportStore = useCSVImportStore()
+const router = useRouter()
+
+const handleCancel = () => {
+  csvImportStore.reset()
+  router.push('/contacts')
+}
 </script>

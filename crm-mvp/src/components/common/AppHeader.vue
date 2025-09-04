@@ -43,7 +43,6 @@
           <div v-if="userMenuOpen"
             class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             @click.stop
-            style="border: 2px solid red; background-color: white !important;"
             data-testid="user-menu-dropdown">
             <!-- User Info -->
             <div class="px-4 py-3 border-b border-gray-100">
