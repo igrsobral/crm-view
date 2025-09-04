@@ -267,7 +267,7 @@ const initializeResolutions = () => {
   }))
 }
 
-const getFieldValue = (contact: any, field: string): string => {
+const getFieldValue = (contact: Record<string, unknown>, field: string): string => {
   const value = contact[field]
   if (field === 'tags' && Array.isArray(value)) {
     return value.join(', ')

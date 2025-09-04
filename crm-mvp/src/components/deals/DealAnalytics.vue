@@ -215,12 +215,8 @@ interface Props {
     metrics: PipelineMetrics | null
 }
 
-interface Emits {
-    (e: 'showOverdueDeals'): void
-}
 
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
 
 const pipelineStages = [
     { value: DEAL_STAGES.LEAD, label: 'Lead', color: 'bg-gray-400' },

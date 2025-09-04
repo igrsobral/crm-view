@@ -197,7 +197,6 @@
 import { ref, computed, watch } from 'vue'
 import { useContactsStore } from '@/stores/contacts'
 import ContactCard from './ContactCard.vue'
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import ErrorDisplay from '@/components/common/ErrorDisplay.vue'
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import type { Contact } from '@/stores/contacts'
@@ -236,7 +235,7 @@ watch([selectedStatus, selectedTag], () => {
   currentPage.value = 1
 })
 
-const { contacts, loading, error, hasError, filteredContacts, allTags, initialized } = contactsStore
+const { contacts, loading, error, hasError, filteredContacts, allTags } = contactsStore
 
 const totalContacts = computed(() => contacts.length)
 

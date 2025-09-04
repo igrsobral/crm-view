@@ -13,7 +13,7 @@
           v-for="toast in toasts"
           :key="toast.id"
           :class="getToastClass(toast.type)"
-          class="min-w-80 max-w-md w-auto shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+          class="min-w-100 max-w-md w-auto shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
         >
           <div class="p-4">
             <div class="flex items-start">

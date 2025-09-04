@@ -177,7 +177,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useContactsStore } from '@/stores/contacts'
 import type { ActivityType } from '@/utils/constants'
-import type { Contact } from '@/stores/contacts'
+
 
 interface Props {
     contactId?: string

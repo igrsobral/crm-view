@@ -194,10 +194,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits<{
-  close: []
-  edit: []
-}>()
+// const emit = defineEmits<{
+//   close: []
+//   edit: []
+// }>()
 
 const activitiesStore = useActivitiesStore()
 const showActivityForm = ref(false)
@@ -252,7 +252,7 @@ const handleActivityCreated = () => {
   console.log('Activity created')
 }
 
-const handleActivityUpdated = (activityId: string, updates: any) => {
+const handleActivityUpdated = (activityId: string, updates: Record<string, unknown>) => {
   // Activity is already updated in store by the timeline component
   console.log('Activity updated:', activityId, updates)
 }

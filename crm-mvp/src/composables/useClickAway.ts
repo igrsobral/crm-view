@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 export function useClickAway(callback: () => void) {
   const target = ref<HTMLElement>()

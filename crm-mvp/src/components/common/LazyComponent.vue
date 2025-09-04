@@ -25,12 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
+import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import SkeletonLoader from './SkeletonLoader.vue'
 
 interface Props {
   // Component to lazy load
-  component: () => Promise<any>
+  component: () => Promise<unknown>
   // Intersection observer options
   rootMargin?: string
   threshold?: number

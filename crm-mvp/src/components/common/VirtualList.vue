@@ -28,11 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useThrottle } from '@/composables/usePerformance'
 
 interface Props {
-  items: any[]
+  items: unknown[]
   itemHeight: number
   containerHeight?: string
   overscan?: number // Number of items to render outside visible area
@@ -86,7 +86,7 @@ const remainingHeight = computed(() => {
   return Math.max(0, totalHeight - offsetY.value - visibleHeight)
 })
 
-const getItemKey = (item: any, index: number) => {
+const getItemKey = (item: unknown, index: number) => {
   if (props.keyField && item[props.keyField] !== undefined) {
     return item[props.keyField]
   }

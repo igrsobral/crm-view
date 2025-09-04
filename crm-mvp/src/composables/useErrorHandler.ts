@@ -35,7 +35,7 @@ export function useErrorHandler() {
     isRetrying.value = false
   }
 
-  const handleSupabaseError = (err: any): ErrorState => {
+  const handleSupabaseError = (err: Record<string, unknown>): ErrorState => {
     if (err?.code) {
       switch (err.code) {
         case 'PGRST116':

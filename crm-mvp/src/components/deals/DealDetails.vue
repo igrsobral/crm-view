@@ -129,13 +129,7 @@ interface Props {
     deal: Deal
 }
 
-interface Emits {
-    (e: 'edit', deal: Deal): void
-    (e: 'close'): void
-}
-
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
 
 const pipelineStages = [
     { value: DEAL_STAGES.LEAD, label: 'Lead' },
@@ -221,7 +215,7 @@ const isStageCompleted = (stage: DealStage): boolean => {
     return stageIndex < currentIndex
 }
 
-const getStageProgressClass = (stage: DealStage, index: number): string => {
+const getStageProgressClass = (stage: DealStage): string => {
     if (isStageCompleted(stage)) {
         return 'bg-green-500'
     }

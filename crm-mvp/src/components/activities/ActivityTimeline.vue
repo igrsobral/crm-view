@@ -179,15 +179,15 @@ import type { ActivityType } from '@/utils/constants'
 // Import ActivityForm component
 const ActivityForm = defineAsyncComponent(() => import('./ActivityForm.vue'))
 
-interface Props {
-  contactId: string
-  activities: Activity[]
-  loading?: boolean
-}
+// interface Props {
+//   contactId: string
+//   activities: Activity[]
+//   loading?: boolean
+// }
 
-const props = withDefaults(defineProps<Props>(), {
-  loading: false
-})
+// const props = withDefaults(defineProps<Props>(), {
+//   loading: false
+// })
 
 const emit = defineEmits<{
   'activity-created': []

@@ -136,7 +136,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { DEAL_STAGES, type DealStage } from '@/utils/constants'
+import { DEAL_STAGES } from '@/utils/constants'
 import type { Deal, DealInput } from '@/stores/deals'
 import type { Contact } from '@/stores/contacts'
 import { useContactsStore } from '@/stores/contacts'

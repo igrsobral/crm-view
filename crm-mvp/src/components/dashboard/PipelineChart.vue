@@ -130,7 +130,7 @@ const doughnutOptions = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => {
+                label: (context: { label?: string; parsed?: number; dataset: { data: number[] } }) => {
                     const label = context.label || ''
                     const value = context.parsed || 0
                     const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
@@ -152,7 +152,7 @@ const barOptions = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => {
+                label: (context: { label?: string; parsed: { y: number } }) => {
                     return `${context.label}: ${context.parsed.y} deals`
                 }
             }

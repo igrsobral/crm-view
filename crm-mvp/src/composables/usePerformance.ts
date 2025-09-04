@@ -51,8 +51,9 @@ export function usePerformance() {
       const clsObserver = new PerformanceObserver((list) => {
         let clsValue = 0
         for (const entry of list.getEntries()) {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value
+          const layoutShiftEntry = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number }
+          if (!layoutShiftEntry.hadRecentInput) {
+            clsValue += layoutShiftEntry.value || 0
           }
         }
         metrics.value.cumulativeLayoutShift = clsValue
@@ -64,7 +65,8 @@ export function usePerformance() {
         const entries = list.getEntries()
         const firstInput = entries[0]
         if (firstInput) {
-          metrics.value.firstInputDelay = (firstInput as any).processingStart - firstInput.startTime
+          const firstInputEntry = firstInput as PerformanceEntry & { processingStart?: number }
+          metrics.value.firstInputDelay = (firstInputEntry.processingStart || 0) - firstInput.startTime
         }
       })
       fidObserver.observe({ entryTypes: ['first-input'] })
@@ -102,12 +104,18 @@ export function usePerformance() {
   const getResourceTimings = () => {
     if (typeof window === 'undefined' || !window.performance) return []
 
-    return performance.getEntriesByType('resource').map(entry => ({
-      name: entry.name,
-      duration: entry.duration,
-      size: (entry as any).transferSize || 0,
-      type: (entry as any).initiatorType
-    }))
+    return performance.getEntriesByType('resource').map(entry => {
+      const resourceEntry = entry as PerformanceResourceTiming & {
+        transferSize?: number
+        initiatorType?: string
+      }
+      return {
+        name: entry.name,
+        duration: entry.duration,
+        size: resourceEntry.transferSize || 0,
+        type: resourceEntry.initiatorType || 'unknown'
+      }
+    })
   }
 
   const getBundleSize = () => {
@@ -154,7 +162,7 @@ export function usePerformance() {
 }
 
 // Debounce utility for performance optimization
-export function useDebounce<T extends (...args: any[]) => any>(
+export function useDebounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -167,7 +175,7 @@ export function useDebounce<T extends (...args: any[]) => any>(
 }
 
 // Throttle utility for performance optimization
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
