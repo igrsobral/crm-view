@@ -151,7 +151,18 @@ const getProgressClass = (type: string) => {
   return variants[type as keyof typeof variants] || variants.info
 }
 
-const getProgress = (toast: any) => {
+const getProgress = (toast: {
+    id: string;
+    type: "success" | "error" | "warning" | "info";
+    title?: string | undefined;
+    message: string;
+    duration?: number | undefined;
+    action?: {
+        label: string;
+        handler: () => void;
+    } | undefined;
+    createdAt: number;
+}) => {
   if (!toast.duration || toast.duration <= 0) return 0
   const elapsed = Date.now() - toast.createdAt
   const progress = Math.max(0, Math.min(100, (elapsed / toast.duration) * 100))
