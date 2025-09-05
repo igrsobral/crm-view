@@ -4,17 +4,16 @@
       <!-- Header -->
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <button @click="refreshDashboard" :disabled="dashboardStore.loading"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-          <svg :class="[
-            'w-4 h-4 mr-2',
-            dashboardStore.loading ? 'animate-spin' : ''
-          ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh
-        </button>
+        <Button 
+          @click="refreshDashboard" 
+          :disabled="dashboardStore.loading"
+          :loading="dashboardStore.loading"
+          icon="pi pi-refresh"
+          label="Refresh"
+          outlined
+          severity="secondary"
+          class="px-4 py-2"
+        />
       </div>
 
       <!-- Loading State -->
@@ -88,6 +87,8 @@ import UpcomingTasks from '@/components/dashboard/UpcomingTasks.vue'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useActivitiesStore } from '@/stores/activities'
 
+import Button from 'primevue/button'
+
 const dashboardStore = useDashboardStore()
 const activitiesStore = useActivitiesStore()
 
@@ -128,9 +129,7 @@ const handleCompleteTask = async (taskId: string) => {
 }
 
 const handleRescheduleTask = (taskId: string) => {
-  // This would typically open a modal or navigate to edit form
   console.log('Reschedule task:', taskId)
-  // For now, just log - this could be enhanced with a modal
 }
 
 onMounted(async () => {

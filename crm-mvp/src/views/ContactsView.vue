@@ -27,13 +27,12 @@
             </svg>
             Export
           </router-link>
-          <button @click="openCreateForm"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Add Contact
-          </button>
+          <Button 
+            @click="openCreateForm"
+            icon="pi pi-plus"
+            label="Add Contact"
+            class="px-4 py-2"
+          />
         </div>
       </div>
 
@@ -128,14 +127,19 @@
               </p>
             </div>
             <div class="flex gap-3 px-4 py-3">
-              <button @click="contactToDelete = null"
-                class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                Cancel
-              </button>
-              <button @click="confirmDelete"
-                class="flex-1 px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
-                Delete
-              </button>
+              <Button 
+                @click="contactToDelete = null"
+                outlined
+                severity="secondary"
+                label="Cancel"
+                class="flex-1"
+              />
+              <Button 
+                @click="confirmDelete"
+                severity="danger"
+                label="Delete"
+                class="flex-1"
+              />
             </div>
           </div>
         </div>
@@ -152,6 +156,9 @@ import ContactForm from '@/components/contacts/ContactForm.vue'
 import ContactDetails from '@/components/contacts/ContactDetails.vue'
 import { useContactsStore } from '@/stores/contacts'
 import type { Contact, ContactInput } from '@/stores/contacts'
+
+// PrimeVue component imports
+import Button from 'primevue/button'
 
 const contactsStore = useContactsStore()
 

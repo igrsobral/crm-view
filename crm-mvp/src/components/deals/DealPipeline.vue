@@ -12,44 +12,40 @@
             <div class="flex items-center space-x-3">
                 <!-- Search -->
                 <div class="relative">
-                    <input v-model="searchQuery" type="text" placeholder="Search deals..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    <InputText 
+                        v-model="searchQuery" 
+                        placeholder="Search deals..."
+                        class="pl-10 pr-4 py-2 w-64"
+                    />
                 </div>
 
                 <!-- Stage Filter -->
-                <select v-model="selectedStage"
-                    class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="all">All Stages</option>
-                    <option v-for="stage in stageOptions" :key="stage.value" :value="stage.value">
-                        {{ stage.label }}
-                    </option>
-                </select>
+                <Select 
+                    v-model="selectedStage"
+                    :options="stageFilterOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="All Stages"
+                    class="w-48"
+                />
 
                 <!-- Export Button -->
-                <router-link
-                    to="/export"
-                    class="bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center"
-                >
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 10l5 5 5-5M7 14l5 5 5-5" />
-                    </svg>
-                    Export
-                </router-link>
+                <Button 
+                    outlined
+                    severity="secondary"
+                    icon="pi pi-download"
+                    label="Export"
+                    @click="() => router.push('/export')"
+                    class="px-4 py-2"
+                />
 
                 <!-- Add Deal Button -->
-                <button @click="$emit('createDeal')"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Add Deal
-                </button>
+                <Button 
+                    icon="pi pi-plus"
+                    label="Add Deal"
+                    @click="$emit('create-deal')"
+                    class="px-4 py-2"
+                />
             </div>
         </div>
 
@@ -81,7 +77,7 @@
                         <!-- Deal Cards -->
                         <div class="space-y-3">
                             <DealCard v-for="deal in getFilteredStageDeals(stage.value)" :key="deal.id" :deal="deal"
-                                @click="$emit('selectDeal', deal)" @edit="$emit('editDeal', deal)"
+                                @click="$emit('select-deal', deal)" @edit="$emit('edit-deal', deal)"
                                 @dragStart="onDealDragStart" @dragEnd="onDealDragEnd" />
                         </div>
 
@@ -104,9 +100,15 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { DEAL_STAGES, type DealStage } from '@/utils/constants'
 import type { Deal } from '@/stores/deals'
 import DealCard from './DealCard.vue'
+
+// PrimeVue component imports
+import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
+import Button from 'primevue/button'
 
 interface Props {
     deals: Deal[]
@@ -114,14 +116,15 @@ interface Props {
 }
 
 interface Emits {
-    (e: 'createDeal'): void
-    (e: 'selectDeal', deal: Deal): void
-    (e: 'editDeal', deal: Deal): void
-    (e: 'moveDeal', dealId: string, newStage: DealStage): void
+    (e: 'create-deal'): void
+    (e: 'select-deal', deal: Deal): void
+    (e: 'edit-deal', deal: Deal): void
+    (e: 'move-deal', dealId: string, newStage: DealStage): void
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+const router = useRouter()
 
 const searchQuery = ref('')
 const selectedStage = ref<DealStage | 'all'>('all')
@@ -137,7 +140,13 @@ const pipelineStages = [
     { value: DEAL_STAGES.CLOSED_LOST, label: 'Closed Lost', color: 'bg-red-400' }
 ]
 
-const stageOptions = computed(() => pipelineStages)
+const stageFilterOptions = computed(() => [
+    { label: 'All Stages', value: 'all' },
+    ...pipelineStages.map(stage => ({
+        label: stage.label,
+        value: stage.value
+    }))
+])
 
 const dealsByStage = computed(() => {
     return props.deals.reduce((acc, deal) => {
@@ -214,7 +223,7 @@ const onDragLeave = () => {
 
 const onDrop = (newStage: DealStage) => {
     if (draggedDeal.value && draggedDeal.value.stage !== newStage) {
-        emit('moveDeal', draggedDeal.value.id, newStage)
+        emit('move-deal', draggedDeal.value.id, newStage)
     }
     dragOverStage.value = null
     draggedDeal.value = null

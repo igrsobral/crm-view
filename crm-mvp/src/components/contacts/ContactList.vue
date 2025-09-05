@@ -5,54 +5,46 @@
       <div class="flex flex-col sm:flex-row gap-4">
         <!-- Search Input -->
         <div class="flex-1">
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
+            <InputText
               v-model="searchInput"
-              type="text"
               placeholder="Search contacts by name, email, or company..."
-              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full pl-10 pr-3 py-2"
             />
-          </div>
         </div>
 
         <!-- Status Filter -->
         <div class="sm:w-48">
-          <select
+          <Select
             v-model="selectedStatus"
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="all">All Statuses</option>
-            <option value="lead">Lead</option>
-            <option value="prospect">Prospect</option>
-            <option value="customer">Customer</option>
-            <option value="inactive">Inactive</option>
-          </select>
+            :options="statusFilterOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="All Statuses"
+            class="w-full"
+          />
         </div>
 
         <!-- Tag Filter -->
         <div class="sm:w-48" v-if="allTags.length > 0">
-          <select
+          <Select
             v-model="selectedTag"
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">All Tags</option>
-            <option v-for="tag in allTags" :key="tag" :value="tag">{{ tag }}</option>
-          </select>
+            :options="tagFilterOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="All Tags"
+            class="w-full"
+          />
         </div>
 
         <!-- Clear Filters -->
-        <button
+        <Button
           v-if="hasActiveFilters"
           @click="clearAllFilters"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Clear Filters
-        </button>
+          outlined
+          severity="secondary"
+          label="Clear Filters"
+          class="px-4 py-2"
+        />
       </div>
     </div>
 
@@ -67,63 +59,49 @@
           <!-- Sort Options -->
           <div class="flex items-center gap-2">
             <label class="text-sm text-gray-700">Sort by:</label>
-            <select
+            <Select
               v-model="sortBy"
-              class="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="created_at">Date Created</option>
-              <option value="name">Name</option>
-              <option value="company">Company</option>
-              <option value="status">Status</option>
-              <option value="last_contact_date">Last Contact</option>
-            </select>
+              :options="sortOptions"
+              optionLabel="label"
+              optionValue="value"
+              class="text-sm w-48"
+            />
             
-            <button
+            <Button
               @click="toggleSortOrder"
-              class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+              text
+              icon="pi pi-sort"
               :title="sortOrder === 'asc' ? 'Sort Descending' : 'Sort Ascending'"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path 
-                  v-if="sortOrder === 'asc'"
-                  stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
-                  d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" 
-                />
-                <path 
-                  v-else
-                  stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
-                  d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" 
-                />
-              </svg>
-            </button>
+              class="p-1"
+            />
           </div>
         </div>
 
         <!-- Pagination Controls -->
         <div class="flex items-center gap-2" v-if="totalPages > 1">
-          <button
+          <Button
             @click="goToPage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
+            outlined
+            severity="secondary"
+            label="Previous"
+            size="small"
+            class="px-3 py-1"
+          />
           
           <span class="text-sm text-gray-700">
             Page {{ currentPage }} of {{ totalPages }}
           </span>
           
-          <button
+          <Button
             @click="goToPage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
+            outlined
+            severity="secondary"
+            label="Next"
+            size="small"
+            class="px-3 py-1"
+          />
         </div>
       </div>
     </div>
@@ -162,20 +140,18 @@
             : 'Get started by adding your first contact.' 
           }}
         </p>
-        <button
+        <Button
           v-if="hasActiveFilters"
           @click="clearAllFilters"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Clear Filters
-        </button>
-        <button
+          label="Clear Filters"
+          class="px-4 py-2"
+        />
+        <Button
           v-else
           @click="$emit('create-contact')"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Add First Contact
-        </button>
+          label="Add First Contact"
+          class="px-4 py-2"
+        />
       </div>
     </div>
 
@@ -202,6 +178,11 @@ import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import type { Contact } from '@/stores/contacts'
 import type { ContactStatus } from '@/utils/constants'
 
+// PrimeVue component imports
+import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
+import Button from 'primevue/button'
+
 defineEmits<{
   'create-contact': []
   'edit-contact': [contact: Contact]
@@ -218,6 +199,27 @@ const sortBy = ref<'created_at' | 'name' | 'company' | 'status' | 'last_contact_
 const sortOrder = ref<'asc' | 'desc'>('desc')
 const currentPage = ref(1)
 const itemsPerPage = ref(12)
+
+const statusFilterOptions = [
+  { label: 'All Statuses', value: 'all' },
+  { label: 'Lead', value: 'lead' },
+  { label: 'Prospect', value: 'prospect' },
+  { label: 'Customer', value: 'customer' },
+  { label: 'Inactive', value: 'inactive' }
+]
+
+const sortOptions = [
+  { label: 'Date Created', value: 'created_at' },
+  { label: 'Name', value: 'name' },
+  { label: 'Company', value: 'company' },
+  { label: 'Status', value: 'status' },
+  { label: 'Last Contact', value: 'last_contact_date' }
+]
+
+const tagFilterOptions = computed(() => [
+  { label: 'All Tags', value: '' },
+  ...allTags.map((tag: string) => ({ label: tag, value: tag }))
+])
 
 const searchDebounceTimeout = ref<NodeJS.Timeout>()
 watch(searchInput, (newValue) => {

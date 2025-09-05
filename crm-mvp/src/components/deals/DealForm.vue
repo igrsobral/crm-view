@@ -6,12 +6,14 @@
                 <h2 class="text-xl font-semibold text-gray-900">
                     {{ isEditing ? 'Edit Deal' : 'Create New Deal' }}
                 </h2>
-                <button @click="$emit('cancel')" class="text-gray-400 hover:text-gray-600 p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <Button 
+                    icon="pi pi-times" 
+                    text 
+                    rounded 
+                    severity="secondary" 
+                    @click="$emit('cancel')"
+                    class="text-gray-400 hover:text-gray-600" 
+                />
             </div>
         </div>
 
@@ -20,43 +22,43 @@
             <!-- Deal Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                    Deal Name *
+                    Deal Name <span class="text-red-500">*</span>
                 </label>
-                <input id="name" v-model="form.name" type="text" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    :class="{ 'border-red-300': errors.name }" placeholder="Enter deal name">
+                <InputText 
+                    id="name" 
+                    v-model="form.name" 
+                    placeholder="Enter deal name"
+                    :invalid="!!errors.name"
+                    class="w-full"
+                />
                 <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
             </div>
 
             <!-- Contact Selection -->
             <div>
                 <label for="contact" class="block text-sm font-medium text-gray-700 mb-2">
-                    Contact *
+                    Contact <span class="text-red-500">*</span>
                 </label>
-                <div class="relative">
-                    <input id="contact" v-model="contactSearchQuery" type="text" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        :class="{ 'border-red-300': errors.contact_id }" placeholder="Search for a contact..."
-                        @input="searchContacts" @focus="showContactDropdown = true">
-
-                    <!-- Contact Dropdown -->
-                    <div v-if="showContactDropdown && (filteredContacts.length > 0 || contactSearchQuery.length > 0)"
-                        class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        <div v-for="contact in filteredContacts" :key="contact.id"
-                            class="px-4 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                            @click="selectContact(contact)">
-                            <div class="font-medium text-gray-900">{{ contact.name }}</div>
+                <AutoComplete 
+                    id="contact"
+                    v-model="selectedContact"
+                    :suggestions="filteredContacts"
+                    @complete="searchContacts"
+                    optionLabel="name"
+                    placeholder="Search for a contact..."
+                    :invalid="!!errors.contact_id"
+                    class="w-full"
+                >
+                    <template #option="{ option }">
+                        <div>
+                            <div class="font-medium text-gray-900">{{ option.name }}</div>
                             <div class="text-sm text-gray-600">
-                                {{ contact.email }}
-                                <span v-if="contact.company"> • {{ contact.company }}</span>
+                                {{ option.email }}
+                                <span v-if="option.company"> • {{ option.company }}</span>
                             </div>
                         </div>
-                        <div v-if="filteredContacts.length === 0 && contactSearchQuery.length > 0"
-                            class="px-4 py-2 text-gray-500 text-sm">
-                            No contacts found
-                        </div>
-                    </div>
-                </div>
+                    </template>
+                </AutoComplete>
                 <p v-if="errors.contact_id" class="mt-1 text-sm text-red-600">{{ errors.contact_id }}</p>
             </div>
 
@@ -65,14 +67,15 @@
                 <label for="value" class="block text-sm font-medium text-gray-700 mb-2">
                     Deal Value
                 </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="text-gray-500 sm:text-sm">$</span>
-                    </div>
-                    <input id="value" v-model.number="form.value" type="number" min="0" step="0.01"
-                        class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="0.00">
-                </div>
+                <InputNumber 
+                    id="value" 
+                    v-model="form.value" 
+                    mode="currency" 
+                    currency="USD" 
+                    :min="0"
+                    placeholder="0.00"
+                    class="w-full"
+                />
             </div>
 
             <!-- Pipeline Stage -->
@@ -80,12 +83,15 @@
                 <label for="stage" class="block text-sm font-medium text-gray-700 mb-2">
                     Pipeline Stage
                 </label>
-                <select id="stage" v-model="form.stage"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option v-for="stage in stageOptions" :key="stage.value" :value="stage.value">
-                        {{ stage.label }}
-                    </option>
-                </select>
+                <Select 
+                    id="stage" 
+                    v-model="form.stage" 
+                    :options="stageOptions" 
+                    optionLabel="label" 
+                    optionValue="value" 
+                    placeholder="Select pipeline stage"
+                    class="w-full"
+                />
             </div>
 
             <!-- Expected Close Date -->
@@ -93,8 +99,13 @@
                 <label for="expected_close_date" class="block text-sm font-medium text-gray-700 mb-2">
                     Expected Close Date
                 </label>
-                <input id="expected_close_date" v-model="form.expected_close_date" type="date"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <DatePicker 
+                    id="expected_close_date" 
+                    v-model="expectedCloseDate"
+                    placeholder="Select expected close date"
+                    :minDate="minDate"
+                    class="w-full"
+                />
             </div>
 
             <!-- Notes -->
@@ -102,44 +113,52 @@
                 <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
                     Notes
                 </label>
-                <textarea id="notes" v-model="form.notes" rows="4"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    placeholder="Add any notes about this deal..."></textarea>
+                <Textarea 
+                    id="notes" 
+                    v-model="form.notes" 
+                    rows="4"
+                    placeholder="Add any notes about this deal..."
+                    class="w-full"
+                />
             </div>
 
             <!-- Form Actions -->
             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
-                <button type="button" @click="$emit('cancel')"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Cancel
-                </button>
-                <button type="submit" :disabled="loading || !isFormValid"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span v-if="loading" class="flex items-center">
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
-                        </svg>
-                        {{ isEditing ? 'Updating...' : 'Creating...' }}
-                    </span>
-                    <span v-else>
-                        {{ isEditing ? 'Update Deal' : 'Create Deal' }}
-                    </span>
-                </button>
+                <Button 
+                    type="button" 
+                    @click="$emit('cancel')"
+                    label="Cancel"
+                    severity="secondary"
+                    outlined
+                    class="px-4 py-2"
+                />
+                <Button 
+                    type="submit" 
+                    :disabled="loading || !isFormValid"
+                    :loading="loading"
+                    :label="isEditing ? 'Update Deal' : 'Create Deal'"
+                    class="px-4 py-2"
+                />
             </div>
         </form>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { DEAL_STAGES } from '@/utils/constants'
 import type { Deal, DealInput } from '@/stores/deals'
 import type { Contact } from '@/stores/contacts'
 import { useContactsStore } from '@/stores/contacts'
+
+// PrimeVue component imports
+import AutoComplete from 'primevue/autocomplete'
+import Button from 'primevue/button'
+import DatePicker from 'primevue/datepicker'
+import InputNumber from 'primevue/inputnumber'
+import InputText from '@primevue/core/basecomponent'
+import Select from 'primevue/select'
+import Textarea from 'primevue/textarea'
 
 interface Props {
     deal?: Deal | null
@@ -166,11 +185,12 @@ const form = ref<DealInput>({
 })
 
 const errors = ref<Record<string, string>>({})
-const contactSearchQuery = ref('')
-const showContactDropdown = ref(false)
+const selectedContact = ref<Contact | null>(null)
+const expectedCloseDate = ref<Date | null>(null)
 const filteredContacts = ref<Contact[]>([])
 
 const isEditing = computed(() => !!props.deal)
+const minDate = computed(() => new Date()) // Prevent selecting past dates
 
 const stageOptions = [
     { value: DEAL_STAGES.LEAD, label: 'Lead' },
@@ -185,6 +205,25 @@ const isFormValid = computed(() => {
     return form.value.name.trim() && form.value.contact_id
 })
 
+// Watch selectedContact changes
+watch(selectedContact, (contact) => {
+    if (contact) {
+        form.value.contact_id = contact.id
+        delete errors.value.contact_id
+    } else {
+        form.value.contact_id = ''
+    }
+})
+
+// Watch expectedCloseDate changes
+watch(expectedCloseDate, (date) => {
+    if (date) {
+        form.value.expected_close_date = date.toISOString().split('T')[0]
+    } else {
+        form.value.expected_close_date = ''
+    }
+})
+
 const initializeForm = () => {
     if (props.deal) {
         form.value = {
@@ -197,7 +236,11 @@ const initializeForm = () => {
         }
 
         if (props.deal.contact) {
-            contactSearchQuery.value = props.deal.contact.name
+            selectedContact.value = props.deal.contact
+        }
+        
+        if (props.deal.expected_close_date) {
+            expectedCloseDate.value = new Date(props.deal.expected_close_date)
         }
     } else {
         form.value = {
@@ -208,31 +251,26 @@ const initializeForm = () => {
             expected_close_date: '',
             notes: ''
         }
-        contactSearchQuery.value = ''
+        selectedContact.value = null
+        expectedCloseDate.value = null
     }
     errors.value = {}
 }
 
-const searchContacts = async () => {
-    if (contactSearchQuery.value.length < 2) {
+const searchContacts = async (event: { query: string }) => {
+    const query = event.query
+    if (query.length < 2) {
         filteredContacts.value = []
         return
     }
 
     try {
-        const { data } = await contactsStore.searchContacts(contactSearchQuery.value, 10)
+        const { data } = await contactsStore.searchContacts(query, 10)
         filteredContacts.value = data || []
     } catch (error) {
         console.error('Error searching contacts:', error)
         filteredContacts.value = []
     }
-}
-
-const selectContact = (contact: Contact) => {
-    form.value.contact_id = contact.id
-    contactSearchQuery.value = contact.name
-    showContactDropdown.value = false
-    errors.value.contact_id = ''
 }
 
 const validateForm = (): boolean => {
@@ -266,21 +304,9 @@ const handleSubmit = () => {
     emit('save', dealData)
 }
 
-const handleClickOutside = (event: Event) => {
-    const target = event.target as HTMLElement
-    if (!target.closest('.relative')) {
-        showContactDropdown.value = false
-    }
-}
-
 watch(() => props.deal, initializeForm, { immediate: true })
 
 onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
     contactsStore.fetchContacts()
-})
-
-onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside)
 })
 </script>

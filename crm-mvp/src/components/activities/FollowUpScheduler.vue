@@ -20,14 +20,16 @@
                 <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">
                     Contact <span class="text-red-500">*</span>
                 </label>
-                <select id="contact" v-model="formData.contactId"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.contactId }">
-                    <option value="">Select a contact...</option>
-                    <option v-for="contact in contacts" :key="contact.id" :value="contact.id">
-                        {{ contact.name }} {{ contact.company ? `(${contact.company})` : '' }}
-                    </option>
-                </select>
+                <Select 
+                    id="contact" 
+                    v-model="formData.contactId"
+                    :options="contactOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Select a contact..."
+                    :invalid="!!errors.contactId"
+                    class="w-full"
+                />
                 <p v-if="errors.contactId" class="mt-1 text-sm text-red-600">{{ errors.contactId }}</p>
             </div>
 
@@ -36,14 +38,16 @@
                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
                     Follow-up Type <span class="text-red-500">*</span>
                 </label>
-                <select id="type" v-model="formData.type"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.type }">
-                    <option value="call">Phone Call</option>
-                    <option value="email">Email</option>
-                    <option value="meeting">Meeting</option>
-                    <option value="note">Note/Reminder</option>
-                </select>
+                <Select 
+                    id="type" 
+                    v-model="formData.type"
+                    :options="followUpTypeOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Select follow-up type"
+                    :invalid="!!errors.type"
+                    class="w-full"
+                />
                 <p v-if="errors.type" class="mt-1 text-sm text-red-600">{{ errors.type }}</p>
             </div>
 
@@ -79,7 +83,7 @@
                         class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         Next month
                     </button>
-                    <button type="button" @click="formData.scheduledAt = ''"
+                    <button type="button" @click="scheduledDate = undefined"
                         class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500">
                         Clear
                     </button>
@@ -91,12 +95,19 @@
                 <label for="scheduledAt" class="block text-sm font-medium text-gray-700 mb-1">
                     Custom Date & Time <span class="text-red-500">*</span>
                 </label>
-                <input id="scheduledAt" v-model="formData.scheduledAt" type="datetime-local" :min="minDateTime"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.scheduledAt }" />
+                <Calendar 
+                    id="scheduledAt" 
+                    v-model="scheduledDate"
+                    showTime
+                    hourFormat="24"
+                    :minDate="new Date()"
+                    placeholder="Select date and time"
+                    :invalid="!!errors.scheduledAt"
+                    class="w-full"
+                />
                 <p v-if="errors.scheduledAt" class="mt-1 text-sm text-red-600">{{ errors.scheduledAt }}</p>
                 <p class="mt-1 text-sm text-gray-500">
-                    {{ formData.scheduledAt ? `Scheduled for ${formatScheduledTime(formData.scheduledAt)}` : 'Select date and time for follow-up' }}
+                    {{ scheduledDate ? `Scheduled for ${formatScheduledTime(scheduledDate.toISOString().slice(0, 16))}` : 'Select date and time for follow-up' }}
                 </p>
             </div>
 
@@ -105,10 +116,13 @@
                 <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
                     Subject
                 </label>
-                <input id="subject" v-model="formData.subject" type="text"
+                <InputText 
+                    id="subject" 
+                    v-model="formData.subject"
                     :placeholder="`Follow-up ${formData.type} with ${selectedContactName}`"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.subject }" />
+                    :invalid="!!errors.subject"
+                    class="w-full"
+                />
                 <p v-if="errors.subject" class="mt-1 text-sm text-red-600">{{ errors.subject }}</p>
             </div>
 
@@ -117,10 +131,14 @@
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
                     Notes
                 </label>
-                <textarea id="description" v-model="formData.description" rows="3"
+                <Textarea 
+                    id="description" 
+                    v-model="formData.description" 
+                    rows="3"
                     placeholder="Add any notes or context for this follow-up..."
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-                    :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.description }"></textarea>
+                    :invalid="!!errors.description"
+                    class="w-full resize-vertical"
+                />
                 <p v-if="errors.description" class="mt-1 text-sm text-red-600">{{ errors.description }}</p>
             </div>
 
@@ -129,18 +147,27 @@
                 <label class="block text-sm font-medium text-gray-700 mb-3">Priority Level</label>
                 <div class="flex items-center space-x-4">
                     <label class="flex items-center">
-                        <input type="radio" v-model="formData.priority" value="low"
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                        <RadioButton 
+                            v-model="formData.priority" 
+                            inputId="priority-low" 
+                            value="low" 
+                        />
                         <span class="ml-2 text-sm text-gray-700">Low</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="radio" v-model="formData.priority" value="medium"
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                        <RadioButton 
+                            v-model="formData.priority" 
+                            inputId="priority-medium" 
+                            value="medium" 
+                        />
                         <span class="ml-2 text-sm text-gray-700">Medium</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="radio" v-model="formData.priority" value="high"
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                        <RadioButton 
+                            v-model="formData.priority" 
+                            inputId="priority-high" 
+                            value="high" 
+                        />
                         <span class="ml-2 text-sm text-gray-700">High</span>
                     </label>
                 </div>
@@ -148,26 +175,21 @@
 
             <!-- Form Actions -->
             <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                <button type="button" @click="$emit('cancel')"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Cancel
-                </button>
-                <button type="submit" :disabled="isSubmitting"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span v-if="isSubmitting" class="flex items-center">
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
-                        </svg>
-                        Scheduling...
-                    </span>
-                    <span v-else>
-                        Schedule Follow-up
-                    </span>
-                </button>
+                <Button 
+                    type="button" 
+                    @click="$emit('cancel')"
+                    outlined
+                    severity="secondary"
+                    label="Cancel"
+                    class="px-4 py-2"
+                />
+                <Button 
+                    type="submit" 
+                    :disabled="isSubmitting"
+                    :loading="isSubmitting"
+                    :label="isSubmitting ? 'Scheduling...' : 'Schedule Follow-up'"
+                    class="px-4 py-2"
+                />
             </div>
         </form>
     </div>
@@ -177,6 +199,14 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useContactsStore } from '@/stores/contacts'
 import type { ActivityType } from '@/utils/constants'
+
+// PrimeVue component imports
+import Select from 'primevue/select'
+import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
+import Button from 'primevue/button'
+import Calendar from 'primevue/calendar'
+import RadioButton from 'primevue/radiobutton'
 
 
 interface Props {
@@ -213,22 +243,31 @@ const formData = ref({
     priority: 'medium' as 'low' | 'medium' | 'high'
 })
 
+const scheduledDate = ref<Date>()
 const errors = ref<Partial<Record<keyof typeof formData.value, string>>>({})
 const isSubmitting = ref(false)
 
 const contacts = computed(() => contactsStore.contacts)
+
+const contactOptions = computed(() => 
+    contacts.value.map(contact => ({
+        label: `${contact.name}${contact.company ? ` (${contact.company})` : ''}`,
+        value: contact.id
+    }))
+)
+
+const followUpTypeOptions = [
+    { label: 'Phone Call', value: 'call' },
+    { label: 'Email', value: 'email' },
+    { label: 'Meeting', value: 'meeting' },
+    { label: 'Note/Reminder', value: 'note' }
+]
 
 const selectedContactName = computed(() => {
     const contactId = formData.value.contactId || props.contactId
     if (!contactId) return ''
     const contact = contacts.value.find(c => c.id === contactId)
     return contact?.name || ''
-})
-
-const minDateTime = computed(() => {
-    const now = new Date()
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
-    return now.toISOString().slice(0, 16)
 })
 
 // Load contacts if not already loaded
@@ -240,6 +279,22 @@ onMounted(async () => {
     // Set default scheduled time to 1 hour from now
     if (!formData.value.scheduledAt) {
         setQuickSchedule(1, 'hours')
+    }
+})
+
+// Watch scheduledDate changes and update formData.scheduledAt
+watch(scheduledDate, (newDate) => {
+    if (newDate) {
+        formData.value.scheduledAt = newDate.toISOString().slice(0, 16)
+    } else {
+        formData.value.scheduledAt = ''
+    }
+})
+
+// Watch formData.scheduledAt changes and update scheduledDate
+watch(() => formData.value.scheduledAt, (newDateTime) => {
+    if (newDateTime && newDateTime !== scheduledDate.value?.toISOString().slice(0, 16)) {
+        scheduledDate.value = new Date(newDateTime)
     }
 })
 
@@ -266,7 +321,7 @@ const setQuickSchedule = (amount: number, unit: 'hours' | 'days' | 'weeks' | 'mo
     const roundedMinutes = Math.ceil(minutes / 15) * 15
     now.setMinutes(roundedMinutes, 0, 0)
 
-    formData.value.scheduledAt = now.toISOString().slice(0, 16)
+    scheduledDate.value = now
 }
 
 const formatScheduledTime = (dateTimeString: string) => {

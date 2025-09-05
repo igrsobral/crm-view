@@ -8,53 +8,31 @@
             {{ contact.name }}
           </h3>
           <div class="flex items-center mt-1">
-            <span 
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-              :class="statusClasses[contact.status]"
-            >
-              {{ statusLabels[contact.status] }}
-            </span>
+            <Tag 
+              :value="statusLabels[contact.status]"
+              :severity="statusSeverity[contact.status]"
+              class="text-xs"
+            />
           </div>
         </div>
         
         <!-- Actions dropdown -->
         <div class="relative ml-4">
-          <button
-            @click="showActions = !showActions"
-            @blur="handleBlur"
-            class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
-          >
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
-          </button>
+          <Button
+            @click="toggleMenu"
+            icon="pi pi-ellipsis-v"
+            text
+            rounded
+            severity="secondary"
+            size="small"
+            class="p-1"
+          />
           
-          <div
-            v-if="showActions"
-            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200"
-          >
-            <div class="py-1">
-              <button
-                @click="handleView"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                View Details
-              </button>
-              <button
-                @click="handleEdit"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Edit Contact
-              </button>
-              <hr class="my-1">
-              <button
-                @click="handleDelete"
-                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                Delete Contact
-              </button>
-            </div>
-          </div>
+          <Menu
+            ref="menu"
+            :model="menuItems"
+            :popup="true"
+          />
         </div>
       </div>
 
@@ -100,19 +78,19 @@
       <!-- Tags -->
       <div v-if="contact.tags && contact.tags.length > 0" class="mt-4">
         <div class="flex flex-wrap gap-1">
-          <span
+          <Tag
             v-for="tag in contact.tags.slice(0, 3)"
             :key="tag"
-            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-          >
-            {{ tag }}
-          </span>
-          <span
+            :value="tag"
+            severity="info"
+            class="text-xs"
+          />
+          <Tag
             v-if="contact.tags.length > 3"
-            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600"
-          >
-            +{{ contact.tags.length - 3 }} more
-          </span>
+            :value="`+${contact.tags.length - 3} more`"
+            severity="secondary"
+            class="text-xs"
+          />
         </div>
       </div>
 
@@ -132,9 +110,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import type { Contact } from '@/stores/contacts'
 import type { ContactStatus } from '@/utils/constants'
+
+// PrimeVue component imports
+import Button from 'primevue/button'
+import Menu from 'primevue/menu'
+import type { MenuItem } from 'primevue/menuitem'
+import Tag from 'primevue/tag'
 
 defineProps<{
   contact: Contact
@@ -146,14 +130,38 @@ const emit = defineEmits<{
   view: []
 }>()
 
-const showActions = ref(false)
+const menu = ref()
 
-const statusClasses: Record<ContactStatus, string> = {
-  lead: 'bg-yellow-100 text-yellow-800',
-  prospect: 'bg-blue-100 text-blue-800',
-  customer: 'bg-green-100 text-green-800',
-  inactive: 'bg-gray-100 text-gray-800'
+const menuItems: MenuItem[] = [
+  {
+    label: 'View Details',
+    icon: 'pi pi-eye',
+    command: () => handleView()
+  },
+  {
+    label: 'Edit Contact',
+    icon: 'pi pi-pencil',
+    command: () => handleEdit()
+  },
+  {
+    separator: true
+  },
+  {
+    label: 'Delete Contact',
+    icon: 'pi pi-trash',
+    class: 'text-red-600',
+    command: () => handleDelete()
+  }
+]
+
+const statusSeverity: Record<ContactStatus, 'success' | 'info' | 'warning' | 'secondary'> = {
+  lead: 'warning',
+  prospect: 'info', 
+  customer: 'success',
+  inactive: 'secondary'
 }
+
+
 
 const statusLabels: Record<ContactStatus, string> = {
   lead: 'Lead',
@@ -163,24 +171,19 @@ const statusLabels: Record<ContactStatus, string> = {
 }
 
 const handleView = () => {
-  showActions.value = false
   emit('view')
 }
 
 const handleEdit = () => {
-  showActions.value = false
   emit('edit')
 }
 
 const handleDelete = () => {
-  showActions.value = false
   emit('delete')
 }
 
-const handleBlur = () => {
-  nextTick(() => {
-    showActions.value = false
-  })
+const toggleMenu = (event: Event) => {
+  menu.value.toggle(event)
 }
 
 const formatDate = (dateString: string) => {

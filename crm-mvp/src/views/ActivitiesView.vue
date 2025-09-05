@@ -7,13 +7,12 @@
           <h1 class="text-2xl font-bold text-gray-900">Activities</h1>
           <p class="text-gray-600 mt-1">Track and manage your interactions</p>
         </div>
-        <button @click="showActivityForm = true"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Log Activity
-        </button>
+        <Button 
+          @click="showActivityForm = true"
+          icon="pi pi-plus"
+          label="Log Activity"
+          class="px-4 py-2"
+        />
       </div>
 
       <!-- Stats Cards -->
@@ -93,37 +92,48 @@
         <div class="flex flex-wrap gap-4 items-center">
           <div>
             <label for="type-filter" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select id="type-filter" v-model="filters.type"
-              class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="">All Types</option>
-              <option value="call">Phone Call</option>
-              <option value="email">Email</option>
-              <option value="meeting">Meeting</option>
-              <option value="note">Note</option>
-            </select>
+            <Select 
+              id="type-filter" 
+              v-model="filters.type"
+              :options="typeFilterOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="All Types"
+              class="w-32"
+            />
           </div>
 
           <div>
             <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select id="status-filter" v-model="filters.completed"
-              class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="">All Activities</option>
-              <option value="false">Pending</option>
-              <option value="true">Completed</option>
-            </select>
+            <Select 
+              id="status-filter" 
+              v-model="filters.completed"
+              :options="statusFilterOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="All Activities"
+              class="w-32"
+            />
           </div>
 
           <div class="flex-1">
             <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-            <input id="search" v-model="searchQuery" type="text" placeholder="Search activities..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <InputText 
+              id="search" 
+              v-model="searchQuery" 
+              placeholder="Search activities..."
+              class="w-full"
+            />
           </div>
 
           <div class="flex items-end">
-            <button @click="clearFilters"
-              class="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 focus:outline-none">
-              Clear Filters
-            </button>
+            <Button 
+              @click="clearFilters"
+              text
+              label="Clear Filters"
+              severity="secondary"
+              class="px-3 py-2"
+            />
           </div>
         </div>
       </div>
@@ -185,6 +195,11 @@ import { useActivitiesStore } from '@/stores/activities'
 import type { ActivityInput, Activity } from '@/stores/activities'
 import type { ActivityType } from '@/utils/constants'
 
+// PrimeVue component imports
+import Select from 'primevue/select'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+
 const activitiesStore = useActivitiesStore()
 const showActivityForm = ref(false)
 const searchQuery = ref('')
@@ -196,6 +211,20 @@ const filters = ref<{
   type: '',
   completed: ''
 })
+
+const typeFilterOptions = [
+  { label: 'All Types', value: '' },
+  { label: 'Phone Call', value: 'call' },
+  { label: 'Email', value: 'email' },
+  { label: 'Meeting', value: 'meeting' },
+  { label: 'Note', value: 'note' }
+]
+
+const statusFilterOptions = [
+  { label: 'All Activities', value: '' },
+  { label: 'Pending', value: 'false' },
+  { label: 'Completed', value: 'true' }
+]
 
 const activities = computed(() => activitiesStore.activities)
 const loading = computed(() => activitiesStore.loading)

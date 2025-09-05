@@ -8,24 +8,22 @@
             </div>
             <div class="flex items-center space-x-3">
                 <!-- Date Range Filter -->
-                <select v-model="selectedPeriod"
-                    class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="7">Last 7 days</option>
-                    <option value="30">Last 30 days</option>
-                    <option value="90">Last 90 days</option>
-                    <option value="365">Last year</option>
-                    <option value="all">All time</option>
-                </select>
+                <Select 
+                    v-model="selectedPeriod"
+                    :options="periodOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Select Period"
+                    class="w-48"
+                />
 
                 <!-- Export Button -->
-                <button @click="exportReport"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Export
-                </button>
+                <Button 
+                    @click="exportReport"
+                    icon="pi pi-download"
+                    label="Export"
+                    class="px-4 py-2"
+                />
             </div>
         </div>
 
@@ -231,6 +229,10 @@
 import { ref, computed } from 'vue'
 import type { Deal } from '@/stores/deals'
 
+// PrimeVue component imports
+import Select from 'primevue/select'
+import Button from 'primevue/button'
+
 interface Props {
     deals: Deal[]
 }
@@ -238,6 +240,14 @@ interface Props {
 const props = defineProps<Props>()
 
 const selectedPeriod = ref<string>('30')
+
+const periodOptions = [
+    { label: 'Last 7 days', value: '7' },
+    { label: 'Last 30 days', value: '30' },
+    { label: 'Last 90 days', value: '90' },
+    { label: 'Last year', value: '365' },
+    { label: 'All time', value: 'all' }
+]
 
 const cutoffDate = computed(() => {
     if (selectedPeriod.value === 'all') return null

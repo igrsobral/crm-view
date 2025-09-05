@@ -3,17 +3,33 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
+// PrimeVue imports
+import PrimeVue from 'primevue/config'
+import { CRMTheme } from './presets/crm-theme'
+import 'primeicons/primeicons.css'
+
 import App from './App.vue'
 import router from './router'
 import { AuthManager } from './utils/authManager'
 import { SessionMonitor } from './utils/sessionMonitor'
 import { 
-  preloadCriticalResources, 
+  // preloadCriticalResources, 
   // registerServiceWorker, 
   startPerformanceMonitoring 
 } from './utils/performance'
 
 const app = createApp(App)
+
+app.use(PrimeVue, {
+  theme: {
+    preset: CRMTheme,
+    options: {
+      prefix: 'p',
+      darkModeSelector: 'light',
+      cssLayer: false
+    }
+  }
+})
 
 app.use(createPinia())
 app.use(router)

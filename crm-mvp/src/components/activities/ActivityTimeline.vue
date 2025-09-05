@@ -7,7 +7,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="activities.length === 0" class="text-center py-8">
+    <div v-else-if="activities?.length === 0" class="text-center py-8">
       <div class="text-gray-400 mb-4">
         <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -179,15 +179,15 @@ import type { ActivityType } from '@/utils/constants'
 // Import ActivityForm component
 const ActivityForm = defineAsyncComponent(() => import('./ActivityForm.vue'))
 
-// interface Props {
-//   contactId: string
-//   activities: Activity[]
-//   loading?: boolean
-// }
+interface Props {
+  contactId: string
+  activities: Activity[]
+  loading?: boolean
+}
 
-// const props = withDefaults(defineProps<Props>(), {
-//   loading: false
-// })
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
+})
 
 const emit = defineEmits<{
   'activity-created': []

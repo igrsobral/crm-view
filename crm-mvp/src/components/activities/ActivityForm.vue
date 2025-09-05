@@ -21,14 +21,16 @@
         <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
           Activity Type <span class="text-red-500">*</span>
         </label>
-        <select id="type" v-model="formData.type"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.type }">
-          <option value="call">Phone Call</option>
-          <option value="email">Email</option>
-          <option value="meeting">Meeting</option>
-          <option value="note">Note</option>
-        </select>
+        <Select 
+          id="type" 
+          v-model="formData.type"
+          :options="activityTypeOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select activity type"
+          :invalid="!!errors.type"
+          class="w-full"
+        />
         <p v-if="errors.type" class="mt-1 text-sm text-red-600">{{ errors.type }}</p>
       </div>
 
@@ -37,9 +39,13 @@
         <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
           Subject
         </label>
-        <input id="subject" v-model="formData.subject" type="text" placeholder="Brief summary of the activity"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.subject }" />
+        <InputText 
+          id="subject" 
+          v-model="formData.subject" 
+          placeholder="Brief summary of the activity"
+          :invalid="!!errors.subject"
+          class="w-full"
+        />
         <p v-if="errors.subject" class="mt-1 text-sm text-red-600">{{ errors.subject }}</p>
       </div>
 
@@ -48,10 +54,14 @@
         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
           Description
         </label>
-        <textarea id="description" v-model="formData.description" rows="4"
+        <Textarea 
+          id="description" 
+          v-model="formData.description" 
+          rows="4"
           placeholder="Detailed notes about this activity..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.description }"></textarea>
+          :invalid="!!errors.description"
+          class="w-full resize-vertical"
+        />
         <p v-if="errors.description" class="mt-1 text-sm text-red-600">{{ errors.description }}</p>
         <p class="mt-1 text-sm text-gray-500">
           {{ (formData.description?.length || 0) }}/1000 characters
@@ -64,17 +74,27 @@
           Schedule for Later
         </label>
         <div class="flex items-center space-x-2">
-          <input type="checkbox" id="schedule-checkbox" v-model="isScheduled"
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+          <Checkbox 
+            id="schedule-checkbox" 
+            v-model="isScheduled" 
+            :binary="true"
+          />
           <label for="schedule-checkbox" class="text-sm text-gray-700">
             Schedule this activity for a future date/time
           </label>
         </div>
 
         <div v-if="isScheduled" class="mt-3">
-          <input id="scheduled_at" v-model="formData.scheduled_at" type="datetime-local" :min="minDateTime"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.scheduled_at }" />
+          <Calendar 
+            id="scheduled_at" 
+            v-model="scheduledDate" 
+            showTime 
+            :showSeconds="false"
+            :minDate="new Date()"
+            placeholder="Select date and time"
+            :invalid="!!errors.scheduled_at"
+            class="w-full"
+          />
           <p v-if="errors.scheduled_at" class="mt-1 text-sm text-red-600">{{ errors.scheduled_at }}</p>
           <p class="mt-1 text-sm text-gray-500">
             Leave empty to log as completed activity
@@ -84,25 +104,21 @@
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-        <button type="button" @click="$emit('cancel')"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          Cancel
-        </button>
-        <button type="submit" :disabled="isSubmitting"
-          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
-          <span v-if="isSubmitting" class="flex items-center">
-            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-              </path>
-            </svg>
-            {{ isEditing ? 'Updating...' : 'Saving...' }}
-          </span>
-          <span v-else>
-            {{ isEditing ? 'Update Activity' : 'Save Activity' }}
-          </span>
-        </button>
+        <Button 
+          type="button" 
+          @click="$emit('cancel')"
+          outlined
+          severity="secondary"
+          label="Cancel"
+          class="px-4 py-2"
+        />
+        <Button 
+          type="submit" 
+          :disabled="isSubmitting"
+          :loading="isSubmitting"
+          :label="isSubmitting ? (isEditing ? 'Updating...' : 'Saving...') : (isEditing ? 'Update Activity' : 'Save Activity')"
+          class="px-4 py-2"
+        />
       </div>
     </form>
   </div>
@@ -112,6 +128,14 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import type { Activity, ActivityInput } from '@/stores/activities'
 import type { ActivityType } from '@/utils/constants'
+
+// PrimeVue component imports
+import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
+import Textarea from 'primevue/textarea'
+import Checkbox from 'primevue/checkbox'
+import Calendar from 'primevue/calendar'
+import Button from 'primevue/button'
 
 interface Props {
   contactId?: string
@@ -147,14 +171,16 @@ const formData = ref<{
 const errors = ref<Partial<Record<keyof typeof formData.value, string>>>({})
 const isSubmitting = ref(false)
 const isScheduled = ref(false)
+const scheduledDate = ref<Date | null>(null)
 
 const isEditing = computed(() => props.mode === 'edit')
 
-const minDateTime = computed(() => {
-  const now = new Date()
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
-  return now.toISOString().slice(0, 16)
-})
+const activityTypeOptions = [
+  { label: 'Phone Call', value: 'call' },
+  { label: 'Email', value: 'email' },
+  { label: 'Meeting', value: 'meeting' },
+  { label: 'Note', value: 'note' }
+]
 
 watch(() => props.activity, (newActivity) => {
   if (newActivity) {
@@ -166,6 +192,7 @@ watch(() => props.activity, (newActivity) => {
         new Date(newActivity.scheduled_at).toISOString().slice(0, 16) : ''
     }
     isScheduled.value = !!newActivity.scheduled_at
+    scheduledDate.value = newActivity.scheduled_at ? new Date(newActivity.scheduled_at) : null
   } else {
     resetForm()
   }
@@ -174,11 +201,21 @@ watch(() => props.activity, (newActivity) => {
 watch(isScheduled, (newValue) => {
   if (!newValue) {
     formData.value.scheduled_at = ''
-  } else if (!formData.value.scheduled_at) {
+    scheduledDate.value = null
+  } else if (!scheduledDate.value) {
     const defaultTime = new Date()
     defaultTime.setHours(defaultTime.getHours() + 1)
     defaultTime.setMinutes(0, 0, 0)
+    scheduledDate.value = defaultTime
     formData.value.scheduled_at = defaultTime.toISOString().slice(0, 16)
+  }
+})
+
+watch(scheduledDate, (newDate) => {
+  if (newDate) {
+    formData.value.scheduled_at = newDate.toISOString().slice(0, 16)
+  } else {
+    formData.value.scheduled_at = ''
   }
 })
 
@@ -197,7 +234,7 @@ const validateForm = () => {
     newErrors.description = 'Description must be less than 1000 characters'
   }
 
-  if (isScheduled.value && !formData.value.scheduled_at) {
+  if (isScheduled.value && !scheduledDate.value) {
     newErrors.scheduled_at = 'Scheduled date/time is required when scheduling'
   }
 
@@ -213,6 +250,19 @@ const validateForm = () => {
   return Object.keys(newErrors).length === 0
 }
 
+const resetForm = () => {
+  formData.value = {
+    type: 'call',
+    subject: '',
+    description: '',
+    scheduled_at: ''
+  }
+  errors.value = {}
+  isScheduled.value = false
+  scheduledDate.value = null
+}
+
+
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
@@ -227,8 +277,8 @@ const handleSubmit = async () => {
       type: formData.value.type,
       subject: formData.value.subject.trim() || undefined,
       description: formData.value.description.trim() || undefined,
-      scheduled_at: isScheduled.value && formData.value.scheduled_at ?
-        new Date(formData.value.scheduled_at).toISOString() : undefined
+      scheduled_at: isScheduled.value && scheduledDate.value ?
+        scheduledDate.value.toISOString() : undefined
     }
 
     emit('save', activityData)
@@ -237,16 +287,6 @@ const handleSubmit = async () => {
   }
 }
 
-const resetForm = () => {
-  formData.value = {
-    type: 'call',
-    subject: '',
-    description: '',
-    scheduled_at: ''
-  }
-  errors.value = {}
-  isScheduled.value = false
-}
 
 // Clear individual field errors on input
 watch(() => formData.value.type, () => {

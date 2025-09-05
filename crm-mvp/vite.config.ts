@@ -38,6 +38,9 @@ export default defineConfig({
           // Chart.js chunk (if used)
           charts: ['chart.js', 'vue-chartjs'],
           
+          // PrimeVue chunk for UI components
+          primevue: ['primevue'],
+          
           // UI components chunk
           ui: [
             // Add any large UI library imports here
@@ -113,7 +116,8 @@ export default defineConfig({
       'vue',
       'vue-router',
       'pinia',
-      '@supabase/supabase-js'
+      '@supabase/supabase-js',
+      'primevue'
     ],
     exclude: [
       // Exclude any problematic dependencies

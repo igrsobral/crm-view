@@ -17,48 +17,44 @@
         <div class="space-y-4">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-            <input
+            <InputText
               id="email"
               v-model="form.email"
-              name="email"
               type="email"
               autocomplete="email"
-              required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              :class="{ 'border-red-300': errors.email }"
               placeholder="Email address"
+              :invalid="!!errors.email"
+              class="mt-1 w-full"
             />
             <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
           </div>
           
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input
+            <Password
               id="password"
               v-model="form.password"
-              name="password"
-              type="password"
               autocomplete="new-password"
-              required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              :class="{ 'border-red-300': errors.password }"
               placeholder="Password (min. 6 characters)"
+              :invalid="!!errors.password"
+              :feedback="false"
+              toggleMask
+              class="mt-1 w-full"
             />
             <p v-if="errors.password" class="mt-1 text-sm text-red-600">{{ errors.password }}</p>
           </div>
           
           <div>
             <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-            <input
+            <Password
               id="confirmPassword"
               v-model="form.confirmPassword"
-              name="confirmPassword"
-              type="password"
               autocomplete="new-password"
-              required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              :class="{ 'border-red-300': errors.confirmPassword }"
               placeholder="Confirm your password"
+              :invalid="!!errors.confirmPassword"
+              :feedback="false"
+              toggleMask
+              class="mt-1 w-full"
             />
             <p v-if="errors.confirmPassword" class="mt-1 text-sm text-red-600">{{ errors.confirmPassword }}</p>
           </div>
@@ -85,19 +81,13 @@
         </div>
 
         <div>
-          <button
+          <Button
             type="submit"
             :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span v-if="loading" class="absolute left-0 inset-y-0 flex items-center pl-3">
-              <svg class="animate-spin h-5 w-5 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </span>
-            {{ loading ? 'Creating account...' : 'Create account' }}
-          </button>
+            :loading="loading"
+            :label="loading ? 'Creating account...' : 'Create account'"
+            class="w-full justify-center py-2 px-4 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white"
+          />
         </div>
 
         <div class="text-xs text-gray-500 text-center">
@@ -112,6 +102,11 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+
+// PrimeVue component imports
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
+import Button from 'primevue/button'
 
 const router = useRouter()
 const { signUp, loading, error } = useAuth()
