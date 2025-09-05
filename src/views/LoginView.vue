@@ -85,6 +85,7 @@
                 :invalid="!!errors.password"
                 :feedback="false"
                 toggleMask
+                inputClass="w-full"
                 class="w-full"
               />
               <p v-if="errors.password" class="mt-2 text-sm text-red-600">{{ errors.password }}</p>
@@ -319,3 +320,23 @@ const closeResetModal = () => {
   resetLoading.value = false
 }
 </script>
+
+<style scoped>
+/* Ensure PrimeVue Password component has proper styling */
+:deep(.p-password) {
+  width: 100%;
+}
+
+:deep(.p-password .p-inputtext) {
+  width: 100%;
+  padding-right: 3rem;
+}
+
+:deep(.p-password .p-password-toggle-icon) {
+  right: 0.75rem;
+}
+
+:deep(.p-password-input) {
+  width: 100% !important;
+}
+</style>
