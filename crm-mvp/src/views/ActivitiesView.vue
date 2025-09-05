@@ -7,12 +7,19 @@
           <h1 class="text-2xl font-bold text-gray-900">Activities</h1>
           <p class="text-gray-600 mt-1">Track and manage your interactions</p>
         </div>
-        <Button 
-          @click="showActivityForm = true"
-          icon="pi pi-plus"
-          label="Log Activity"
-          class="px-4 py-2"
-        />
+        <button
+          @click="handleLogActivityClick"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Log Activity
+        </button>
+        <!-- Debug Info (remove in production) -->
+        <span class="text-xs text-gray-500 ml-2">
+          Modal State: {{ showActivityForm ? 'Open' : 'Closed' }}
+        </span>
       </div>
 
       <!-- Stats Cards -->
@@ -127,13 +134,12 @@
           </div>
 
           <div class="flex items-end">
-            <Button 
+            <button
               @click="clearFilters"
-              text
-              label="Clear Filters"
-              severity="secondary"
-              class="px-3 py-2"
-            />
+              class="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              Clear Filters
+            </button>
           </div>
         </div>
       </div>
@@ -170,16 +176,25 @@
 
         <!-- Activities Timeline -->
         <div v-else class="p-6">
-          <ActivityTimeline :activities="filteredActivities" :loading="loading" contact-id=""
+          <ActivityTimeline :activities="filteredActivities" :loading="loading"
             @activity-updated="handleActivityUpdate" />
         </div>
       </div>
 
       <!-- Activity Form Modal -->
       <div v-if="showActivityForm"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-        <div class="w-full max-w-lg" @click.stop>
-          <ActivityForm @save="handleActivitySave" @cancel="showActivityForm = false" />
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+        @click.self="showActivityForm = false">
+        <div class="w-full max-w-lg bg-white rounded-lg shadow-xl" @click.stop>
+          <Suspense>
+            <ActivityForm @save="handleActivitySave" @cancel="showActivityForm = false" />
+            <template #fallback>
+              <div class="p-6 text-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="mt-2 text-gray-600">Loading activity form...</p>
+              </div>
+            </template>
+          </Suspense>
         </div>
       </div>
     </div>
@@ -192,15 +207,16 @@ import AppLayout from '@/components/common/AppLayout.vue'
 import ActivityTimeline from '@/components/activities/ActivityTimeline.vue'
 import ActivityForm from '@/components/activities/ActivityForm.vue'
 import { useActivitiesStore } from '@/stores/activities'
+import { useToastStore } from '@/stores/toast'
 import type { ActivityInput, Activity } from '@/stores/activities'
 import type { ActivityType } from '@/utils/constants'
 
 // PrimeVue component imports
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
 
 const activitiesStore = useActivitiesStore()
+const toastStore = useToastStore()
 const showActivityForm = ref(false)
 const searchQuery = ref('')
 
@@ -281,15 +297,35 @@ const filteredActivities = computed(() => {
 })
 
 const handleActivitySave = async (activityData: ActivityInput) => {
-  const result = await activitiesStore.createActivity(activityData)
-  if (!result.error) {
-    showActivityForm.value = false
+  console.log('Attempting to save activity:', activityData)
+  
+  try {
+    const result = await activitiesStore.createActivity(activityData)
+    console.log('Create activity result:', result)
+    
+    if (!result.error) {
+      showActivityForm.value = false
+      toastStore.success('Activity logged successfully!')
+      // Refresh activities list
+      await activitiesStore.fetchActivities()
+    } else {
+      console.error('Activity creation error:', result.error)
+      toastStore.error(`Failed to log activity: ${result.error}`)
+    }
+  } catch (error) {
+    console.error('Exception in handleActivitySave:', error)
+    toastStore.error('An unexpected error occurred while logging the activity')
   }
 }
 
 const handleActivityUpdate = (activityId: string, updates: Partial<Activity>) => {
   // Activity is automatically updated in the store
   console.log('Activity updated:', activityId, updates)
+}
+
+const handleLogActivityClick = () => {
+  console.log('Log Activity button clicked!')
+  showActivityForm.value = true
 }
 
 const clearFilters = () => {

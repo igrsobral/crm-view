@@ -16,6 +16,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
+                    <button @click="showActivityForm = true"
+                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Log Activity
+                    </button>
                     <button @click="$emit('edit', deal)" class="text-gray-400 hover:text-gray-600 p-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -96,9 +103,9 @@
             <div>
                 <h3 class="text-sm font-medium text-gray-900 mb-3">Pipeline Progress</h3>
                 <div class="space-y-2">
-                    <div v-for="(stage, index) in pipelineStages" :key="stage.value" class="flex items-center">
+                    <div v-for="stage in pipelineStages" :key="stage.value" class="flex items-center">
                         <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center"
-                            :class="getStageProgressClass(stage.value, index)">
+                            :class="getStageProgressClass(stage.value)">
                             <svg v-if="isStageCompleted(stage.value)" class="w-4 h-4 text-white" fill="currentColor"
                                 viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -116,20 +123,51 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Activity Timeline -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-gray-900">Activity Timeline</h3>
+                    <button @click="showActivityForm = true"
+                        class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        + Add Activity
+                    </button>
+                </div>
+                <ActivityTimeline :deal-id="deal.id" :contact-id="deal.contact?.id" :activities="dealActivities" :loading="activitiesLoading"
+                    @activity-created="handleActivityCreated" @activity-updated="handleActivityUpdated" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Form Modal -->
+    <div v-if="showActivityForm"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-lg" @click.stop>
+            <ActivityForm :deal-id="deal.id" :contact-id="deal.contact?.id" @save="handleActivitySave"
+                @cancel="showActivityForm = false" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useActivitiesStore } from '@/stores/activities'
+import { useToastStore } from '@/stores/toast'
+import ActivityTimeline from '@/components/activities/ActivityTimeline.vue'
+import ActivityForm from '@/components/activities/ActivityForm.vue'
 import { DEAL_STAGES, type DealStage } from '@/utils/constants'
 import type { Deal } from '@/stores/deals'
+import type { ActivityInput } from '@/stores/activities'
 
 interface Props {
     deal: Deal
 }
 
 const props = defineProps<Props>()
+
+const activitiesStore = useActivitiesStore()
+const toastStore = useToastStore()
+const showActivityForm = ref(false)
 
 const pipelineStages = [
     { value: DEAL_STAGES.LEAD, label: 'Lead' },
@@ -181,6 +219,37 @@ const closeDateClass = computed(() => {
     return 'text-gray-900'
 })
 
+const dealActivities = computed(() => {
+    return activitiesStore.activities.filter(activity =>
+        activity.deal_id === props.deal.id
+    ).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+})
+
+const activitiesLoading = computed(() => activitiesStore.loading)
+
+const handleActivitySave = async (activityData: ActivityInput) => {
+    const result = await activitiesStore.createActivity({
+        ...activityData,
+        deal_id: props.deal.id,
+        contact_id: props.deal.contact?.id
+    })
+
+    if (!result.error) {
+        showActivityForm.value = false
+        toastStore.success('Activity logged successfully!')
+    } else {
+        toastStore.error(`Failed to log activity: ${result.error}`)
+    }
+}
+
+const handleActivityCreated = () => {
+    console.log('Activity created')
+}
+
+const handleActivityUpdated = (activityId: string, updates: Record<string, unknown>) => {
+    console.log('Activity updated:', activityId, updates)
+}
+
 const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 0,
@@ -224,4 +293,11 @@ const getStageProgressClass = (stage: DealStage): string => {
     }
     return 'bg-gray-300'
 }
+
+onMounted(() => {
+    // Fetch activities when component mounts
+    if (activitiesStore.activities.length === 0) {
+        activitiesStore.fetchActivities()
+    }
+})
 </script>

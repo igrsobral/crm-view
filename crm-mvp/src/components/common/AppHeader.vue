@@ -48,11 +48,21 @@
             :model="menuItems" 
             :popup="true"
             class="w-56"
+            appendTo="body"
             data-testid="user-menu-dropdown">
             <template #start>
               <div class="px-4 py-3 border-b border-gray-100">
                 <p class="text-sm font-medium text-gray-900 truncate">{{ userEmail }}</p>
                 <p class="text-xs text-gray-500">Signed in</p>
+              </div>
+            </template>
+            <template #item="{ item }">
+              <div class="flex w-full items-center justify-between">
+                <div class="flex items-center">
+                  <i :class="item.icon" class="mr-3" />
+                  <span>{{ item.label }}</span>
+                </div>
+                <span v-if="typeof item.label === 'string' && item.label.includes('Sign out')" class="text-xs text-gray-400">⌘⇧Q</span>
               </div>
             </template>
           </Menu>
