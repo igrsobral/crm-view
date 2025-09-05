@@ -95,8 +95,8 @@
         <div class="flex flex-wrap gap-4 items-center">
           <div>
             <label for="type-filter" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <Select 
-              id="type-filter" 
+            <Select
+              id="type-filter"
               v-model="filters.type"
               :options="typeFilterOptions"
               optionLabel="label"
@@ -108,8 +108,8 @@
 
           <div>
             <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <Select 
-              id="status-filter" 
+            <Select
+              id="status-filter"
               v-model="filters.completed"
               :options="statusFilterOptions"
               optionLabel="label"
@@ -121,9 +121,9 @@
 
           <div class="flex-1">
             <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-            <InputText 
-              id="search" 
-              v-model="searchQuery" 
+            <InputText
+              id="search"
+              v-model="searchQuery"
               placeholder="Search activities..."
               class="w-full"
             />
@@ -294,11 +294,11 @@ const filteredActivities = computed(() => {
 
 const handleActivitySave = async (activityData: ActivityInput) => {
   console.log('Attempting to save activity:', activityData)
-  
+
   try {
     const result = await activitiesStore.createActivity(activityData)
     console.log('Create activity result:', result)
-    
+
     if (!result.error) {
       showActivityForm.value = false
       toastStore.success('Activity logged successfully!')

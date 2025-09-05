@@ -14,7 +14,7 @@
           </button>
           <div>
             <h2 class="text-xl font-semibold text-gray-900">{{ contact.name }}</h2>
-            <span 
+            <span
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1"
               :class="statusClasses[contact.status]"
             >
@@ -22,7 +22,7 @@
             </span>
           </div>
         </div>
-        
+
         <!-- Quick Actions -->
         <div class="flex items-center space-x-2">
           <button
@@ -34,7 +34,7 @@
             </svg>
             Edit
           </button>
-          
+
           <button
             v-if="contact.email"
             @click="sendEmail"
@@ -45,7 +45,7 @@
             </svg>
             Email
           </button>
-          
+
           <button
             v-if="contact.phone"
             @click="makeCall"
@@ -56,7 +56,7 @@
             </svg>
             Call
           </button>
-          
+
           <button
             @click="showActivityForm = true"
             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -74,13 +74,13 @@
       <!-- Contact Information Panel -->
       <div class="lg:w-1/3 p-6 border-r border-gray-200">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
-        
+
         <div class="space-y-4">
           <!-- Email -->
           <div v-if="contact.email">
             <label class="block text-sm font-medium text-gray-500">Email</label>
             <div class="mt-1">
-              <a 
+              <a
                 :href="`mailto:${contact.email}`"
                 class="text-blue-600 hover:text-blue-800"
               >
@@ -93,7 +93,7 @@
           <div v-if="contact.phone">
             <label class="block text-sm font-medium text-gray-500">Phone</label>
             <div class="mt-1">
-              <a 
+              <a
                 :href="`tel:${contact.phone}`"
                 class="text-blue-600 hover:text-blue-800"
               >
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Activity Timeline -->
-        <ActivityTimeline 
+        <ActivityTimeline
           :contact-id="contact.id"
           :activities="contactActivities"
           :loading="activitiesLoading"
@@ -219,7 +219,7 @@ const statusLabels: Record<ContactStatus, string> = {
 }
 
 const contactActivities = computed(() => {
-  return activitiesStore.activities.filter(activity => 
+  return activitiesStore.activities.filter(activity =>
     activity.contact_id === props.contact.id
   ).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 })
@@ -243,7 +243,7 @@ const handleActivitySave = async (activityData: ActivityInput) => {
     ...activityData,
     contact_id: props.contact.id
   })
-  
+
   if (!result.error) {
     showActivityForm.value = false
     toastStore.success('Activity logged successfully!')
@@ -267,7 +267,7 @@ const formatDate = (dateString: string) => {
   const now = new Date()
   const diffTime = Math.abs(now.getTime() - date.getTime())
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
+
   if (diffDays === 1) {
     return 'yesterday'
   } else if (diffDays < 7) {

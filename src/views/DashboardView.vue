@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <Button 
-          @click="refreshDashboard" 
+        <Button
+          @click="refreshDashboard"
           :disabled="dashboardStore.loading"
           :loading="dashboardStore.loading"
           icon="pi pi-refresh"
@@ -86,11 +86,13 @@ import RecentActivities from '@/components/dashboard/RecentActivities.vue'
 import UpcomingTasks from '@/components/dashboard/UpcomingTasks.vue'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useActivitiesStore } from '@/stores/activities'
+import { useToastStore } from '@/stores/toast'
 
 import Button from 'primevue/button'
 
 const dashboardStore = useDashboardStore()
 const activitiesStore = useActivitiesStore()
+const toastStore = useToastStore()
 
 const hasData = computed(() => {
   return dashboardStore.metrics.totalContacts > 0 ||
@@ -121,6 +123,7 @@ const overdueTasks = computed(() => {
 
 const refreshDashboard = async () => {
   await dashboardStore.refreshMetrics()
+  toastStore.success('Dashboard refreshed successfully!')
 }
 
 const handleCompleteTask = async (taskId: string) => {

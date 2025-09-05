@@ -255,6 +255,8 @@ const handleKeydown = (event: KeyboardEvent) => {
 };
 
 onMounted(() => {
+  toastStore.initToastService();
+
   document.addEventListener("keydown", handleKeydown);
   document.addEventListener("click", handleClickOutside);
 });

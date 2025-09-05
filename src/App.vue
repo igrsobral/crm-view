@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import ToastNotification from '@/components/common/ToastNotification.vue'
+import Toast from 'primevue/toast'
 import GlobalConfirmDialog from '@/components/common/GlobalConfirmDialog.vue'
 
 // Initialize authentication
@@ -11,7 +11,7 @@ useAuth()
 <template>
   <div id="app" class="min-h-screen bg-gray-50">
     <RouterView />
-    <ToastNotification />
+    <Toast group="app" class="min-w-80 max-w-md w-auto" />
     <GlobalConfirmDialog />
   </div>
 </template>

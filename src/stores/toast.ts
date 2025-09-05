@@ -22,14 +22,22 @@ export const useToastStore = defineStore('toast', () => {
 
     const initToastService = () => {
         if (!toastService) {
-            toastService = useToast()
+            try {
+                toastService = useToast()
+            } catch (error) {
+                console.warn('Toast service not available:', error)
+                return null
+            }
         }
         return toastService
     }
 
     const addToast = (toast: Omit<Toast, 'id' | 'createdAt'>) => {
         const service = initToastService()
-        if (!service) return
+        if (!service) {
+            console.warn('Toast service not initialized')
+            return
+        }
 
         const id = Math.random().toString(36).substring(2, 9)
         const duration = toast.duration ?? (toast.type === 'error' ? 0 : 5000)
@@ -48,7 +56,7 @@ export const useToastStore = defineStore('toast', () => {
     const removeToast = (id?: string) => {
         const service = initToastService()
         if (!service) return
-        
+
         // PrimeVue doesn't support removing specific toasts by ID
         // This is a limitation of the service
         service.removeAllGroups()
@@ -64,7 +72,7 @@ export const useToastStore = defineStore('toast', () => {
         const titles = {
             success: 'Success',
             error: 'Error',
-            warning: 'Warning', 
+            warning: 'Warning',
             info: 'Information'
         }
         return titles[type as keyof typeof titles] || 'Notification'
