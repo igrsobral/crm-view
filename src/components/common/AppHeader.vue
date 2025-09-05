@@ -57,12 +57,12 @@
               </div>
             </template>
             <template #item="{ item }">
-              <div class="flex w-full items-center justify-between">
-                <div class="flex items-center">
-                  <i :class="item.icon" class="mr-3" />
-                  <span>{{ item.label }}</span>
+              <div class="flex w-full items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <i :class="item.icon" class="text-gray-500" />
+                  <span class="text-sm font-medium text-gray-700">{{ item.label }}</span>
                 </div>
-                <span v-if="typeof item.label === 'string' && item.label.includes('Sign out')" class="text-xs text-gray-400">⌘⇧Q</span>
+                <span v-if="typeof item.label === 'string' && item.label.includes('Sign out')" class="text-xs text-gray-400 font-mono">⌘⇧Q</span>
               </div>
             </template>
           </Menu>
@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import { ref, computed, inject, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
 import type { useConfirmation } from '@/composables/useConfirmation'
@@ -88,6 +88,7 @@ defineEmits<{
 }>()
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const toastStore = useToastStore()
 const confirmation = inject<ReturnType<typeof useConfirmation>>('confirmation')
@@ -188,7 +189,7 @@ const handleSignOut = async () => {
 const performSignOut = async () => {
   try {
     const { error } = await authStore.signOut()
-
+     await router.replace('/login')
     if (error) {
       console.error('Logout error:', error)
       toastStore.error('Failed to sign out. Please try again.')
