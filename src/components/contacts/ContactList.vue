@@ -4,12 +4,18 @@
     <div class="bg-white rounded-lg shadow p-4">
       <div class="flex flex-col sm:flex-row gap-4">
         <!-- Search Input -->
-        <div class="flex-1">
-            <InputText
-              v-model="searchInput"
-              placeholder="Search contacts by name, email, or company..."
-              class="block w-full pl-10 pr-3 py-2"
-            />
+        <div class="flex-1 relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <InputText
+            v-model="searchInput"
+            data-testid="search-input"
+            placeholder="Search contacts by name, email, or company..."
+            class="block w-full pl-10 pr-3 py-2"
+          />
         </div>
 
         <!-- Status Filter -->
@@ -156,7 +162,7 @@
     </div>
 
     <!-- Contact Cards -->
-    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="contacts-list">
       <ContactCard
         v-for="contact in paginatedContacts"
         :key="contact.id"
@@ -218,7 +224,7 @@ const sortOptions = [
 
 const tagFilterOptions = computed(() => [
   { label: 'All Tags', value: '' },
-  ...allTags.map((tag: string) => ({ label: tag, value: tag }))
+  ...allTags.value.map((tag: string) => ({ label: tag, value: tag }))
 ])
 
 const searchDebounceTimeout = ref<NodeJS.Timeout>()
@@ -237,16 +243,21 @@ watch([selectedStatus, selectedTag], () => {
   currentPage.value = 1
 })
 
-const { contacts, loading, error, hasError, filteredContacts, allTags } = contactsStore
+const contacts = computed(() => contactsStore.contacts)
+const loading = computed(() => contactsStore.loading)
+const error = computed(() => contactsStore.error)
+const hasError = computed(() => contactsStore.hasError)
+const filteredContacts = computed(() => contactsStore.filteredContacts)
+const allTags = computed(() => contactsStore.allTags)
 
-const totalContacts = computed(() => contacts.length)
+const totalContacts = computed(() => contacts.value.length)
 
 const hasActiveFilters = computed(() => {
   return searchInput.value !== '' || selectedStatus.value !== 'all' || selectedTag.value !== ''
 })
 
 const sortedContacts = computed(() => {
-  const sorted = [...filteredContacts]
+  const sorted = [...filteredContacts.value]
   
   sorted.sort((a, b) => {
     let aValue: string | number | null | undefined = a[sortBy.value]
