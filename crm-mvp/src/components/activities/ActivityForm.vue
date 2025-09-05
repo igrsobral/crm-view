@@ -116,7 +116,7 @@
           type="submit" 
           :disabled="isSubmitting"
           :loading="isSubmitting"
-          :label="isSubmitting ? (isEditing ? 'Updating...' : 'Saving...') : (isEditing ? 'Update Activity' : 'Save Activity')"
+          :label="isSubmitting ? (isEditing ? 'Updating...' : 'Logging Activity...') : (isEditing ? 'Update Activity' : 'Log Activity')"
           class="px-4 py-2"
         />
       </div>
@@ -182,6 +182,50 @@ const activityTypeOptions = [
   { label: 'Note', value: 'note' }
 ]
 
+// Define resetForm function before using it in watchers
+const resetForm = () => {
+  formData.value = {
+    type: 'call',
+    subject: '',
+    description: '',
+    scheduled_at: ''
+  }
+  errors.value = {}
+  isScheduled.value = false
+  scheduledDate.value = null
+}
+
+const validateForm = () => {
+  const newErrors: Partial<Record<keyof typeof formData.value, string>> = {}
+
+  if (!formData.value.type) {
+    newErrors.type = 'Activity type is required'
+  }
+
+  if (formData.value.subject && formData.value.subject.length > 200) {
+    newErrors.subject = 'Subject must be less than 200 characters'
+  }
+
+  if (formData.value.description && formData.value.description.length > 1000) {
+    newErrors.description = 'Description must be less than 1000 characters'
+  }
+
+  if (isScheduled.value && !scheduledDate.value) {
+    newErrors.scheduled_at = 'Scheduled date/time is required when scheduling'
+  }
+
+  if (formData.value.scheduled_at) {
+    const scheduledDate = new Date(formData.value.scheduled_at)
+    const now = new Date()
+    if (scheduledDate <= now) {
+      newErrors.scheduled_at = 'Scheduled date/time must be in the future'
+    }
+  }
+
+  errors.value = newErrors
+  return Object.keys(newErrors).length === 0
+}
+
 watch(() => props.activity, (newActivity) => {
   if (newActivity) {
     formData.value = {
@@ -218,50 +262,6 @@ watch(scheduledDate, (newDate) => {
     formData.value.scheduled_at = ''
   }
 })
-
-const validateForm = () => {
-  const newErrors: Partial<Record<keyof typeof formData.value, string>> = {}
-
-  if (!formData.value.type) {
-    newErrors.type = 'Activity type is required'
-  }
-
-  if (formData.value.subject && formData.value.subject.length > 200) {
-    newErrors.subject = 'Subject must be less than 200 characters'
-  }
-
-  if (formData.value.description && formData.value.description.length > 1000) {
-    newErrors.description = 'Description must be less than 1000 characters'
-  }
-
-  if (isScheduled.value && !scheduledDate.value) {
-    newErrors.scheduled_at = 'Scheduled date/time is required when scheduling'
-  }
-
-  if (formData.value.scheduled_at) {
-    const scheduledDate = new Date(formData.value.scheduled_at)
-    const now = new Date()
-    if (scheduledDate <= now) {
-      newErrors.scheduled_at = 'Scheduled date/time must be in the future'
-    }
-  }
-
-  errors.value = newErrors
-  return Object.keys(newErrors).length === 0
-}
-
-const resetForm = () => {
-  formData.value = {
-    type: 'call',
-    subject: '',
-    description: '',
-    scheduled_at: ''
-  }
-  errors.value = {}
-  isScheduled.value = false
-  scheduledDate.value = null
-}
-
 
 const handleSubmit = async () => {
   if (!validateForm()) {

@@ -132,8 +132,14 @@
     <div v-if="editingActivity"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
       <div class="w-full max-w-lg" @click.stop>
-        <ActivityForm :activity="editingActivity" :contact-id="contactId" mode="edit" @save="handleActivityUpdate"
-          @cancel="editingActivity = null" />
+        <ActivityForm 
+          :activity="editingActivity" 
+          :contact-id="contactId" 
+          :deal-id="dealId"
+          mode="edit" 
+          @save="handleActivityUpdate"
+          @cancel="editingActivity = null" 
+        />
       </div>
     </div>
 
@@ -180,12 +186,15 @@ import type { ActivityType } from '@/utils/constants'
 const ActivityForm = defineAsyncComponent(() => import('./ActivityForm.vue'))
 
 interface Props {
-  contactId: string
+  contactId?: string
+  dealId?: string
   activities: Activity[]
   loading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  contactId: undefined,
+  dealId: undefined,
   loading: false
 })
 
@@ -197,6 +206,9 @@ const emit = defineEmits<{
 const activitiesStore = useActivitiesStore()
 const editingActivity = ref<Activity | null>(null)
 const activityToDelete = ref<Activity | null>(null)
+
+// Extract props for template access
+const { contactId, dealId } = props
 
 const getActivityIcon = (type: ActivityType) => {
   const icons = {

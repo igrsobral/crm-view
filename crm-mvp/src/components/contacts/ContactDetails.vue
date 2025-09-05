@@ -182,6 +182,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useActivitiesStore } from '@/stores/activities'
+import { useToastStore } from '@/stores/toast'
 import ActivityTimeline from '@/components/activities/ActivityTimeline.vue'
 import ActivityForm from '@/components/activities/ActivityForm.vue'
 import type { Contact } from '@/stores/contacts'
@@ -200,6 +201,7 @@ const props = defineProps<Props>()
 // }>()
 
 const activitiesStore = useActivitiesStore()
+const toastStore = useToastStore()
 const showActivityForm = ref(false)
 
 const statusClasses: Record<ContactStatus, string> = {
@@ -244,6 +246,9 @@ const handleActivitySave = async (activityData: ActivityInput) => {
   
   if (!result.error) {
     showActivityForm.value = false
+    toastStore.success('Activity logged successfully!')
+  } else {
+    toastStore.error(`Failed to log activity: ${result.error}`)
   }
 }
 
