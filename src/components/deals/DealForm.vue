@@ -105,6 +105,7 @@
                     placeholder="Select expected close date"
                     :minDate="minDate"
                     class="w-full"
+                    fluid
                 />
             </div>
 

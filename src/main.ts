@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 
 // PrimeVue imports
 import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
 import { CRMTheme } from './presets/crm-theme'
 import 'primeicons/primeicons.css'
 
@@ -31,6 +32,7 @@ app.use(PrimeVue, {
   }
 })
 
+app.use(ToastService)
 app.use(createPinia())
 app.use(router)
 

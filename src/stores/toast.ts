@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import type { ToastServiceMethods } from 'primevue/toastservice'
 
 export interface ToastAction {
     label: string
@@ -17,38 +18,56 @@ export interface Toast {
 }
 
 export const useToastStore = defineStore('toast', () => {
-    const toasts = ref<Toast[]>([])
+    let toastService: ToastServiceMethods | null = null
+
+    const initToastService = () => {
+        if (!toastService) {
+            toastService = useToast()
+        }
+        return toastService
+    }
 
     const addToast = (toast: Omit<Toast, 'id' | 'createdAt'>) => {
+        const service = initToastService()
+        if (!service) return
+
         const id = Math.random().toString(36).substring(2, 9)
-        const newToast: Toast = {
-            ...toast,
-            id,
-            createdAt: Date.now(),
-            duration: toast.duration ?? (toast.type === 'error' ? 0 : 5000) // Errors don't auto-dismiss
-        }
+        const duration = toast.duration ?? (toast.type === 'error' ? 0 : 5000)
 
-        toasts.value.push(newToast)
-
-        // Auto-dismiss if duration is set
-        if (newToast.duration && newToast.duration > 0) {
-            setTimeout(() => {
-                removeToast(id)
-            }, newToast.duration)
-        }
+        service.add({
+            severity: toast.type,
+            summary: toast.title || getDefaultTitle(toast.type),
+            detail: toast.message,
+            life: duration,
+            group: 'app'
+        })
 
         return id
     }
 
-    const removeToast = (id: string) => {
-        const index = toasts.value.findIndex(toast => toast.id === id)
-        if (index > -1) {
-            toasts.value.splice(index, 1)
-        }
+    const removeToast = (id?: string) => {
+        const service = initToastService()
+        if (!service) return
+        
+        // PrimeVue doesn't support removing specific toasts by ID
+        // This is a limitation of the service
+        service.removeAllGroups()
     }
 
     const clearAllToasts = () => {
-        toasts.value = []
+        const service = initToastService()
+        if (!service) return
+        service.removeAllGroups()
+    }
+
+    const getDefaultTitle = (type: string) => {
+        const titles = {
+            success: 'Success',
+            error: 'Error',
+            warning: 'Warning', 
+            info: 'Information'
+        }
+        return titles[type as keyof typeof titles] || 'Notification'
     }
 
     const success = (message: string, options?: Partial<Omit<Toast, 'type' | 'message'>>) => {
@@ -68,13 +87,11 @@ export const useToastStore = defineStore('toast', () => {
     }
 
     return {
-        // State
-        toasts,
-
         // Actions
         addToast,
         removeToast,
         clearAllToasts,
+        initToastService,
 
         // Convenience methods
         success,
