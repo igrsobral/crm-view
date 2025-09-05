@@ -16,10 +16,6 @@
           </svg>
           Log Activity
         </button>
-        <!-- Debug Info (remove in production) -->
-        <span class="text-xs text-gray-500 ml-2">
-          Modal State: {{ showActivityForm ? 'Open' : 'Closed' }}
-        </span>
       </div>
 
       <!-- Stats Cards -->

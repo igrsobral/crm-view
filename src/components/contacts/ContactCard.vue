@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 border border-gray-200">
+  <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 border border-gray-200" data-testid="contact-card">
     <div class="p-6">
       <!-- Header with name and status -->
       <div class="flex items-start justify-between mb-4">
         <div class="flex-1 min-w-0">
-          <h3 class="text-lg font-semibold text-gray-900 truncate">
+          <h3 class="text-lg font-semibold text-gray-900 truncate" data-testid="contact-name">
             {{ contact.name }}
           </h3>
           <div class="flex items-center mt-1">
