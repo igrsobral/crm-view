@@ -1,6 +1,6 @@
 <template>
   <header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto  px-4 sm:px-6 lg:px-6">
       <div class="flex h-16 justify-between items-center">
         <!-- Mobile menu button -->
 

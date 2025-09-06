@@ -340,12 +340,11 @@ const onDragEnd = () => {
 <style scoped>
 .deal-card {
   transition: all 0.2s ease;
-  border: 1px solid #e5e7eb;
+  background: #f0f0f048;
 }
 
 .deal-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .deal-card.ring-2 {

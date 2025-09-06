@@ -8,14 +8,14 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <Button
+            <!-- <Button
               outlined
               severity="secondary"
               icon="pi pi-download"
               label="Export"
               size="small"
               class="text-gray-600 border-gray-300"
-            />
+            /> -->
 
             <Button icon="pi pi-plus" label="Add Deal" size="small" @click="$emit('create-deal')" />
           </div>
@@ -158,7 +158,7 @@
                     severity="secondary"
                     class="text-xs"
                   >
-                    {{ getStageDeals(stage.value).length }} deals
+                    {{ getStageDeals(stage.value).length }}
                   </Badge>
                 </div>
               </div>
@@ -168,7 +168,7 @@
 
           <!-- Drop Zone -->
           <div
-            class="bg-gray-50 rounded-b-lg border-l border-r border-b border-gray-200 min-h-96 p-4 space-y-3"
+            class="bg-white rounded-b-lg border-l border-r border-b border-gray-200 min-h-96 p-4 space-y-3"
             :class="{ 'bg-blue-50 border-blue-300': dragOverStage === stage.value }"
             @dragover.prevent="onDragOver(stage.value)"
             @dragleave="onDragLeave"

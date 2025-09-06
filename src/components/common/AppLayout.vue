@@ -19,7 +19,7 @@
 
       <!-- Breadcrumb navigation -->
       <nav class="bg-white border-b border-gray-200 lg:hidden" aria-label="Breadcrumb">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto  px-4 sm:px-6 lg:px-6">
           <div class="flex items-center py-4">
             <ol class="flex items-center space-x-2">
               <li>
@@ -46,7 +46,7 @@
 
       <!-- Main content -->
       <main class="py-6">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto  px-4 sm:px-6 lg:px-6">
           <slot />
         </div>
       </main>
