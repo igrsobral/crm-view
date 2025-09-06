@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="bg-white ">
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
@@ -139,14 +139,24 @@
         </div>
     </div>
 
-    <!-- Activity Form Modal -->
-    <div v-if="showActivityForm"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-        <div class="w-full max-w-lg" @click.stop>
-            <ActivityForm :deal-id="deal.id" :contact-id="deal.contact?.id" @save="handleActivitySave"
-                @cancel="showActivityForm = false" />
-        </div>
-    </div>
+    <!-- Activity Form Dialog -->
+    <Dialog
+      v-model:visible="showActivityForm"
+      header="Add Activity"
+      modal
+      :style="{ width: '32rem', maxHeight: '90vh' }"
+      :draggable="false"
+      :resizable="false"
+      class="p-fluid"
+      @hide="closeActivityForm"
+    >
+      <ActivityForm
+        :deal-id="deal.id"
+        :contact-id="deal.contact?.id"
+        @save="handleActivitySave"
+        @cancel="closeActivityForm"
+      />
+    </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -155,6 +165,7 @@ import { useActivitiesStore } from '@/stores/activities'
 import { useToastStore } from '@/stores/toast'
 import ActivityTimeline from '@/components/activities/ActivityTimeline.vue'
 import ActivityForm from '@/components/activities/ActivityForm.vue'
+import Dialog from 'primevue/dialog'
 import { DEAL_STAGES, type DealStage } from '@/utils/constants'
 import type { Deal } from '@/stores/deals'
 import type { ActivityInput } from '@/stores/activities'
@@ -241,6 +252,10 @@ const handleActivitySave = async (activityData: ActivityInput) => {
         toastStore.error(`Failed to log activity: ${result.error}`)
     }
 }
+
+const closeActivityForm = () => {
+    showActivityForm.value = false;
+};
 
 const handleActivityCreated = () => {
     console.log('Activity created')

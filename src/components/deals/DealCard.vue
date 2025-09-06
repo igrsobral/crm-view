@@ -1,6 +1,6 @@
 <template>
   <Card
-    class="deal-card cursor-pointer transition-all duration-200 hover:shadow-lg"
+    class="deal-card cursor-pointer transition-all duration-200 hover:shadow-md"
     :class="{ 'border-red-200 bg-red-50': isOverdue, 'ring-2 ring-blue-200': isDragging }"
     @click="$emit('click', deal)"
     draggable="true"
@@ -11,34 +11,24 @@
       <div class="p-0">
         <!-- Service Category Header -->
         <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center space-x-2">
-            <Tag
-              :value="getServiceCategory(deal.name)"
-              severity="secondary"
-              class="text-xs font-medium"
-            />
-            <Button
-              icon="pi pi-ellipsis-h"
-              text
-              rounded
-              size="small"
-              severity="secondary"
-              @click.stop="$emit('edit', deal)"
-              class="p-1 hover:bg-gray-100"
-            />
-          </div>
-        </div>
-
-        <!-- Location/Address -->
-        <div v-if="deal.contact?.company || getLocation()" class="mb-3">
-          <div class="flex items-center text-sm text-gray-600">
-            <i class="pi pi-map-marker mr-2 text-xs text-gray-400"></i>
-            <span class="truncate">{{ getLocation() }}</span>
-          </div>
+          <Tag
+            :value="getServiceCategory(deal.name)"
+            severity="secondary"
+            class="text-xs"
+          />
+          <Button
+            icon="pi pi-ellipsis-h"
+            text
+            rounded
+            size="small"
+            severity="secondary"
+            @click.stop="$emit('edit', deal)"
+            class="p-1 hover:bg-gray-100"
+          />
         </div>
 
         <!-- Contact Information -->
-        <div v-if="deal.contact" class="flex items-center space-x-3 mb-4">
+        <div v-if="deal.contact" class="flex items-center gap-3 mb-4">
           <Avatar
             v-if="deal.contact.name"
             :label="getContactInitials(deal.contact.name)"
@@ -51,8 +41,9 @@
             <p class="text-sm font-medium text-gray-900 truncate">
               {{ deal.contact.name }}
             </p>
-            <p v-if="deal.contact.email" class="text-xs text-gray-500 truncate">
-              {{ deal.contact.email }}
+            <p v-if="getLocation()" class="text-xs text-gray-500 truncate">
+              <i class="pi pi-map-marker mr-1"></i>
+              {{ getLocation() }}
             </p>
           </div>
         </div>
@@ -62,7 +53,7 @@
           <div class="text-lg font-bold text-gray-900">
             {{ deal.value ? `$${formatCurrency(deal.value)}` : "$0" }}
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center gap-2">
             <!-- Status Indicators -->
             <Badge
               v-if="getActivityCount()"
@@ -70,7 +61,7 @@
               severity="info"
               class="text-xs"
             />
-            <Badge v-if="deal.notes" value="1" severity="secondary" class="text-xs">
+            <Badge v-if="deal.notes" severity="secondary" class="text-xs">
               <i class="pi pi-comment text-xs"></i>
             </Badge>
           </div>
@@ -78,7 +69,7 @@
 
         <!-- Bottom Row: Time and Actions -->
         <div class="flex items-center justify-between text-xs text-gray-500">
-          <div class="flex items-center space-x-3">
+          <div class="flex items-center gap-3">
             <!-- Time indicators -->
             <span v-if="deal.expected_close_date" class="flex items-center">
               <i class="pi pi-calendar mr-1"></i>
@@ -91,7 +82,7 @@
           </div>
 
           <!-- Priority/Status Indicator -->
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center gap-1">
             <div
               v-if="isHighPriority()"
               class="w-2 h-2 bg-red-400 rounded-full"
@@ -248,11 +239,11 @@ const getActivityCount = (): number => {
   // Try to get activity count from activities store if available
   try {
     // Check if activities store exists and has activities for this deal
-    if (activitiesStore && typeof activitiesStore.getActivitiesByDealId === 'function') {
-      const activities = activitiesStore.getActivitiesByDealId(props.deal.id);
+    if (activitiesStore && typeof activitiesStore.getActivitiesByDeal === 'function') {
+      const activities = activitiesStore.getActivitiesByDeal(props.deal.id);
       return activities?.length || 0;
     }
-  } catch (error) {
+  } catch {
     // Store might not be available, fall back to mock data
     console.warn('Activities store not available, using mock data');
   }
@@ -339,12 +330,14 @@ const onDragEnd = () => {
 
 <style scoped>
 .deal-card {
-  transition: all 0.2s ease;
-  background: #f0f0f048;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 .deal-card:hover {
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .deal-card.ring-2 {
@@ -355,6 +348,7 @@ const onDragEnd = () => {
 :deep(.p-badge) {
   font-size: 0.625rem;
   padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
 }
 
 /* Card content padding override */
@@ -366,6 +360,7 @@ const onDragEnd = () => {
 :deep(.p-tag) {
   border-radius: 0.375rem;
   font-weight: 500;
+  font-size: 0.75rem;
 }
 
 /* Avatar sizing */
@@ -373,5 +368,18 @@ const onDragEnd = () => {
   width: 2rem;
   height: 2rem;
   font-size: 0.75rem;
+}
+
+/* Gap utilities */
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 </style>

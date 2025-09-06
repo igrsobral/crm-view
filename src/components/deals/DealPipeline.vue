@@ -434,29 +434,41 @@ watch(searchQuery, () => {
 </script>
 
 <style scoped>
-/* Custom scrollbar for horizontal scroll */
+/* Modern scrollbar styling */
 .overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
+  background: #f8fafc;
+  border-radius: 3px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Smooth transitions */
+/* Improved transitions */
 .transition-colors {
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pipeline layout improvements */
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+/* Better gap consistency */
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
 }
 </style>

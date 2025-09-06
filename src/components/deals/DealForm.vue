@@ -1,7 +1,6 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg">
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-200">
+    <!-- <div class="px-6 py-4 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900">
           {{ isEditing ? "Edit Deal" : "Create New Deal" }}
@@ -15,10 +14,10 @@
           class="text-gray-400 hover:text-gray-600"
         />
       </div>
-    </div>
+    </div> -->
 
     <!-- Form -->
-    <form @submit.prevent="handleSubmit" class="px-6 py-4 space-y-6">
+    <form @submit.prevent="handleSubmit" class="py-4 space-y-6">
       <!-- Deal Name -->
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
@@ -142,7 +141,6 @@
         />
       </div>
     </form>
-  </div>
 </template>
 
 <script setup lang="ts">
