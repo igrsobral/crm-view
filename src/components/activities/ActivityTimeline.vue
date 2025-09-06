@@ -174,76 +174,82 @@
       </ul>
     </div>
 
-    <!-- Edit Activity Modal -->
-    <div
-      v-if="editingActivity"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+    <!-- Edit Activity Dialog -->
+    <Dialog
+      v-model:visible="showEditDialog"
+      header="Edit Activity"
+      modal
+      :style="{ width: '32rem', maxHeight: '90vh' }"
+      :draggable="false"
+      :resizable="false"
+      class="p-fluid"
+      @hide="closeEditDialog"
     >
-      <div class="w-full max-w-lg" @click.stop>
-        <ActivityForm
-          :activity="editingActivity"
-          :contact-id="contactId"
-          :deal-id="dealId"
-          mode="edit"
-          @save="handleActivityUpdate"
-          @cancel="editingActivity = null"
-        />
-      </div>
-    </div>
+      <ActivityForm
+        :activity="editingActivity"
+        :contact-id="contactId"
+        :deal-id="dealId"
+        mode="edit"
+        @save="handleActivityUpdate"
+        @cancel="closeEditDialog"
+      />
+    </Dialog>
 
-    <!-- Delete Confirmation Modal -->
-    <div
-      v-if="activityToDelete"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-      @click="activityToDelete = null"
+    <!-- Delete Confirmation Dialog -->
+    <Dialog
+      v-model:visible="showDeleteDialog"
+      header="Delete Activity"
+      modal
+      :style="{ width: '25rem' }"
+      :draggable="false"
+      :resizable="false"
     >
-      <div
-        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
-        @click.stop
-      >
-        <div class="mt-3 text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-lg font-medium text-gray-900 mt-4">Delete Activity</h3>
-          <div class="mt-2 px-7 py-3">
-            <p class="text-sm text-gray-500">
-              Are you sure you want to delete this activity? This action cannot be undone.
-            </p>
-          </div>
-          <div class="flex gap-3 px-4 py-3">
-            <button
-              @click="activityToDelete = null"
-              class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
-            >
-              Cancel
-            </button>
-            <button
-              @click="confirmDeleteActivity"
-              class="flex-1 px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
-            >
-              Delete
-            </button>
-          </div>
+      <div class="text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+          <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
         </div>
+        <p class="text-sm text-gray-500">
+          Are you sure you want to delete this activity? This action cannot be undone.
+        </p>
       </div>
-    </div>
+
+      <template #footer>
+        <div class="flex gap-3">
+          <Button
+            type="button"
+            @click="closeDeleteDialog"
+            outlined
+            severity="secondary"
+            label="Cancel"
+            class="flex-1"
+          />
+          <Button
+            type="button"
+            @click="confirmDeleteActivity"
+            severity="danger"
+            label="Delete"
+            class="flex-1"
+          />
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h, defineAsyncComponent } from "vue";
+import { ref, h, defineAsyncComponent, computed } from "vue";
 import { useActivitiesStore } from "@/stores/activities";
 import type { Activity, ActivityInput } from "@/stores/activities";
 import type { ActivityType } from "@/utils/constants";
 import Button from "primevue/button";
+import Dialog from "primevue/dialog";
 
 // Import ActivityForm component
 const ActivityForm = defineAsyncComponent(() => import("./ActivityForm.vue"));
@@ -269,6 +275,21 @@ const emit = defineEmits<{
 const activitiesStore = useActivitiesStore();
 const editingActivity = ref<Activity | null>(null);
 const activityToDelete = ref<Activity | null>(null);
+
+// Dialog visibility computed properties
+const showEditDialog = computed({
+  get: () => editingActivity.value !== null,
+  set: (value: boolean) => {
+    if (!value) editingActivity.value = null;
+  }
+});
+
+const showDeleteDialog = computed({
+  get: () => activityToDelete.value !== null,
+  set: (value: boolean) => {
+    if (!value) activityToDelete.value = null;
+  }
+});
 
 // Extract props for template access
 const { contactId, dealId } = props;
@@ -375,6 +396,14 @@ const handleActivityUpdate = async (activityData: ActivityInput) => {
 
 const deleteActivity = (activity: Activity) => {
   activityToDelete.value = activity;
+};
+
+const closeEditDialog = () => {
+  editingActivity.value = null;
+};
+
+const closeDeleteDialog = () => {
+  activityToDelete.value = null;
 };
 
 const confirmDeleteActivity = async () => {

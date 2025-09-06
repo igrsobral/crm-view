@@ -1,28 +1,13 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg">
-    <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-200">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900">
-          {{ isEditing ? 'Edit Activity' : 'Log New Activity' }}
-        </h2>
-        <button @click="$emit('cancel')" class="text-gray-400 hover:text-gray-600 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
     <!-- Form -->
-    <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
+    <form @submit.prevent="handleSubmit" class="space-y-6">
       <!-- Activity Type -->
       <div>
         <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
           Activity Type <span class="text-red-500">*</span>
         </label>
-        <Select 
-          id="type" 
+        <Select
+          id="type"
           v-model="formData.type"
           :options="activityTypeOptions"
           optionLabel="label"
@@ -39,9 +24,9 @@
         <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
           Subject
         </label>
-        <InputText 
-          id="subject" 
-          v-model="formData.subject" 
+        <InputText
+          id="subject"
+          v-model="formData.subject"
           placeholder="Brief summary of the activity"
           :invalid="!!errors.subject"
           class="w-full"
@@ -54,9 +39,9 @@
         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
           Description
         </label>
-        <Textarea 
-          id="description" 
-          v-model="formData.description" 
+        <Textarea
+          id="description"
+          v-model="formData.description"
           rows="4"
           placeholder="Detailed notes about this activity..."
           :invalid="!!errors.description"
@@ -74,9 +59,9 @@
           Schedule for Later
         </label>
         <div class="flex items-center space-x-2">
-          <Checkbox 
-            id="schedule-checkbox" 
-            v-model="isScheduled" 
+          <Checkbox
+            id="schedule-checkbox"
+            v-model="isScheduled"
             :binary="true"
           />
           <label for="schedule-checkbox" class="text-sm text-gray-700">
@@ -85,10 +70,10 @@
         </div>
 
         <div v-if="isScheduled" class="mt-3">
-          <Calendar 
-            id="scheduled_at" 
-            v-model="scheduledDate" 
-            showTime 
+          <Calendar
+            id="scheduled_at"
+            v-model="scheduledDate"
+            showTime
             :showSeconds="false"
             :minDate="new Date()"
             placeholder="Select date and time"
@@ -104,16 +89,16 @@
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           @click="$emit('cancel')"
           outlined
           severity="secondary"
           label="Cancel"
           class="px-4 py-2"
         />
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           :disabled="isSubmitting"
           :loading="isSubmitting"
           :label="isSubmitting ? (isEditing ? 'Updating...' : 'Logging Activity...') : (isEditing ? 'Update Activity' : 'Log Activity')"
@@ -121,7 +106,6 @@
         />
       </div>
     </form>
-  </div>
 </template>
 
 <script setup lang="ts">
