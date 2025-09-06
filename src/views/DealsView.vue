@@ -33,21 +33,46 @@
         </div>
       </div>
 
-      <!-- Deal Form Modal -->
-      <div v-if="showCreateForm || showEditForm"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DealForm :deal="selectedDeal" :loading="dealsStore.loading" @save="saveDeal" @cancel="closeForm" />
-        </div>
-      </div>
+      <!-- Deal Form Dialog -->
+      <Dialog
+        v-model:visible="showCreateForm"
+        :header="'Create New Deal'"
+        modal
+        :style="{ width: '50rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeForm"
+      >
+        <DealForm :deal="null" :loading="dealsStore.loading" @save="saveDeal" @cancel="closeForm" />
+      </Dialog>
 
-      <!-- Deal Details Modal -->
-      <div v-if="showDetailsModal && selectedDeal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DealDetails :deal="selectedDeal" @edit="editDeal" @close="closeDetailsModal" />
-        </div>
-      </div>
+      <Dialog
+        v-model:visible="showEditForm"
+        :header="'Edit Deal'"
+        modal
+        :style="{ width: '50rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeForm"
+      >
+        <DealForm :deal="selectedDeal" :loading="dealsStore.loading" @save="saveDeal" @cancel="closeForm" />
+      </Dialog>
+
+      <!-- Deal Details Dialog -->
+      <Dialog
+        v-model:visible="showDetailsModal"
+        :header="selectedDeal?.name || 'Deal Details'"
+        modal
+        :style="{ width: '50rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeDetailsModal"
+      >
+        <DealDetails v-if="selectedDeal" :deal="selectedDeal" @edit="editDeal" @close="closeDetailsModal" />
+      </Dialog>
 
       <!-- Loading Overlay -->
       <div v-if="dealsStore.loading" class="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-40">
@@ -100,6 +125,9 @@ import DealAnalytics from '@/components/deals/DealAnalytics.vue'
 import DealReports from '@/components/deals/DealReports.vue'
 import { useDealsStore } from '@/stores/deals'
 import type { Deal, DealInput } from '@/stores/deals'
+
+// PrimeVue component imports
+import Dialog from 'primevue/dialog'
 
 const dealsStore = useDealsStore()
 

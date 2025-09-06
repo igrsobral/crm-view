@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 // PrimeVue imports
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 import { CRMTheme } from './presets/crm-theme'
 import 'primeicons/primeicons.css'
 
@@ -13,10 +14,10 @@ import App from './App.vue'
 import router from './router'
 import { AuthManager } from './utils/authManager'
 import { SessionMonitor } from './utils/sessionMonitor'
-import { 
-  // preloadCriticalResources, 
-  // registerServiceWorker, 
-  startPerformanceMonitoring 
+import {
+  // preloadCriticalResources,
+  // registerServiceWorker,
+  startPerformanceMonitoring
 } from './utils/performance'
 
 const app = createApp(App)
@@ -33,6 +34,7 @@ app.use(PrimeVue, {
 })
 
 app.use(ToastService)
+app.use(ConfirmationService)
 app.use(createPinia())
 app.use(router)
 
@@ -44,7 +46,7 @@ SessionMonitor.getInstance().initialize(router)
 
 if (import.meta.env.PROD) {
   // preloadCriticalResources()
-  
+
   // registerServiceWorker()
 }
 

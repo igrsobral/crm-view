@@ -230,26 +230,29 @@
         </div>
       </div>
 
-      <!-- Activity Form Modal -->
-      <div
-        v-if="showActivityForm"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
-        @click.self="showActivityForm = false"
+      <!-- Activity Form Dialog -->
+      <Dialog
+        v-model:visible="showActivityForm"
+        header="Log Activity"
+        modal
+        :style="{ width: '32rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeActivityForm"
       >
-        <div class="w-full max-w-lg bg-white rounded-lg shadow-xl" @click.stop>
-          <Suspense>
-            <ActivityForm @save="handleActivitySave" @cancel="showActivityForm = false" />
-            <template #fallback>
-              <div class="p-6 text-center">
-                <div
-                  class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
-                ></div>
-                <p class="mt-2 text-gray-600">Loading activity form...</p>
-              </div>
-            </template>
-          </Suspense>
-        </div>
-      </div>
+        <Suspense>
+          <ActivityForm @save="handleActivitySave" @cancel="closeActivityForm" />
+          <template #fallback>
+            <div class="p-6 text-center">
+              <div
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+              ></div>
+              <p class="mt-2 text-gray-600">Loading activity form...</p>
+            </div>
+          </template>
+        </Suspense>
+      </Dialog>
     </div>
   </AppLayout>
 </template>
@@ -266,6 +269,7 @@ import type { ActivityType } from "@/utils/constants";
 
 import Select from "primevue/select";
 import InputText from "primevue/inputtext";
+import Dialog from "primevue/dialog";
 
 const activitiesStore = useActivitiesStore();
 const toastStore = useToastStore();
@@ -369,6 +373,10 @@ const handleActivitySave = async (activityData: ActivityInput) => {
     console.error("Exception in handleActivitySave:", error);
     toastStore.error("An unexpected error occurred while logging the activity");
   }
+};
+
+const closeActivityForm = () => {
+  showActivityForm.value = false;
 };
 
 const handleActivityUpdate = (activityId: string, updates: Partial<Activity>) => {

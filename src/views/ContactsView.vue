@@ -49,34 +49,43 @@
         @view-contact="handleViewContact"
       />
 
-      <!-- Create/Edit Contact Modal -->
-      <div
-        v-if="showContactForm"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+      <!-- Create/Edit Contact Dialog -->
+      <Dialog
+        v-model:visible="showContactForm"
+        :header="formMode === 'create' ? 'Create New Contact' : 'Edit Contact'"
+        modal
+        :style="{ width: '50rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeContactForm"
       >
-        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto" @click.stop>
-          <ContactForm
-            :contact="selectedContact"
-            :mode="formMode"
-            @save="handleSaveContact"
-            @cancel="closeContactForm"
-          />
-        </div>
-      </div>
+        <ContactForm
+          :contact="selectedContact"
+          :mode="formMode"
+          @save="handleSaveContact"
+          @cancel="closeContactForm"
+        />
+      </Dialog>
 
-      <!-- Contact Details Modal -->
-      <div
-        v-if="showContactDetails && selectedContact"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+      <!-- Contact Details Dialog -->
+      <Dialog
+        v-model:visible="showContactDetails"
+        :header="selectedContact?.name || 'Contact Details'"
+        modal
+        :style="{ width: '75rem', maxHeight: '90vh' }"
+        :draggable="false"
+        :resizable="false"
+        class="p-fluid"
+        @hide="closeContactDetails"
       >
-        <div class="w-full max-w-6xl max-h-[90vh] overflow-y-auto" @click.stop>
-          <ContactDetails
-            :contact="selectedContact"
-            @close="closeContactDetails"
-            @edit="handleEditFromDetails"
-          />
-        </div>
-      </div>
+        <ContactDetails
+          v-if="selectedContact"
+          :contact="selectedContact"
+          @close="closeContactDetails"
+          @edit="handleEditFromDetails"
+        />
+      </Dialog>
 
       <!-- Success/Error Notification -->
       <div v-if="notification" class="fixed top-4 right-4 z-50">
@@ -146,58 +155,42 @@
         </div>
       </div>
 
-      <!-- Delete Confirmation Modal -->
-      <div
-        v-if="contactToDelete"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-        @click="contactToDelete = null"
+      <!-- Delete Confirmation Dialog -->
+      <Dialog
+        v-model:visible="showDeleteDialog"
+        header="Delete Contact"
+        modal
+        :style="{ width: '25rem' }"
+        :draggable="false"
+        :resizable="false"
       >
-        <div
-          class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
-          @click.stop
-        >
-          <div class="mt-3 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-              <svg
-                class="h-6 w-6 text-red-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                />
-              </svg>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mt-4">Delete Contact</h3>
-            <div class="mt-2 px-7 py-3">
-              <p class="text-sm text-gray-500">
-                Are you sure you want to delete <strong>{{ contactToDelete.name }}</strong
-                >? This action cannot be undone.
-              </p>
-            </div>
-            <div class="flex gap-3 px-4 py-3">
-              <Button
-                @click="contactToDelete = null"
-                outlined
-                severity="secondary"
-                label="Cancel"
-                class="flex-1"
-              />
-              <Button @click="confirmDelete" severity="danger" label="Delete" class="flex-1" />
-            </div>
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+            <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
           </div>
+          <p class="text-sm text-gray-600 mb-4">
+            Are you sure you want to delete <strong>{{ contactToDelete?.name }}</strong>? This action cannot be undone.
+          </p>
         </div>
-      </div>
+        <template #footer>
+          <div class="flex gap-3">
+            <Button
+              @click="cancelDelete"
+              outlined
+              severity="secondary"
+              label="Cancel"
+              class="flex-1"
+            />
+            <Button @click="confirmDelete" severity="danger" label="Delete" class="flex-1" />
+          </div>
+        </template>
+      </Dialog>
     </div>
   </AppLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import AppLayout from "@/components/common/AppLayout.vue";
 import ContactList from "@/components/contacts/ContactList.vue";
 import ContactForm from "@/components/contacts/ContactForm.vue";
@@ -207,6 +200,7 @@ import type { Contact, ContactInput } from "@/stores/contacts";
 
 // PrimeVue component imports
 import Button from "primevue/button";
+import Dialog from "primevue/dialog";
 
 const contactsStore = useContactsStore();
 
@@ -216,6 +210,11 @@ const selectedContact = ref<Contact | null>(null);
 const formMode = ref<"create" | "edit">("create");
 
 const contactToDelete = ref<Contact | null>(null);
+const showDeleteDialog = computed(() => contactToDelete.value !== null);
+
+const cancelDelete = () => {
+  contactToDelete.value = null;
+};
 
 const notification = ref<{ type: "success" | "error"; message: string } | null>(null);
 

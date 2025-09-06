@@ -7,33 +7,33 @@
       <div class="absolute inset-0">
         <!-- Base gradient layer -->
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-900"></div>
-        
+
         <!-- Ripple animations -->
         <div class="absolute inset-0">
           <!-- Large ripple 1 -->
           <div class="absolute w-96 h-96 -top-48 -left-48 bg-gradient-radial from-blue-400/30 via-purple-500/20 to-transparent rounded-full animate-ripple-1"></div>
-          
+
           <!-- Large ripple 2 -->
           <div class="absolute w-80 h-80 top-1/4 -right-40 bg-gradient-radial from-purple-400/25 via-blue-500/15 to-transparent rounded-full animate-ripple-2"></div>
-          
+
           <!-- Medium ripple 3 -->
           <div class="absolute w-64 h-64 bottom-0 left-1/4 bg-gradient-radial from-indigo-400/20 via-blue-600/10 to-transparent rounded-full animate-ripple-3"></div>
-          
+
           <!-- Small ripple 4 -->
           <div class="absolute w-48 h-48 top-3/4 right-1/4 bg-gradient-radial from-cyan-400/30 via-blue-500/20 to-transparent rounded-full animate-ripple-4"></div>
-          
+
           <!-- Tiny ripples -->
           <div class="absolute w-32 h-32 top-1/3 left-1/3 bg-gradient-radial from-white/10 to-transparent rounded-full animate-ripple-5"></div>
           <div class="absolute w-24 h-24 bottom-1/4 right-1/3 bg-gradient-radial from-blue-300/20 to-transparent rounded-full animate-ripple-6"></div>
         </div>
-        
+
         <!-- Animated floating blobs -->
         <div class="absolute inset-0 opacity-20">
           <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
           <div class="absolute top-0 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
           <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
-        
+
         <!-- Subtle overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-blue-900/20 via-transparent to-blue-800/10"></div>
       </div>
@@ -226,48 +226,60 @@
           </div>
         </form>
 
-        <!-- Password Reset Modal -->
-        <div v-if="showResetPassword"
-          class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-          <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto">
-            <div class="p-6">
-              <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-900">Reset Password</h3>
-                <button @click="closeResetModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <form @submit.prevent="handleResetPassword">
-                <div class="mb-4">
-                  <label for="reset-email" class="block text-sm font-medium text-gray-700 mb-2">
-                    Email address
-                  </label>
-                  <InputText id="reset-email" v-model="resetEmail" type="email" placeholder="Enter your email"
-                    class="w-full" />
-                </div>
-
-                <div v-if="resetError" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
-                  <p class="text-sm text-red-800">{{ resetError }}</p>
-                </div>
-
-                <div v-if="resetSuccess" class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200">
-                  <p class="text-sm text-green-800">Password reset email sent! Check your inbox.</p>
-                </div>
-
-                <div class="flex space-x-3">
-                  <Button type="button" @click="closeResetModal" outlined severity="secondary" label="Cancel"
-                    class="flex-1" />
-                  <Button type="submit" :disabled="resetLoading" :loading="resetLoading"
-                    :label="resetLoading ? 'Sending...' : 'Send Reset Email'"
-                    class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" />
-                </div>
-              </form>
+        <!-- Password Reset Dialog -->
+        <Dialog
+          v-model:visible="showResetPassword"
+          header="Reset Password"
+          modal
+          :style="{ width: '25rem' }"
+          :draggable="false"
+          :resizable="false"
+          @hide="closeResetModal"
+        >
+          <form @submit.prevent="handleResetPassword">
+            <div class="mb-4">
+              <label for="reset-email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email address
+              </label>
+              <InputText
+                id="reset-email"
+                v-model="resetEmail"
+                type="email"
+                placeholder="Enter your email"
+                class="w-full"
+              />
             </div>
-          </div>
-        </div>
+
+            <div v-if="resetError" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p class="text-sm text-red-800">{{ resetError }}</p>
+            </div>
+
+            <div v-if="resetSuccess" class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200">
+              <p class="text-sm text-green-800">Password reset email sent! Check your inbox.</p>
+            </div>
+          </form>
+
+          <template #footer>
+            <div class="flex gap-3">
+              <Button
+                type="button"
+                @click="closeResetModal"
+                outlined
+                severity="secondary"
+                label="Cancel"
+                class="flex-1"
+              />
+              <Button
+                type="button"
+                @click="handleResetPassword"
+                :disabled="resetLoading"
+                :loading="resetLoading"
+                :label="resetLoading ? 'Sending...' : 'Send Reset Email'"
+                class="flex-1"
+              />
+            </div>
+          </template>
+        </Dialog>
       </div>
     </div>
   </div>
@@ -282,6 +294,7 @@ import { useAuth } from '@/composables/useAuth'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
 
 const router = useRouter()
 const route = useRoute()
