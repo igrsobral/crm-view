@@ -182,19 +182,23 @@
       </div>
     </div>
 
-    <!-- Activity Form Modal -->
-    <div
-      v-if="showActivityForm"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+    <!-- Activity Form Dialog -->
+    <Dialog
+      v-model:visible="showActivityForm"
+      header="Add Activity"
+      modal
+      :style="{ width: '32rem', maxHeight: '90vh' }"
+      :draggable="false"
+      :resizable="false"
+      class="p-fluid"
+      @hide="closeActivityForm"
     >
-      <div class="w-full max-w-lg" @click.stop>
-        <ActivityForm
-          :contact-id="contact.id"
-          @save="handleActivitySave"
-          @cancel="showActivityForm = false"
-        />
-      </div>
-    </div>
+      <ActivityForm
+        :contact-id="contact.id"
+        @save="handleActivitySave"
+        @cancel="closeActivityForm"
+      />
+    </Dialog>
   </div>
 </template>
 
@@ -204,6 +208,7 @@ import { useActivitiesStore } from "@/stores/activities";
 import { useToastStore } from "@/stores/toast";
 import ActivityTimeline from "@/components/activities/ActivityTimeline.vue";
 import ActivityForm from "@/components/activities/ActivityForm.vue";
+import Dialog from "primevue/dialog";
 import type { Contact } from "@/stores/contacts";
 import type { ContactStatus } from "@/utils/constants";
 import type { ActivityInput } from "@/stores/activities";
@@ -269,6 +274,10 @@ const handleActivitySave = async (activityData: ActivityInput) => {
   } else {
     toastStore.error(`Failed to log activity: ${result.error}`);
   }
+};
+
+const closeActivityForm = () => {
+  showActivityForm.value = false;
 };
 
 const handleActivityCreated = () => {

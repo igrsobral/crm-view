@@ -1,7 +1,6 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg">
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-200">
+    <!-- <div class="px-6 py-4 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900">
           {{ isEditing ? 'Edit Contact' : 'Add New Contact' }}
@@ -12,18 +11,18 @@
           </svg>
         </button>
       </div>
-    </div>
+    </div> -->
 
     <!-- Form -->
-    <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
+    <form @submit.prevent="handleSubmit" class=" space-y-6">
       <!-- Name Field -->
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
           Name <span class="text-red-500">*</span>
         </label>
-        <InputText 
-          id="name" 
-          v-model="formData.name" 
+        <InputText
+          id="name"
+          v-model="formData.name"
           placeholder="Enter contact name"
           :invalid="!!errors.name"
           class="w-full"
@@ -36,10 +35,10 @@
         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
           Email
         </label>
-        <InputText 
-          id="email" 
-          v-model="formData.email" 
-          type="email" 
+        <InputText
+          id="email"
+          v-model="formData.email"
+          type="email"
           placeholder="Enter email address"
           :invalid="!!errors.email"
           class="w-full"
@@ -52,10 +51,10 @@
         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
           Phone
         </label>
-        <InputText 
-          id="phone" 
-          v-model="formData.phone" 
-          type="tel" 
+        <InputText
+          id="phone"
+          v-model="formData.phone"
+          type="tel"
           placeholder="Enter phone number"
           :invalid="!!errors.phone"
           class="w-full"
@@ -68,9 +67,9 @@
         <label for="company" class="block text-sm font-medium text-gray-700 mb-1">
           Company
         </label>
-        <InputText 
-          id="company" 
-          v-model="formData.company" 
+        <InputText
+          id="company"
+          v-model="formData.company"
           placeholder="Enter company name"
           :invalid="!!errors.company"
           class="w-full"
@@ -83,8 +82,8 @@
         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
           Status <span class="text-red-500">*</span>
         </label>
-        <Select 
-          id="status" 
+        <Select
+          id="status"
           v-model="formData.status"
           :options="statusOptions"
           optionLabel="label"
@@ -101,7 +100,7 @@
         <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
           Tags
         </label>
-        <Chips 
+        <Chips
           id="tags"
           v-model="formData.tags"
           :allowDuplicate="false"
@@ -120,9 +119,9 @@
         <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
           Notes
         </label>
-        <Textarea 
-          id="notes" 
-          v-model="formData.notes" 
+        <Textarea
+          id="notes"
+          v-model="formData.notes"
           rows="4"
           placeholder="Add any additional notes about this contact..."
           :invalid="!!errors.notes"
@@ -136,16 +135,16 @@
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           @click="$emit('cancel')"
           outlined
           severity="secondary"
           label="Cancel"
           class="px-4 py-2"
         />
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           :disabled="isSubmitting"
           :loading="isSubmitting"
           :label="isSubmitting ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Contact' : 'Create Contact')"
@@ -153,7 +152,6 @@
         />
       </div>
     </form>
-  </div>
 </template>
 
 <script setup lang="ts">
