@@ -1,21 +1,21 @@
 <template>
-  <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 border border-gray-200" data-testid="contact-card">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700" data-testid="contact-card">
     <div class="p-6">
       <!-- Header with name and status -->
       <div class="flex items-start justify-between mb-4">
         <div class="flex-1 min-w-0">
-          <h3 class="text-lg font-semibold text-gray-900 truncate" data-testid="contact-name">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate" data-testid="contact-name">
             {{ contact.name }}
           </h3>
           <div class="flex items-center mt-1">
-            <Tag 
+            <Tag
               :value="statusLabels[contact.status]"
               :severity="statusSeverity[contact.status]"
               class="text-xs"
             />
           </div>
         </div>
-        
+
         <!-- Actions dropdown -->
         <div class="relative ml-4">
           <Button
@@ -27,7 +27,7 @@
             size="small"
             class="p-1"
           />
-          
+
           <Menu
             ref="menu"
             :model="menuItems"
@@ -39,13 +39,13 @@
       <!-- Contact Information -->
       <div class="space-y-2">
         <!-- Email -->
-        <div v-if="contact.email" class="flex items-center text-sm text-gray-600">
-          <svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div v-if="contact.email" class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+          <svg class="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <a 
+          <a
             :href="`mailto:${contact.email}`"
-            class="hover:text-blue-600 truncate"
+            class="hover:text-blue-600 dark:hover:text-blue-400 truncate"
             @click.stop
           >
             {{ contact.email }}
@@ -53,13 +53,13 @@
         </div>
 
         <!-- Phone -->
-        <div v-if="contact.phone" class="flex items-center text-sm text-gray-600">
-          <svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div v-if="contact.phone" class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+          <svg class="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
           </svg>
-          <a 
+          <a
             :href="`tel:${contact.phone}`"
-            class="hover:text-blue-600"
+            class="hover:text-blue-600 dark:hover:text-blue-400"
             @click.stop
           >
             {{ contact.phone }}
@@ -67,8 +67,8 @@
         </div>
 
         <!-- Company -->
-        <div v-if="contact.company" class="flex items-center text-sm text-gray-600">
-          <svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div v-if="contact.company" class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+          <svg class="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
           <span class="truncate">{{ contact.company }}</span>
@@ -95,8 +95,8 @@
       </div>
 
       <!-- Footer with dates -->
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <div class="flex justify-between items-center text-xs text-gray-500">
+      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
           <span>
             Created {{ formatDate(contact.created_at) }}
           </span>
@@ -149,14 +149,14 @@ const menuItems: MenuItem[] = [
   {
     label: 'Delete Contact',
     icon: 'pi pi-trash',
-    class: 'text-red-600',
+    class: 'text-red-600 dark:text-red-400',
     command: () => handleDelete()
   }
 ]
 
 const statusSeverity: Record<ContactStatus, 'success' | 'info' | 'warning' | 'secondary'> = {
   lead: 'warning',
-  prospect: 'info', 
+  prospect: 'info',
   customer: 'success',
   inactive: 'secondary'
 }
@@ -191,7 +191,7 @@ const formatDate = (dateString: string) => {
   const now = new Date()
   const diffTime = Math.abs(now.getTime() - date.getTime())
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
+
   if (diffDays === 1) {
     return 'yesterday'
   } else if (diffDays < 7) {

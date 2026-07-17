@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white shadow-sm border-b border-gray-200">
+  <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
     <div class="mx-auto  px-4 sm:px-6 lg:px-6">
       <div class="flex h-16 justify-between items-center">
         <!-- Mobile menu button -->
@@ -18,13 +18,18 @@
         </div>
         <!-- Page title -->
         <div class="flex-1 lg:flex-none">
-          <h1 class="text-xl font-semibold text-gray-900 lg:hidden">
+          <h1 class="text-xl font-semibold text-gray-900 dark:text-white lg:hidden">
             {{ currentPageTitle }}
           </h1>
         </div>
 
-        <!-- User menu -->
-        <div class="relative" ref="userMenuContainer">
+        <!-- Theme switcher and User menu -->
+        <div class="flex items-center gap-x-3">
+          <!-- Theme switcher -->
+          <ThemeSwitcher />
+
+          <!-- User menu -->
+          <div class="relative" ref="userMenuContainer">
           <Button
             class="flex items-center gap-x-2 p-1.5"
             variant="text"
@@ -40,10 +45,10 @@
               size="small"
               shape="circle"
             />
-            <span class="hidden lg:block text-sm font-medium text-gray-700">
+            <span class="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-300">
               {{ userEmail }}
             </span>
-            <i class="pi pi-chevron-down text-gray-400" />
+            <i class="pi pi-chevron-down text-gray-400 dark:text-gray-500" />
           </Button>
 
           <!-- User dropdown menu -->
@@ -56,25 +61,26 @@
             data-testid="user-menu-dropdown"
           >
             <template #start>
-              <div class="px-4 py-3 border-b border-gray-100">
-                <p class="text-sm font-medium text-gray-900 truncate">{{ userEmail }}</p>
-                <p class="text-xs text-gray-500">Signed in</p>
+              <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ userEmail }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Signed in</p>
               </div>
             </template>
             <template #item="{ item }">
               <div class="flex w-full items-center justify-between px-4 py-3">
                 <div class="flex items-center gap-3">
-                  <i :class="item.icon" class="text-gray-500" />
-                  <span class="text-sm font-medium text-gray-700">{{ item.label }}</span>
+                  <i :class="item.icon" class="text-gray-500 dark:text-gray-400" />
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ item.label }}</span>
                 </div>
                 <span
                   v-if="typeof item.label === 'string' && item.label.includes('Sign out')"
-                  class="text-xs text-gray-400 font-mono"
+                  class="text-xs text-gray-400 dark:text-gray-500 font-mono"
                   >⌘⇧Q</span
                 >
               </div>
             </template>
           </Menu>
+          </div>
         </div>
       </div>
     </div>
@@ -91,6 +97,7 @@ import Button from "primevue/button";
 import Avatar from "primevue/avatar";
 import Menu from "primevue/menu";
 import type { MenuItem } from "primevue/menuitem";
+import ThemeSwitcher from "@/components/common/ThemeSwitcher.vue";
 
 defineEmits<{
   "toggle-sidebar": [];

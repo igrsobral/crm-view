@@ -1,24 +1,21 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <button
+          <Button
+            variant="text"
             @click="$emit('close')"
-            class="text-gray-400 hover:text-gray-600 focus:outline-none"
+            aria-label="Close"
+            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
           >
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
+            <template #icon>
+              <i class="pi pi-arrow-left"/>
+            </template>
+          </Button>
           <div>
-            <h2 class="text-xl font-semibold text-gray-900">{{ contact.name }}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ contact.name }}</h2>
             <span
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1"
               :class="statusClasses[contact.status]"
@@ -30,82 +27,53 @@
 
         <!-- Quick Actions -->
         <div class="flex items-center space-x-2">
-          <button
+          <Button
             @click="$emit('edit')"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-            Edit
-          </button>
+            variant="outlined"
+            size="small"
+            label="Edit"
+            icon="pi pi-pencil"
+          />
 
-          <button
+          <Button
             v-if="contact.email"
             @click="sendEmail"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            Email
-          </button>
+            variant="outlined"
+            size="small"
+            label="Email"
+            icon="pi pi-envelope"
+          />
 
-          <button
+          <Button
             v-if="contact.phone"
             @click="makeCall"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-              />
-            </svg>
-            Call
-          </button>
+            variant="outlined"
+            size="small"
+            label="Call"
+            icon="pi pi-phone"
+          />
 
-          <button
+          <Button
             @click="showActivityForm = true"
-            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Log Activity
-          </button>
+            size="small"
+            label="Log Activity"
+            icon="pi pi-plus"
+          />
         </div>
       </div>
     </div>
 
     <div class="flex flex-col lg:flex-row">
       <!-- Contact Information Panel -->
-      <div class="lg:w-1/3 p-6 border-r border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+      <div class="lg:w-1/3 p-6 border-r border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Contact Information</h3>
 
         <div class="space-y-4">
           <!-- Email -->
           <div v-if="contact.email">
-            <label class="block text-sm font-medium text-gray-500">Email</label>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
             <div class="mt-1">
-              <a :href="`mailto:${contact.email}`" class="text-blue-600 hover:text-blue-800">
+              <a :href="`mailto:${contact.email}`" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 {{ contact.email }}
               </a>
             </div>
@@ -113,9 +81,9 @@
 
           <!-- Phone -->
           <div v-if="contact.phone">
-            <label class="block text-sm font-medium text-gray-500">Phone</label>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
             <div class="mt-1">
-              <a :href="`tel:${contact.phone}`" class="text-blue-600 hover:text-blue-800">
+              <a :href="`tel:${contact.phone}`" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 {{ contact.phone }}
               </a>
             </div>
@@ -123,18 +91,18 @@
 
           <!-- Company -->
           <div v-if="contact.company">
-            <label class="block text-sm font-medium text-gray-500">Company</label>
-            <div class="mt-1 text-gray-900">{{ contact.company }}</div>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Company</label>
+            <div class="mt-1 text-gray-900 dark:text-white">{{ contact.company }}</div>
           </div>
 
           <!-- Tags -->
           <div v-if="contact.tags && contact.tags.length > 0">
-            <label class="block text-sm font-medium text-gray-500 mb-2">Tags</label>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Tags</label>
             <div class="flex flex-wrap gap-1">
               <span
                 v-for="tag in contact.tags"
                 :key="tag"
-                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300"
               >
                 {{ tag }}
               </span>
@@ -143,13 +111,13 @@
 
           <!-- Notes -->
           <div v-if="contact.notes">
-            <label class="block text-sm font-medium text-gray-500">Notes</label>
-            <div class="mt-1 text-gray-900 whitespace-pre-wrap">{{ contact.notes }}</div>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Notes</label>
+            <div class="mt-1 text-gray-900 dark:text-white whitespace-pre-wrap">{{ contact.notes }}</div>
           </div>
 
           <!-- Dates -->
-          <div class="pt-4 border-t border-gray-200">
-            <div class="text-sm text-gray-500">
+          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-sm text-gray-500 dark:text-gray-400">
               <div>Created {{ formatDate(contact.created_at) }}</div>
               <div v-if="contact.last_contact_date" class="mt-1">
                 Last contact {{ formatDate(contact.last_contact_date!) }}
@@ -162,13 +130,14 @@
       <!-- Activity Timeline Panel -->
       <div class="lg:w-2/3 p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">Activity Timeline</h3>
-          <button
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Activity Timeline</h3>
+          <Button
             @click="showActivityForm = true"
-            class="text-sm text-blue-600 hover:text-blue-800 font-medium"
-          >
-            + Add Activity
-          </button>
+            variant="text"
+            label="Add Activity"
+            icon="pi pi-plus"
+            size="small"
+          />
         </div>
 
         <!-- Activity Timeline -->
@@ -209,6 +178,7 @@ import { useToastStore } from "@/stores/toast";
 import ActivityTimeline from "@/components/activities/ActivityTimeline.vue";
 import ActivityForm from "@/components/activities/ActivityForm.vue";
 import Dialog from "primevue/dialog";
+import Button from "primevue/button";
 import type { Contact } from "@/stores/contacts";
 import type { ContactStatus } from "@/utils/constants";
 import type { ActivityInput } from "@/stores/activities";
@@ -229,10 +199,10 @@ const toastStore = useToastStore();
 const showActivityForm = ref(false);
 
 const statusClasses: Record<ContactStatus, string> = {
-  lead: "bg-yellow-100 text-yellow-800",
-  prospect: "bg-blue-100 text-blue-800",
-  customer: "bg-green-100 text-green-800",
-  inactive: "bg-gray-100 text-gray-800",
+  lead: "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300",
+  prospect: "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300",
+  customer: "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300",
+  inactive: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300",
 };
 
 const statusLabels: Record<ContactStatus, string> = {

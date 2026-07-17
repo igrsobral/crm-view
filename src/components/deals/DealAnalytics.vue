@@ -3,7 +3,7 @@
         <!-- Pipeline Metrics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Total Pipeline Value -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -14,8 +14,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Pipeline Value</p>
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Pipeline Value</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">
                             ${{ formatCurrency(metrics?.totalValue || 0) }}
                         </p>
                     </div>
@@ -23,7 +23,7 @@
             </div>
 
             <!-- Total Deals -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -34,8 +34,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Deals</p>
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Total Deals</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">
                             {{ metrics?.totalDeals || 0 }}
                         </p>
                     </div>
@@ -43,7 +43,7 @@
             </div>
 
             <!-- Average Deal Value -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -54,8 +54,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Avg Deal Value</p>
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Avg Deal Value</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">
                             ${{ formatCurrency(metrics?.averageDealValue || 0) }}
                         </p>
                     </div>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Overdue Deals -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
@@ -74,8 +74,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Overdue Deals</p>
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Overdue Deals</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">
                             {{ metrics?.overdueDeals || 0 }}
                         </p>
                     </div>
@@ -84,22 +84,22 @@
         </div>
 
         <!-- Pipeline Stage Breakdown -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pipeline Breakdown</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pipeline Breakdown</h3>
             <div class="space-y-4">
                 <div v-for="stage in pipelineStages" :key="stage.value"
-                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 rounded-full mr-3" :class="stage.color"></div>
                         <div>
-                            <p class="font-medium text-gray-900">{{ stage.label }}</p>
-                            <p class="text-sm text-gray-600">
+                            <p class="font-medium text-gray-900 dark:text-white">{{ stage.label }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
                                 {{ getStageMetrics(stage.value).count }} deals
                             </p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="font-semibold text-gray-900">
+                        <p class="font-semibold text-gray-900 dark:text-white">
                             ${{ formatCurrency(getStageMetrics(stage.value).value) }}
                         </p>
                         <p class="text-sm text-gray-600">
@@ -113,55 +113,55 @@
         <!-- Win/Loss Analysis -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Conversion Rates -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversion Rates</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Conversion Rates</h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Win Rate</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-300">Win Rate</span>
                         <div class="flex items-center">
                             <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
                                 <div class="bg-green-500 h-2 rounded-full" :style="{ width: `${winRate}%` }"></div>
                             </div>
-                            <span class="text-sm font-medium text-gray-900">{{ winRate.toFixed(1) }}%</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ winRate.toFixed(1) }}%</span>
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Loss Rate</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-300">Loss Rate</span>
                         <div class="flex items-center">
                             <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
                                 <div class="bg-red-500 h-2 rounded-full" :style="{ width: `${lossRate}%` }"></div>
                             </div>
-                            <span class="text-sm font-medium text-gray-900">{{ lossRate.toFixed(1) }}%</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ lossRate.toFixed(1) }}%</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Activity -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Wins & Losses</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Wins & Losses</h3>
                 <div class="space-y-3">
                     <div v-for="deal in recentClosedDeals" :key="deal.id"
                         class="flex items-center justify-between p-3 rounded-lg"
-                        :class="deal.stage === 'closed_won' ? 'bg-green-50' : 'bg-red-50'">
+                        :class="deal.stage === 'closed_won' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'">
                         <div class="flex items-center">
                             <div class="w-3 h-3 rounded-full mr-3"
                                 :class="deal.stage === 'closed_won' ? 'bg-green-500' : 'bg-red-500'"></div>
                             <div>
-                                <p class="text-sm font-medium text-gray-900">{{ deal.name }}</p>
-                                <p class="text-xs text-gray-600">{{ deal.contact?.name }}</p>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ deal.name }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-300">{{ deal.contact?.name }}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
                                 ${{ formatCurrency(deal.value || 0) }}
                             </p>
-                            <p class="text-xs text-gray-600">
+                            <p class="text-xs text-gray-600 dark:text-gray-300">
                                 {{ formatDate(deal.updated_at) }}
                             </p>
                         </div>
                     </div>
-                    <div v-if="recentClosedDeals.length === 0" class="text-center py-4 text-gray-500 text-sm">
+                    <div v-if="recentClosedDeals.length === 0" class="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
                         No recent wins or losses
                     </div>
                 </div>
@@ -169,20 +169,20 @@
         </div>
 
         <!-- Overdue Deals Alert -->
-        <div v-if="overdueDeals.length > 0" class="bg-red-50 border border-red-200 rounded-lg p-6">
+        <div v-if="overdueDeals.length > 0" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-6">
             <div class="flex items-center mb-4">
                 <svg class="w-6 h-6 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
-                <h3 class="text-lg font-semibold text-red-900">Overdue Deals Require Attention</h3>
+                <h3 class="text-lg font-semibold text-red-900 dark:text-red-300">Overdue Deals Require Attention</h3>
             </div>
             <div class="space-y-2">
                 <div v-for="deal in overdueDeals.slice(0, 5)" :key="deal.id"
-                    class="flex items-center justify-between p-3 bg-white rounded-lg border border-red-200">
+                    class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-red-200 dark:border-red-700">
                     <div>
-                        <p class="font-medium text-gray-900">{{ deal.name }}</p>
-                        <p class="text-sm text-gray-600">{{ deal.contact?.name }}</p>
+                        <p class="font-medium text-gray-900 dark:text-white">{{ deal.name }}</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ deal.contact?.name }}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-medium text-red-600">

@@ -25,7 +25,7 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
@@ -65,13 +65,13 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Completed</p>
-              <p class="text-2xl font-semibold text-gray-900">{{ completedActivities.length }}</p>
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Completed</p>
+              <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ completedActivities.length }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
@@ -91,13 +91,13 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Upcoming</p>
-              <p class="text-2xl font-semibold text-gray-900">{{ upcomingActivities.length }}</p>
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Upcoming</p>
+              <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ upcomingActivities.length }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-red-100 rounded-md flex items-center justify-center">
@@ -117,18 +117,18 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Overdue</p>
-              <p class="text-2xl font-semibold text-gray-900">{{ overdueActivities.length }}</p>
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Overdue</p>
+              <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ overdueActivities.length }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div class="flex flex-wrap gap-4 items-center">
           <div>
-            <label for="type-filter" class="block text-sm font-medium text-gray-700 mb-1"
+            <label for="type-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >Type</label
             >
             <Select
@@ -143,7 +143,7 @@
           </div>
 
           <div>
-            <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1"
+            <label for="status-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >Status</label
             >
             <Select
@@ -158,7 +158,7 @@
           </div>
 
           <div class="flex-1">
-            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
             <InputText
               id="search"
               v-model="searchQuery"
@@ -168,12 +168,12 @@
           </div>
 
           <div class="flex-1 items-end">
-            <label for="search" class="block text-sm font-medium text-gray-700 mb-1"
+            <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >Clear filters</label
             >
             <button
               @click="clearFilters"
-              class="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              class="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
               Clear Filters
             </button>
@@ -182,9 +182,9 @@
       </div>
 
       <!-- Activities List -->
-      <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-gray-900">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white">
             Activities ({{ filteredActivities.length }})
           </h2>
         </div>
@@ -192,7 +192,7 @@
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center py-12">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span class="ml-3 text-gray-600">Loading activities...</span>
+          <span class="ml-3 text-gray-600 dark:text-gray-300">Loading activities...</span>
         </div>
 
         <!-- Error State -->

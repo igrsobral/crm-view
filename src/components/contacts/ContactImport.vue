@@ -9,8 +9,8 @@
     <!-- Progress Steps -->
     <div class="mb-8">
       <div class="flex items-start">
-        <div 
-          v-for="(step, index) in csvImportStore.steps" 
+        <div
+          v-for="(step, index) in csvImportStore.steps"
           :key="step.id"
           class="flex-1 relative"
         >
@@ -18,7 +18,7 @@
           <div class="flex items-start">
             <!-- Step Circle -->
             <div class="flex-shrink-0">
-              <div 
+              <div
                 class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2"
                 :class="{
                   'bg-blue-600 border-blue-600 text-white': index <= csvImportStore.currentStepIndex,
@@ -31,16 +31,16 @@
                 <span v-else>{{ index + 1 }}</span>
               </div>
             </div>
-            
+
             <!-- Step Text -->
             <div class="ml-4 min-w-0 flex-1">
               <p class="text-sm font-medium text-gray-900 whitespace-nowrap">{{ step.title }}</p>
               <p class="text-xs text-gray-500 mt-1">{{ step.description }}</p>
             </div>
           </div>
-          
+
           <!-- Connector Line -->
-          <div 
+          <div
             v-if="index < csvImportStore.steps.length - 1"
             class="absolute top-5 left-5 w-full h-0.5 -ml-5"
             style="width: calc(100% - 20px); margin-left: 40px;"
@@ -69,7 +69,7 @@
     </div>
 
     <!-- Step Content -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <!-- Upload Step -->
       <div v-if="csvImportStore.currentStep === 'upload'">
         <ContactImportUpload />
@@ -87,7 +87,7 @@
 
       <!-- Duplicates Step -->
       <div v-else-if="csvImportStore.currentStep === 'duplicates'">
-        <DuplicateResolution 
+        <DuplicateResolution
           v-if="csvImportStore.duplicateDetectionResult"
           :duplicates="csvImportStore.duplicateDetectionResult.duplicates"
           :duplicate-result="csvImportStore.duplicateDetectionResult"
@@ -124,7 +124,7 @@
           v-if="csvImportStore.currentStep !== 'complete'"
           @click="handleCancel"
           :disabled="csvImportStore.loading"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Cancel
         </button>
@@ -143,10 +143,10 @@
             Processing...
           </span>
           <span v-else>
-            {{ 
+            {{
               csvImportStore.currentStep === 'preview' ? 'Check for Duplicates' :
               csvImportStore.currentStep === 'duplicates' ? 'Start Import' :
-              'Next' 
+              'Next'
             }}
           </span>
         </button>

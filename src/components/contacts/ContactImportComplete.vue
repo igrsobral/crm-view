@@ -7,7 +7,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
       </div>
-      
+
       <h2 class="text-lg font-medium text-gray-900 mb-2">Import Complete!</h2>
       <p class="text-sm text-gray-600">
         Your contacts have been successfully imported into your CRM.
@@ -17,7 +17,7 @@
     <!-- Import Summary -->
     <div v-if="csvImportStore.importResult" class="mb-8">
       <h3 class="text-sm font-medium text-gray-900 mb-4">Import Summary</h3>
-      
+
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-blue-50 p-4 rounded-lg">
@@ -49,18 +49,18 @@
           </div>
           <div class="p-4">
             <div class="space-y-3 max-h-48 overflow-y-auto">
-              <div 
-                v-for="failedRow in csvImportStore.importResult.failed" 
+              <div
+                v-for="failedRow in csvImportStore.importResult.failed"
                 :key="failedRow.rowIndex"
-                class="flex justify-between items-start p-3 bg-white border border-gray-200 rounded"
+                class="flex justify-between items-start p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded"
               >
                 <div>
                   <p class="text-sm font-medium text-gray-900">
                     Row {{ failedRow.rowIndex }}: {{ failedRow.mappedData.name || 'Unknown' }}
                   </p>
                   <div class="mt-1 space-y-1">
-                    <p 
-                      v-for="error in failedRow.errors" 
+                    <p
+                      v-for="error in failedRow.errors"
                       :key="error"
                       class="text-xs text-red-600"
                     >
@@ -82,10 +82,10 @@
           </div>
           <div class="p-4">
             <div class="space-y-3 max-h-48 overflow-y-auto">
-              <div 
-                v-for="duplicateRow in csvImportStore.importResult.duplicates" 
+              <div
+                v-for="duplicateRow in csvImportStore.importResult.duplicates"
                 :key="duplicateRow.rowIndex"
-                class="flex justify-between items-start p-3 bg-white border border-gray-200 rounded"
+                class="flex justify-between items-start p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded"
               >
                 <div>
                   <p class="text-sm font-medium text-gray-900">
@@ -148,14 +148,14 @@
       >
         View All Contacts
       </router-link>
-      
+
       <button
         @click="csvImportStore.reset()"
         class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         Import More Contacts
       </button>
-      
+
       <router-link
         to="/dashboard"
         class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

@@ -3,12 +3,12 @@
         <!-- Report Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Deal Reports</h2>
-                <p class="text-gray-600 mt-1">Analyze your sales performance and pipeline health</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Deal Reports</h2>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Analyze your sales performance and pipeline health</p>
             </div>
             <div class="flex items-center space-x-3">
                 <!-- Date Range Filter -->
-                <Select 
+                <Select
                     v-model="selectedPeriod"
                     :options="periodOptions"
                     optionLabel="label"
@@ -18,7 +18,7 @@
                 />
 
                 <!-- Export Button -->
-                <Button 
+                <Button
                     @click="exportReport"
                     icon="pi pi-download"
                     label="Export"
@@ -29,7 +29,7 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -40,8 +40,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Deals Won</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ filteredWonDeals.length }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Deals Won</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ filteredWonDeals.length }}</p>
                         <p class="text-sm text-green-600">
                             ${{ formatCurrency(wonDealsValue) }}
                         </p>
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
@@ -60,8 +60,8 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Deals Lost</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ filteredLostDeals.length }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Deals Lost</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ filteredLostDeals.length }}</p>
                         <p class="text-sm text-red-600">
                             ${{ formatCurrency(lostDealsValue) }}
                         </p>
@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -80,16 +80,16 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Win Rate</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ winRate.toFixed(1) }}%</p>
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Win Rate</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ winRate.toFixed(1) }}%</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
                             {{ filteredClosedDeals.length }} total closed
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -100,11 +100,11 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Avg Deal Size</p>
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Avg Deal Size</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">
                             ${{ formatCurrency(averageDealSize) }}
                         </p>
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
                             Won deals only
                         </p>
                     </div>
@@ -115,18 +115,18 @@
         <!-- Detailed Reports -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Won Deals List -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Recent Wins</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Wins</h3>
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
                         <div v-for="deal in filteredWonDeals.slice(0, 10)" :key="deal.id"
-                            class="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                            class="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
                             <div>
-                                <p class="font-medium text-gray-900">{{ deal.name }}</p>
-                                <p class="text-sm text-gray-600">{{ deal.contact?.name }}</p>
-                                <p class="text-xs text-gray-500">
+                                <p class="font-medium text-gray-900 dark:text-white">{{ deal.name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ deal.contact?.name }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
                                     Closed: {{ formatDate(deal.updated_at) }}
                                 </p>
                             </div>
@@ -134,13 +134,13 @@
                                 <p class="font-semibold text-green-600">
                                     ${{ formatCurrency(deal.value || 0) }}
                                 </p>
-                                <p class="text-xs text-gray-500">
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ getDealDuration(deal) }} days
                                 </p>
                             </div>
                         </div>
-                        <div v-if="filteredWonDeals.length === 0" class="text-center py-8 text-gray-500">
-                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor"
+                        <div v-if="filteredWonDeals.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -152,18 +152,18 @@
             </div>
 
             <!-- Lost Deals List -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Recent Losses</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Losses</h3>
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
                         <div v-for="deal in filteredLostDeals.slice(0, 10)" :key="deal.id"
-                            class="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+                            class="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
                             <div>
-                                <p class="font-medium text-gray-900">{{ deal.name }}</p>
-                                <p class="text-sm text-gray-600">{{ deal.contact?.name }}</p>
-                                <p class="text-xs text-gray-500">
+                                <p class="font-medium text-gray-900 dark:text-white">{{ deal.name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ deal.contact?.name }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
                                     Closed: {{ formatDate(deal.updated_at) }}
                                 </p>
                             </div>
@@ -171,13 +171,13 @@
                                 <p class="font-semibold text-red-600">
                                     ${{ formatCurrency(deal.value || 0) }}
                                 </p>
-                                <p class="text-xs text-gray-500">
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ getDealDuration(deal) }} days
                                 </p>
                             </div>
                         </div>
-                        <div v-if="filteredLostDeals.length === 0" class="text-center py-8 text-gray-500">
-                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor"
+                        <div v-if="filteredLostDeals.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -190,15 +190,15 @@
         </div>
 
         <!-- Pipeline Health -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pipeline Health Analysis</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pipeline Health Analysis</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold text-blue-600 mb-2">
                         {{ activeDealsCount }}
                     </div>
-                    <p class="text-sm text-gray-600">Active Deals</p>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Active Deals</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         ${{ formatCurrency(activePipelineValue) }} total value
                     </p>
                 </div>
@@ -206,8 +206,8 @@
                     <div class="text-3xl font-bold text-orange-600 mb-2">
                         {{ averageDealAge }}
                     </div>
-                    <p class="text-sm text-gray-600">Avg Deal Age (days)</p>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Avg Deal Age (days)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         For active deals
                     </p>
                 </div>
@@ -215,8 +215,8 @@
                     <div class="text-3xl font-bold text-purple-600 mb-2">
                         {{ averageClosingTime }}
                     </div>
-                    <p class="text-sm text-gray-600">Avg Closing Time (days)</p>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Avg Closing Time (days)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         For closed deals
                     </p>
                 </div>

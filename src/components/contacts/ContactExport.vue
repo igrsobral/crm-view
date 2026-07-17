@@ -73,8 +73,8 @@
 
       <!-- Field Categories -->
       <div class="space-y-6">
-        <div 
-          v-for="(categoryFields, category) in csvExportStore.fieldsByCategory" 
+        <div
+          v-for="(categoryFields, category) in csvExportStore.fieldsByCategory"
           :key="category"
           class="border border-gray-200 rounded-lg p-4"
         >
@@ -101,10 +101,10 @@
               </button>
             </div>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <label 
-              v-for="field in categoryFields" 
+            <label
+              v-for="field in categoryFields"
               :key="field.key"
               class="flex items-center"
             >
@@ -154,20 +154,20 @@
     <!-- Preview -->
     <div v-if="csvExportStore.selectedFields.length > 0" class="mb-8">
       <h2 class="text-lg font-medium text-gray-900 mb-4">Preview</h2>
-      <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr 
-                v-for="(row, index) in csvExportStore.previewData" 
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr
+                v-for="(row, index) in csvExportStore.previewData"
                 :key="index"
                 :class="{ 'bg-gray-50': index === 0 && csvExportStore.includeHeaders }"
               >
-                <td 
-                  v-for="(cell, cellIndex) in row.split(',')" 
+                <td
+                  v-for="(cell, cellIndex) in row.split(',')"
                   :key="cellIndex"
                   class="px-6 py-3 whitespace-nowrap text-sm"
-                  :class="{ 
+                  :class="{
                     'font-medium text-gray-900': index === 0 && csvExportStore.includeHeaders,
                     'text-gray-500': index !== 0 || !csvExportStore.includeHeaders
                   }"
@@ -193,7 +193,7 @@
         <span class="text-sm text-gray-500">{{ csvExportStore.progress.percentage }}%</span>
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
-        <div 
+        <div
           class="h-2 rounded-full transition-all duration-300"
           :class="{
             'bg-blue-600': csvExportStore.progress.status === 'processing',
@@ -226,7 +226,7 @@
         <p>Records to export: <strong>{{ csvExportStore.totalRecords }}</strong></p>
         <p>Selected fields: <strong>{{ csvExportStore.selectedFields.length }}</strong></p>
         <p>Include headers: <strong>{{ csvExportStore.includeHeaders ? 'Yes' : 'No' }}</strong></p>
-        <p>Date format: <strong>{{ 
+        <p>Date format: <strong>{{
           csvExportStore.dateFormat === 'iso' ? 'ISO (YYYY-MM-DD)' :
           csvExportStore.dateFormat === 'us' ? 'US (MM/DD/YYYY)' :
           'European (DD/MM/YYYY)'
@@ -238,7 +238,7 @@
     <div class="flex justify-between">
       <router-link
         :to="csvExportStore.exportType === 'contacts' ? '/contacts' : '/deals'"
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         Cancel
       </router-link>

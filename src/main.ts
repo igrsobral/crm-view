@@ -14,6 +14,7 @@ import App from './App.vue'
 import router from './router'
 import { AuthManager } from './utils/authManager'
 import { SessionMonitor } from './utils/sessionMonitor'
+import { useTheme } from './composables/useTheme'
 import {
   // preloadCriticalResources,
   // registerServiceWorker,
@@ -27,7 +28,7 @@ app.use(PrimeVue, {
     preset: CRMTheme,
     options: {
       prefix: 'p',
-      darkModeSelector: 'light',
+      darkModeSelector: '.dark',
       cssLayer: false
     }
   }
@@ -37,6 +38,10 @@ app.use(ToastService)
 app.use(ConfirmationService)
 app.use(createPinia())
 app.use(router)
+
+// Initialize theme
+const { initializeTheme } = useTheme()
+initializeTheme()
 
 // Initialize authentication manager for automatic token refresh
 AuthManager.initialize()

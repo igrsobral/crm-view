@@ -19,17 +19,17 @@
       <!-- Loading State -->
       <div v-if="dashboardStore.loading && !hasData" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div v-for="i in 4" :key="i" class="bg-white rounded-lg shadow p-6 animate-pulse">
+          <div v-for="i in 4" :key="i" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
             <div class="h-8 bg-gray-200 rounded w-1/2"></div>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white rounded-lg shadow p-6 animate-pulse">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
             <div class="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
             <div class="h-64 bg-gray-200 rounded"></div>
           </div>
-          <div class="bg-white rounded-lg shadow p-6 animate-pulse">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
             <div class="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
             <div class="space-y-3">
               <div v-for="i in 5" :key="i" class="h-16 bg-gray-200 rounded"></div>

@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Mobile sidebar overlay -->
     <Transition enter-active-class="transition-opacity duration-300 ease-linear" enter-from-class="opacity-0"
       enter-to-class="opacity-100" leave-active-class="transition-opacity duration-300 ease-linear"
       leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div v-if="sidebarOpen" class="fixed inset-0 z-40 lg:hidden" @click="sidebarOpen = false">
-        <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+        <div class="fixed inset-0 bg-gray-600 dark:bg-gray-800 bg-opacity-75 dark:bg-opacity-75"></div>
       </div>
     </Transition>
 
@@ -18,25 +18,25 @@
       <AppHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
 
       <!-- Breadcrumb navigation -->
-      <nav class="bg-white border-b border-gray-200 lg:hidden" aria-label="Breadcrumb">
+      <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 lg:hidden" aria-label="Breadcrumb">
         <div class="mx-auto  px-4 sm:px-6 lg:px-6">
           <div class="flex items-center py-4">
             <ol class="flex items-center space-x-2">
               <li>
                 <div class="flex items-center">
-                  <router-link to="/dashboard" class="text-sm font-medium text-gray-500 hover:text-gray-700">
+                  <router-link to="/dashboard" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                     Dashboard
                   </router-link>
                 </div>
               </li>
               <li v-if="currentPageTitle !== 'Dashboard'">
                 <div class="flex items-center">
-                  <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                       d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                       clip-rule="evenodd" />
                   </svg>
-                  <span class="ml-2 text-sm font-medium text-gray-900">{{ currentPageTitle }}</span>
+                  <span class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ currentPageTitle }}</span>
                 </div>
               </li>
             </ol>

@@ -1,7 +1,7 @@
 <template>
-  <div class="h-full flex flex-col bg-gray-50">
+  <div class="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
     <!-- Header Section -->
-    <div class="bg-white border-b border-gray-200 px-6 py-4">
+    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <!-- Top Header with Navigation -->
 
       <!-- Pipeline Title and View Toggle -->
@@ -22,7 +22,7 @@
         </div>
         <div class="flex items-center space-x-4">
           <!-- View Toggle -->
-          <div class="flex bg-gray-100 rounded-lg p-1">
+          <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
             <Button
               :severity="currentView === 'pipeline' ? 'primary' : 'secondary'"
               :outlined="currentView !== 'pipeline'"
@@ -47,18 +47,18 @@
     </div>
 
     <!-- Stats and Controls -->
-    <div class="bg-white border-b border-gray-200 px-6 py-4">
+    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div class="flex items-center justify-between">
         <!-- Statistics -->
         <div class="flex items-center space-x-6">
-          <div class="text-gray-700">
+          <div class="text-gray-700 dark:text-gray-300">
             <span class="font-medium">Projected Deals:</span>
-            <span class="text-gray-900 font-semibold ml-1">{{ totalActiveDeals }}</span>
+            <span class="text-gray-900 dark:text-white font-semibold ml-1">{{ totalActiveDeals }}</span>
           </div>
-          <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
-          <div class="text-gray-700">
+          <div class="w-1 h-1 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
+          <div class="text-gray-700 dark:text-gray-300">
             <span class="font-medium">Projected Revenue:</span>
-            <span class="text-gray-900 font-semibold ml-1"
+            <span class="text-gray-900 dark:text-white font-semibold ml-1"
               >${{ formatCurrency(totalActiveValue) }}</span
             >
           </div>
@@ -99,10 +99,10 @@
       </div>
 
       <!-- Filter Panel -->
-      <div v-if="showFilters" class="mt-4 pt-4 border-t border-gray-200">
+      <div v-if="showFilters" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
         <div class="flex items-center space-x-4">
           <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">Stage:</label>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Stage:</label>
             <Dropdown
               v-model="selectedStage"
               :options="stageFilterOptions"
@@ -115,7 +115,7 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">Value:</label>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Value:</label>
             <Dropdown
               v-model="selectedValueRange"
               :options="valueRangeOptions"
@@ -132,7 +132,7 @@
             size="small"
             label="Clear Filters"
             @click="clearFilters"
-            class="text-gray-500 hover:text-gray-700"
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           />
         </div>
       </div>
@@ -140,17 +140,17 @@
 
     <!-- Pipeline View -->
     <div v-if="currentView === 'pipeline'" class="flex-1 overflow-hidden">
-      <div class="flex space-x-6 h-full py-6 overflow-x-auto">
+      <div class="flex space-x-6 h-full py-6 px-6 overflow-x-auto">
         <div v-for="stage in pipelineStages" :key="stage.value" class="flex-shrink-0 w-80">
           <!-- Stage Header -->
-          <div class="bg-white rounded-t-lg border border-gray-200 p-4">
+          <div class="bg-white dark:bg-gray-800 rounded-t-lg border border-gray-200 dark:border-gray-700 p-4">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="font-semibold text-gray-900 uppercase tracking-wide text-sm">
+                <h3 class="font-semibold text-gray-900 dark:text-white uppercase tracking-wide text-sm">
                   {{ stage.label }}
                 </h3>
                 <div class="flex items-center mt-2 space-x-4">
-                  <span class="text-lg font-bold text-gray-900">
+                  <span class="text-lg font-bold text-gray-900 dark:text-white">
                     ${{ formatCurrency(getStageValue(stage.value)) }}
                   </span>
                   <Badge
@@ -168,8 +168,10 @@
 
           <!-- Drop Zone -->
           <div
-            class="bg-white rounded-b-lg border-l border-r border-b border-gray-200 min-h-96 p-4 space-y-3"
-            :class="{ 'bg-blue-50 border-blue-300': dragOverStage === stage.value }"
+            class="bg-white dark:bg-gray-800 rounded-b-lg border-l border-r border-b border-gray-200 dark:border-gray-700 min-h-96 p-4 space-y-3"
+            :class="{ 
+              'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-600': dragOverStage === stage.value 
+            }"
             @dragover.prevent="onDragOver(stage.value)"
             @dragleave="onDragLeave"
             @drop="onDrop(stage.value)"
@@ -188,15 +190,15 @@
             <!-- Empty State -->
             <div
               v-if="getFilteredStageDeals(stage.value).length === 0"
-              class="text-center py-12 text-gray-400"
+              class="text-center py-12 text-gray-400 dark:text-gray-500"
             >
               <div
-                class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4"
               >
-                <i class="pi pi-inbox text-2xl text-gray-300"></i>
+                <i class="pi pi-inbox text-2xl text-gray-300 dark:text-gray-600"></i>
               </div>
               <p class="text-sm font-medium">No deals</p>
-              <p class="text-xs text-gray-400 mt-1">Drag deals here or create new ones</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Drag deals here or create new ones</p>
             </div>
           </div>
         </div>
@@ -444,13 +446,25 @@ watch(searchQuery, () => {
   border-radius: 3px;
 }
 
+.dark .overflow-x-auto::-webkit-scrollbar-track {
+  background: #374151;
+}
+
 .overflow-x-auto::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
 }
 
+.dark .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 
 /* Improved transitions */

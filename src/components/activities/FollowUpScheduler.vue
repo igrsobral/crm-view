@@ -1,10 +1,10 @@
 <template>
-    <div class="bg-white rounded-lg shadow-lg">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Schedule Follow-up</h2>
-                <button @click="$emit('cancel')" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Schedule Follow-up</h2>
+                <button @click="$emit('cancel')" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -20,8 +20,8 @@
                 <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">
                     Contact <span class="text-red-500">*</span>
                 </label>
-                <Select 
-                    id="contact" 
+                <Select
+                    id="contact"
                     v-model="formData.contactId"
                     :options="contactOptions"
                     optionLabel="label"
@@ -38,8 +38,8 @@
                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
                     Follow-up Type <span class="text-red-500">*</span>
                 </label>
-                <Select 
-                    id="type" 
+                <Select
+                    id="type"
                     v-model="formData.type"
                     :options="followUpTypeOptions"
                     optionLabel="label"
@@ -95,8 +95,8 @@
                 <label for="scheduledAt" class="block text-sm font-medium text-gray-700 mb-1">
                     Custom Date & Time <span class="text-red-500">*</span>
                 </label>
-                <Calendar 
-                    id="scheduledAt" 
+                <Calendar
+                    id="scheduledAt"
                     v-model="scheduledDate"
                     showTime
                     hourFormat="24"
@@ -116,8 +116,8 @@
                 <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
                     Subject
                 </label>
-                <InputText 
-                    id="subject" 
+                <InputText
+                    id="subject"
                     v-model="formData.subject"
                     :placeholder="`Follow-up ${formData.type} with ${selectedContactName}`"
                     :invalid="!!errors.subject"
@@ -131,9 +131,9 @@
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
                     Notes
                 </label>
-                <Textarea 
-                    id="description" 
-                    v-model="formData.description" 
+                <Textarea
+                    id="description"
+                    v-model="formData.description"
                     rows="3"
                     placeholder="Add any notes or context for this follow-up..."
                     :invalid="!!errors.description"
@@ -147,26 +147,26 @@
                 <label class="block text-sm font-medium text-gray-700 mb-3">Priority Level</label>
                 <div class="flex items-center space-x-4">
                     <label class="flex items-center">
-                        <RadioButton 
-                            v-model="formData.priority" 
-                            inputId="priority-low" 
-                            value="low" 
+                        <RadioButton
+                            v-model="formData.priority"
+                            inputId="priority-low"
+                            value="low"
                         />
                         <span class="ml-2 text-sm text-gray-700">Low</span>
                     </label>
                     <label class="flex items-center">
-                        <RadioButton 
-                            v-model="formData.priority" 
-                            inputId="priority-medium" 
-                            value="medium" 
+                        <RadioButton
+                            v-model="formData.priority"
+                            inputId="priority-medium"
+                            value="medium"
                         />
                         <span class="ml-2 text-sm text-gray-700">Medium</span>
                     </label>
                     <label class="flex items-center">
-                        <RadioButton 
-                            v-model="formData.priority" 
-                            inputId="priority-high" 
-                            value="high" 
+                        <RadioButton
+                            v-model="formData.priority"
+                            inputId="priority-high"
+                            value="high"
                         />
                         <span class="ml-2 text-sm text-gray-700">High</span>
                     </label>
@@ -175,16 +175,16 @@
 
             <!-- Form Actions -->
             <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                <Button 
-                    type="button" 
+                <Button
+                    type="button"
                     @click="$emit('cancel')"
                     outlined
                     severity="secondary"
                     label="Cancel"
                     class="px-4 py-2"
                 />
-                <Button 
-                    type="submit" 
+                <Button
+                    type="submit"
                     :disabled="isSubmitting"
                     :loading="isSubmitting"
                     :label="isSubmitting ? 'Scheduling...' : 'Schedule Follow-up'"
@@ -249,7 +249,7 @@ const isSubmitting = ref(false)
 
 const contacts = computed(() => contactsStore.contacts)
 
-const contactOptions = computed(() => 
+const contactOptions = computed(() =>
     contacts.value.map(contact => ({
         label: `${contact.name}${contact.company ? ` (${contact.company})` : ''}`,
         value: contact.id

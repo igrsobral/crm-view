@@ -1,7 +1,7 @@
 <template>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Total Contacts -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
@@ -13,8 +13,8 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Total Contacts</dt>
-                        <dd class="text-lg font-medium text-gray-900">{{ metrics.totalContacts }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Contacts</dt>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ metrics.totalContacts }}</dd>
                     </dl>
                 </div>
             </div>
@@ -22,18 +22,18 @@
                 <div class="flex space-x-4 text-sm">
                     <div class="flex items-center">
                         <div class="w-2 h-2 bg-green-400 rounded-full mr-1"></div>
-                        <span class="text-gray-600">Customers: {{ metrics.contactsByStatus.customer || 0 }}</span>
+                        <span class="text-gray-600 dark:text-gray-300">Customers: {{ metrics.contactsByStatus.customer || 0 }}</span>
                     </div>
                     <div class="flex items-center">
                         <div class="w-2 h-2 bg-yellow-400 rounded-full mr-1"></div>
-                        <span class="text-gray-600">Leads: {{ metrics.contactsByStatus.lead || 0 }}</span>
+                        <span class="text-gray-600 dark:text-gray-300">Leads: {{ metrics.contactsByStatus.lead || 0 }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Pipeline Value -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
@@ -45,22 +45,22 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Pipeline Value</dt>
-                        <dd class="text-lg font-medium text-gray-900">${{ formatCurrency(metrics.totalPipelineValue) }}
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Pipeline Value</dt>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">${{ formatCurrency(metrics.totalPipelineValue) }}
                         </dd>
                     </dl>
                 </div>
             </div>
             <div class="mt-4">
                 <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Won: ${{ formatCurrency(metrics.wonDealsValue) }}</span>
-                    <span class="text-gray-600">{{ metrics.totalDeals }} deals</span>
+                    <span class="text-gray-600 dark:text-gray-300">Won: ${{ formatCurrency(metrics.wonDealsValue) }}</span>
+                    <span class="text-gray-600 dark:text-gray-300">{{ metrics.totalDeals }} deals</span>
                 </div>
             </div>
         </div>
 
         <!-- Conversion Rate -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
@@ -72,14 +72,14 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Win Rate</dt>
-                        <dd class="text-lg font-medium text-gray-900">{{ formatPercentage(metrics.conversionRate) }}%
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Win Rate</dt>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ formatPercentage(metrics.conversionRate) }}%
                         </dd>
                     </dl>
                 </div>
             </div>
             <div class="mt-4">
-                <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div class="bg-purple-500 h-2 rounded-full transition-all duration-300"
                         :style="{ width: `${Math.min(metrics.conversionRate, 100)}%` }"></div>
                 </div>
@@ -87,7 +87,7 @@
         </div>
 
         <!-- Activities -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
@@ -99,8 +99,8 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Activities</dt>
-                        <dd class="text-lg font-medium text-gray-900">{{ metrics.totalActivities }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Activities</dt>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ metrics.totalActivities }}</dd>
                     </dl>
                 </div>
             </div>

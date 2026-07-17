@@ -21,7 +21,7 @@
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           <tr v-for="mapping in csvImportStore.fieldMapping" :key="mapping.csvField">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
               {{ mapping.csvField }}
@@ -39,8 +39,8 @@
                 }"
               >
                 <option value="skip">Skip this field</option>
-                <option 
-                  v-for="field in contactFields" 
+                <option
+                  v-for="field in contactFields"
                   :key="field.value"
                   :value="field.value"
                   :disabled="isFieldAlreadyMapped(field.value, mapping.csvField)"
@@ -86,7 +86,7 @@
     <!-- Preview Sample -->
     <div v-if="csvImportStore.csvRows.length > 0" class="mt-6">
       <h3 class="text-sm font-medium text-gray-900 mb-3">Preview First Row</h3>
-      <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div v-for="mapping in csvImportStore.fieldMapping" :key="mapping.csvField">
             <div v-if="mapping.contactField !== 'skip'" class="flex justify-between">
@@ -125,7 +125,7 @@ const validationErrors = computed(() => {
 const getSampleData = (csvField: string): string => {
   const firstRow = csvImportStore.csvRows[0]
   if (!firstRow) return ''
-  
+
   const value = firstRow[csvField] || ''
   return value.length > 30 ? value.substring(0, 30) + '...' : value
 }
@@ -144,7 +144,7 @@ const hasRequiredMapping = (field: string): boolean => {
 
 const isFieldAlreadyMapped = (field: string, currentCsvField: string): boolean => {
   if (field === 'skip') return false
-  return csvImportStore.fieldMapping.some(m => 
+  return csvImportStore.fieldMapping.some(m =>
     m.contactField === field && m.csvField !== currentCsvField
   )
 }

@@ -8,20 +8,20 @@
     leave-from-class="translate-x-0"
     leave-to-class="-translate-x-full"
   >
-    <div 
+    <div
       v-if="open"
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl lg:hidden"
+      class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl lg:hidden"
     >
-    <div class="flex h-16 items-center justify-between px-6 border-b border-gray-200">
+    <div class="flex h-16 items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center">
         <div class="h-8 w-8 rounded bg-blue-600 flex items-center justify-center">
           <span class="text-white font-bold text-sm">C</span>
         </div>
-        <span class="ml-2 text-lg font-semibold text-gray-900">Contactly</span>
+        <span class="ml-2 text-lg font-semibold text-gray-900 dark:text-white">Contactly</span>
       </div>
       <button
         type="button"
-        class="-m-2.5 p-2.5 text-gray-700 hover:text-gray-900"
+        class="-m-2.5 p-2.5 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
         @click="$emit('close')"
       >
         <span class="sr-only">Close sidebar</span>
@@ -38,14 +38,14 @@
             :class="[
               'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200',
               isActiveRoute(item.href)
-                ? 'bg-blue-50 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
             ]"
           >
             <svg
               :class="[
                 'mr-3 h-5 w-5 flex-shrink-0',
-                isActiveRoute(item.href) ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
+                isActiveRoute(item.href) ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400'
               ]"
               fill="none"
               viewBox="0 0 24 24"
@@ -63,13 +63,13 @@
   </Transition>
 
   <!-- Desktop sidebar -->
-  <div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:bg-white lg:border-r lg:border-gray-200">
-    <div class="flex h-16 items-center px-6 border-b border-gray-200">
+  <div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:bg-white dark:lg:bg-gray-800 lg:border-r lg:border-gray-200 dark:lg:border-gray-700">
+    <div class="flex h-16 items-center px-6 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center">
         <div class="h-8 w-8 rounded bg-blue-600 flex items-center justify-center">
           <span class="text-white font-bold text-sm">C</span>
         </div>
-        <span class="ml-2 text-lg font-semibold text-gray-900">Contactly</span>
+        <span class="ml-2 text-lg font-semibold text-gray-900 dark:text-white">Contactly</span>
       </div>
     </div>
     <nav class="flex-1 px-4 py-6">
@@ -80,14 +80,14 @@
             :class="[
               'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200',
               isActiveRoute(item.href)
-                ? 'bg-blue-50 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
             ]"
           >
             <svg
               :class="[
                 'mr-3 h-5 w-5 flex-shrink-0',
-                isActiveRoute(item.href) ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
+                isActiveRoute(item.href) ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400'
               ]"
               fill="none"
               viewBox="0 0 24 24"

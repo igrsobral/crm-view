@@ -1,49 +1,27 @@
 <template>
     <div class="theme-switcher">
-        <Select 
-            v-model="currentTheme" 
-            :options="themeOptions" 
-            optionLabel="label" 
-            optionValue="value"
-            placeholder="Select Theme"
-            class="w-32"
+        <Button
+            variant="text"
+            @click="toggleTheme"
+            :aria-label="`Switch to ${nextThemeLabel}`"
+            class="p-2"
         >
-            <template #value="{ value }">
-                <div class="flex items-center gap-2">
-                    <i :class="getThemeIcon(value)"></i>
-                    <span>{{ getThemeLabel(value) }}</span>
-                </div>
+            <template #icon>
+                <i :class="currentThemeIcon" class="text-gray-600 dark:text-gray-300"></i>
             </template>
-            <template #option="{ option }">
-                <div class="flex items-center gap-2">
-                    <i :class="getThemeIcon(option.value)"></i>
-                    <span>{{ option.label }}</span>
-                </div>
-            </template>
-        </Select>
+        </Button>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTheme, type ThemeMode } from '@/composables/useTheme'
-import Select from 'primevue/select'
+import Button from 'primevue/button'
 
 const { themeMode, setTheme } = useTheme()
 
-const currentTheme = computed({
-    get: () => themeMode.value,
-    set: (value: ThemeMode) => setTheme(value)
-})
-
-const themeOptions = [
-    { label: 'Light', value: 'light' as ThemeMode },
-    { label: 'Dark', value: 'dark' as ThemeMode },
-    { label: 'System', value: 'system' as ThemeMode }
-]
-
-const getThemeIcon = (theme: ThemeMode) => {
-    switch (theme) {
+const currentThemeIcon = computed(() => {
+    switch (themeMode.value) {
         case 'light':
             return 'pi pi-sun'
         case 'dark':
@@ -53,11 +31,35 @@ const getThemeIcon = (theme: ThemeMode) => {
         default:
             return 'pi pi-desktop'
     }
-}
+})
 
-const getThemeLabel = (theme: ThemeMode) => {
-    const option = themeOptions.find(opt => opt.value === theme)
-    return option?.label || 'System'
+const nextThemeLabel = computed(() => {
+    switch (themeMode.value) {
+        case 'light':
+            return 'dark mode'
+        case 'dark':
+            return 'system mode'
+        case 'system':
+            return 'light mode'
+        default:
+            return 'light mode'
+    }
+})
+
+const toggleTheme = () => {
+    switch (themeMode.value) {
+        case 'light':
+            setTheme('dark')
+            break
+        case 'dark':
+            setTheme('system')
+            break
+        case 'system':
+            setTheme('light')
+            break
+        default:
+            setTheme('light')
+    }
 }
 </script>
 

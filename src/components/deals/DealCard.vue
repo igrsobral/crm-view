@@ -1,7 +1,7 @@
 <template>
   <Card
     class="deal-card cursor-pointer transition-all duration-200 hover:shadow-md"
-    :class="{ 'border-red-200 bg-red-50': isOverdue, 'ring-2 ring-blue-200': isDragging }"
+    :class="{ 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20': isOverdue, 'ring-2 ring-blue-200 dark:ring-blue-600': isDragging }"
     @click="$emit('click', deal)"
     draggable="true"
     @dragstart="onDragStart"
@@ -23,7 +23,7 @@
             size="small"
             severity="secondary"
             @click.stop="$emit('edit', deal)"
-            class="p-1 hover:bg-gray-100"
+            class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
           />
         </div>
 
@@ -38,10 +38,10 @@
             class="text-white text-xs font-medium"
           />
           <div class="min-w-0 flex-1">
-            <p class="text-sm font-medium text-gray-900 truncate">
+            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
               {{ deal.contact.name }}
             </p>
-            <p v-if="getLocation()" class="text-xs text-gray-500 truncate">
+            <p v-if="getLocation()" class="text-xs text-gray-500 dark:text-gray-400 truncate">
               <i class="pi pi-map-marker mr-1"></i>
               {{ getLocation() }}
             </p>
@@ -50,7 +50,7 @@
 
         <!-- Deal Value -->
         <div class="flex items-center justify-between mb-3">
-          <div class="text-lg font-bold text-gray-900">
+          <div class="text-lg font-bold text-gray-900 dark:text-white">
             {{ deal.value ? `$${formatCurrency(deal.value)}` : "$0" }}
           </div>
           <div class="flex items-center gap-2">
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Bottom Row: Time and Actions -->
-        <div class="flex items-center justify-between text-xs text-gray-500">
+        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           <div class="flex items-center gap-3">
             <!-- Time indicators -->
             <span v-if="deal.expected_close_date" class="flex items-center">
@@ -98,8 +98,8 @@
         </div>
 
         <!-- Overdue Warning -->
-        <div v-if="isOverdue" class="mt-3 pt-3 border-t border-red-200">
-          <div class="flex items-center text-xs text-red-600 font-medium">
+        <div v-if="isOverdue" class="mt-3 pt-3 border-t border-red-200 dark:border-red-700">
+          <div class="flex items-center text-xs text-red-600 dark:text-red-400 font-medium">
             <i class="pi pi-exclamation-triangle mr-2"></i>
             <span>Overdue by {{ getOverdueDays() }} days</span>
           </div>
@@ -331,13 +331,37 @@ const onDragEnd = () => {
 <style scoped>
 .deal-card {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgb(229 231 235);
+}
+
+.dark .deal-card {
+  border: 1px solid rgb(75 85 99);
+}
+
+/* Light mode background */
+.deal-card {
   background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Dark mode background */
+.dark .deal-card {
+  background: rgba(31, 41, 55, 0.95);
   backdrop-filter: blur(10px);
 }
 
 .deal-card:hover {
   transform: translateY(-1px);
+}
+
+/* Light mode hover shadow */
+.deal-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode hover shadow */
+.dark .deal-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .deal-card.ring-2 {

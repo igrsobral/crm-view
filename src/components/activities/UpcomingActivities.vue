@@ -84,7 +84,7 @@
         <!-- Activities List -->
         <div v-else class="space-y-3">
             <div v-for="activity in displayedActivities" :key="activity.id"
-                class="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow" :class="{
+                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow" :class="{
                     'border-red-200 bg-red-50': isOverdue(activity.scheduled_at!),
                     'border-yellow-200 bg-yellow-50': isToday(activity.scheduled_at!) && !isOverdue(activity.scheduled_at!),
                     'border-gray-200': !isOverdue(activity.scheduled_at!) && !isToday(activity.scheduled_at!)
@@ -203,18 +203,18 @@
 
                             <!-- Dropdown Menu -->
                             <div v-if="activeMenuId === activity.id"
-                                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-700">
                                 <div class="py-1">
                                     <button @click="editActivity(activity)"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         Edit Activity
                                     </button>
                                     <button @click="snoozeActivity(activity, 1)"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         Snooze 1 hour
                                     </button>
                                     <button @click="snoozeActivity(activity, 24)"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         Snooze 1 day
                                     </button>
                                     <button @click="deleteActivity(activity)"
@@ -231,7 +231,7 @@
             <!-- Load More Button -->
             <div v-if="hasMore" class="text-center pt-4">
                 <button @click="loadMore" :disabled="loading"
-                    class="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+                    class="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 border border-blue-600 dark:border-blue-500 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
                     Load More Activities
                 </button>
             </div>

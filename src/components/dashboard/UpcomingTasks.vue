@@ -1,18 +1,18 @@
 <template>
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-medium text-gray-900">Upcoming Tasks</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Upcoming Tasks</h3>
                 <div class="flex items-center space-x-2">
                     <button @click="showOverdue = !showOverdue" :class="[
                         'px-3 py-1 text-xs rounded-full transition-colors',
                         showOverdue
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     ]" v-if="overdueCount > 0">
                         {{ overdueCount }} Overdue
                     </button>
-                    <router-link to="/activities" class="text-sm text-blue-600 hover:text-blue-500 font-medium">
+                    <router-link to="/activities" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium">
                         View all
                     </router-link>
                 </div>
@@ -25,21 +25,21 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">
+                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ emptyStateTitle }}
                 </h3>
-                <p class="mt-1 text-sm text-gray-500">
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     {{ emptyStateMessage }}
                 </p>
             </div>
         </div>
 
-        <div class="divide-y divide-gray-200" v-else>
-            <div v-for="task in displayTasks" :key="task.id" class="px-6 py-4 hover:bg-gray-50 transition-colors">
+        <div class="divide-y divide-gray-200 dark:divide-gray-700" v-else>
+            <div v-for="task in displayTasks" :key="task.id" class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div class="flex items-start space-x-3">
                     <div class="flex-shrink-0 pt-1">
                         <button @click="completeTask(task.id)" :disabled="completing.includes(task.id)"
-                            class="w-5 h-5 rounded border-2 border-gray-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
+                            class="w-5 h-5 rounded border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50"
                             :class="{
                                 'bg-blue-500 border-blue-500': completing.includes(task.id)
                             }">
@@ -55,11 +55,11 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">
                                     {{ task.subject || getDefaultSubject(task.type) }}
                                 </p>
 
-                                <div class="mt-1 flex items-center space-x-2 text-sm text-gray-500">
+                                <div class="mt-1 flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
                                     <span :class="[
                                         'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
                                         getActivityTypeStyle(task.type)
@@ -72,7 +72,7 @@
                                     <span v-if="task.deal?.name">{{ task.deal.name }}</span>
                                 </div>
 
-                                <p v-if="task.description" class="mt-1 text-sm text-gray-600 line-clamp-2">
+                                <p v-if="task.description" class="mt-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                                     {{ task.description }}
                                 </p>
                             </div>
@@ -80,11 +80,11 @@
                             <div class="ml-4 flex-shrink-0 text-right">
                                 <div :class="[
                                     'text-sm font-medium',
-                                    isOverdue(task.scheduled_at) ? 'text-red-600' : 'text-gray-900'
+                                    isOverdue(task.scheduled_at) ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'
                                 ]">
                                     {{ formatScheduledTime(task.scheduled_at) }}
                                 </div>
-                                <div class="text-xs text-gray-500 mt-1">
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     {{ formatScheduledDate(task.scheduled_at) }}
                                 </div>
                             </div>
@@ -93,15 +93,15 @@
                         <!-- Quick Actions -->
                         <div class="mt-3 flex items-center space-x-2">
                             <button @click="navigateToContact(task.contact_id)" v-if="task.contact_id"
-                                class="text-xs text-blue-600 hover:text-blue-500 font-medium">
+                                class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium">
                                 View Contact
                             </button>
                             <button @click="navigateToDeal(task.deal_id)" v-if="task.deal_id"
-                                class="text-xs text-blue-600 hover:text-blue-500 font-medium">
+                                class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium">
                                 View Deal
                             </button>
                             <button @click="rescheduleTask(task.id)"
-                                class="text-xs text-gray-600 hover:text-gray-500 font-medium">
+                                class="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-400 font-medium">
                                 Reschedule
                             </button>
                         </div>

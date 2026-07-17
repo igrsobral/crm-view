@@ -2,12 +2,12 @@
   <AppLayout>
     <div class="h-full flex flex-col">
       <!-- Tab Navigation -->
-      <div class="border-b border-gray-200 mb-6">
+      <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
         <nav class="-mb-px flex space-x-8">
           <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id"
             class="py-2 px-1 border-b-2 font-medium text-sm transition-colors" :class="activeTab === tab.id
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'">
             {{ tab.name }}
           </button>
         </nav>
@@ -75,21 +75,21 @@
       </Dialog>
 
       <!-- Loading Overlay -->
-      <div v-if="dealsStore.loading" class="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-40">
-        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
-          <svg class="animate-spin h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24">
+      <div v-if="dealsStore.loading" class="fixed inset-0 bg-white dark:bg-gray-900 bg-opacity-25 dark:bg-opacity-25 flex items-center justify-center z-40">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center space-x-3 shadow-lg">
+          <svg class="animate-spin h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
           </svg>
-          <span class="text-gray-900">Loading deals...</span>
+          <span class="text-gray-900 dark:text-gray-100">Loading deals...</span>
         </div>
       </div>
 
       <!-- Error Message -->
       <div v-if="dealsStore.error"
-        class="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50">
+        class="fixed bottom-4 right-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg shadow-lg z-50">
         <div class="flex items-center">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -101,7 +101,7 @@
 
       <!-- Success Message -->
       <div v-if="successMessage"
-        class="fixed bottom-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg z-50">
+        class="fixed bottom-4 right-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-200 px-4 py-3 rounded-lg shadow-lg z-50">
         <div class="flex items-center">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

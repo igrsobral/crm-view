@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <!-- Search and Filter Bar -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
       <div class="flex flex-col sm:flex-row gap-4">
         <!-- Search Input -->
         <div class="flex-1 relative">
@@ -50,13 +50,13 @@
     </div>
 
     <!-- Sort and View Options -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="flex items-center gap-4">
           <span class="text-sm text-gray-700">
             {{ filteredContacts.length }} of {{ totalContacts }} contacts
           </span>
-          
+
           <!-- Sort Options -->
           <div class="flex items-center gap-2">
             <label class="text-sm text-gray-700">Sort by:</label>
@@ -67,7 +67,7 @@
               optionValue="value"
               class="text-sm w-48"
             />
-            
+
             <Button
               @click="toggleSortOrder"
               text
@@ -89,11 +89,11 @@
             size="small"
             class="px-3 py-1"
           />
-          
+
           <span class="text-sm text-gray-700">
             Page {{ currentPage }} of {{ totalPages }}
           </span>
-          
+
           <Button
             @click="goToPage(currentPage + 1)"
             :disabled="currentPage === totalPages"
@@ -125,7 +125,7 @@
     />
 
     <!-- Empty State -->
-    <div v-else-if="filteredContacts.length === 0 && !loading" class="bg-white rounded-lg shadow p-8">
+    <div v-else-if="filteredContacts.length === 0 && !loading" class="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
       <div class="text-center">
         <div class="text-gray-400 mb-4">
           <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,9 +136,9 @@
           {{ hasActiveFilters ? 'No contacts match your filters' : 'No contacts yet' }}
         </h3>
         <p class="text-gray-600 mb-6">
-          {{ hasActiveFilters 
-            ? 'Try adjusting your search or filter criteria.' 
-            : 'Get started by adding your first contact.' 
+          {{ hasActiveFilters
+            ? 'Try adjusting your search or filter criteria.'
+            : 'Get started by adding your first contact.'
           }}
         </p>
         <Button
@@ -227,10 +227,10 @@ watch(searchInput, (newValue) => {
   if (searchDebounceTimeout.value) {
     clearTimeout(searchDebounceTimeout.value)
   }
-  
+
   searchDebounceTimeout.value = setTimeout(() => {
     contactsStore.setSearchQuery(newValue)
-    currentPage.value = 1 
+    currentPage.value = 1
   }, 300)
 })
 
@@ -253,25 +253,25 @@ const hasActiveFilters = computed(() => {
 
 const sortedContacts = computed(() => {
   const sorted = [...filteredContacts.value]
-  
+
   sorted.sort((a, b) => {
     let aValue: string | number | null | undefined = a[sortBy.value]
     let bValue: string | number | null | undefined = b[sortBy.value]
-    
+
     if (aValue == null && bValue == null) return 0
     if (aValue == null) return sortOrder.value === 'asc' ? 1 : -1
     if (bValue == null) return sortOrder.value === 'asc' ? -1 : 1
-    
+
     if (typeof aValue === 'string') aValue = aValue.toLowerCase()
     if (typeof bValue === 'string') bValue = bValue.toLowerCase()
-    
+
     let comparison = 0
     if (aValue < bValue) comparison = -1
     else if (aValue > bValue) comparison = 1
-    
+
     return sortOrder.value === 'asc' ? comparison : -comparison
   })
-  
+
   return sorted
 })
 

@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200">
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
     <!-- List Header -->
-    <div class="px-6 py-4 border-b border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900">Deals List</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Deals List</h3>
         <div class="flex items-center space-x-2">
-          <span class="text-sm text-gray-500">{{ deals.length }} deals</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">{{ deals.length }} deals</span>
         </div>
       </div>
     </div>
@@ -14,17 +14,17 @@
     <div v-if="loading" class="p-8">
       <div class="flex items-center justify-center">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span class="ml-3 text-gray-600">Loading deals...</span>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading deals...</span>
       </div>
     </div>
 
     <!-- List Content -->
-    <div v-else class="divide-y divide-gray-200">
+    <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
       <!-- Deal Row -->
       <div
         v-for="deal in deals"
         :key="deal.id"
-        class="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors"
+        class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
         @click="$emit('select-deal', deal)"
       >
         <div class="flex items-center justify-between">
@@ -38,20 +38,20 @@
                   :label="getInitials(deal.contact.name)"
                   shape="circle"
                   size="large"
-                  class="bg-blue-100 text-blue-700"
+                  class="bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200"
                 />
                 <div
                   v-else
-                  class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center"
+                  class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"
                 >
-                  <i class="pi pi-user text-gray-400"></i>
+                  <i class="pi pi-user text-gray-400 dark:text-gray-500"></i>
                 </div>
               </div>
 
               <!-- Deal Details -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center space-x-3">
-                  <h4 class="text-sm font-semibold text-gray-900 truncate">
+                  <h4 class="text-sm font-semibold text-gray-900 dark:text-white truncate">
                     {{ deal.name }}
                   </h4>
                   <Badge
@@ -62,7 +62,7 @@
                   <Badge v-if="isOverdue(deal)" value="Overdue" severity="danger" class="text-xs" />
                 </div>
 
-                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600">
+                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
                   <div v-if="deal.contact?.name" class="flex items-center">
                     <i class="pi pi-user mr-1 text-xs"></i>
                     {{ deal.contact.name }}
@@ -84,10 +84,10 @@
           <div class="flex items-center space-x-4">
             <!-- Deal Value -->
             <div class="text-right">
-              <div class="text-lg font-semibold text-gray-900">
+              <div class="text-lg font-semibold text-gray-900 dark:text-white">
                 {{ deal.value ? `$${formatCurrency(deal.value)}` : "-" }}
               </div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-gray-500 dark:text-gray-400">
                 {{ getTimeAgo(deal.updated_at) }}
               </div>
             </div>
@@ -101,7 +101,7 @@
                 rounded
                 severity="secondary"
                 @click.stop="$emit('edit-deal', deal)"
-                class="p-2"
+                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-600"
               />
 
               <!-- Stage Quick Change -->
@@ -110,7 +110,7 @@
                 :options="stageOptions"
                 optionLabel="label"
                 optionValue="value"
-                @update:modelValue="(newStage) => handleStageChange(deal.id, newStage)"
+                @update:modelValue="(newStage: DealStage) => handleStageChange(deal.id, newStage)"
                 @click.stop
                 class="w-32"
                 size="small"
@@ -123,12 +123,12 @@
       <!-- Empty State -->
       <div v-if="deals.length === 0 && !loading" class="text-center py-12">
         <div
-          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+          class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4"
         >
-          <i class="pi pi-inbox text-2xl text-gray-300"></i>
+          <i class="pi pi-inbox text-2xl text-gray-300 dark:text-gray-600"></i>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No deals found</h3>
-        <p class="text-gray-500 mb-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No deals found</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">
           Get started by creating your first deal or adjust your search filters.
         </p>
       </div>

@@ -3,8 +3,8 @@
         <!-- Header with Filters -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center space-x-4">
-                <h2 class="text-lg font-semibold text-gray-900">Activities</h2>
-                <span v-if="filteredActivities.length > 0" class="text-sm text-gray-500">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Activities</h2>
+                <span v-if="filteredActivities.length > 0" class="text-sm text-gray-500 dark:text-gray-400">
                     {{ filteredActivities.length }} {{ filteredActivities.length === 1 ? 'activity' : 'activities' }}
                 </span>
             </div>
@@ -44,7 +44,7 @@
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center py-8">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span class="ml-3 text-gray-600">Loading activities...</span>
+            <span class="ml-3 text-gray-600 dark:text-gray-300">Loading activities...</span>
         </div>
 
         <!-- Empty State -->
@@ -55,10 +55,10 @@
                         d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
                 {{ hasFilters ? 'No activities match your filters' : 'No activities yet' }}
             </h3>
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
                 {{ hasFilters ? 'Try adjusting your filters to see more activities.' : 'Start tracking your interactions and follow-ups.' }}
             </p>
             <button v-if="!hasFilters" @click="$emit('create-activity')"
@@ -73,7 +73,7 @@
         <!-- Activities List -->
         <div v-else class="space-y-3">
             <div v-for="activity in paginatedActivities" :key="activity.id"
-                class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div class="flex items-start justify-between">
                     <div class="flex items-start space-x-3 flex-1">
                         <!-- Activity Icon -->
@@ -87,7 +87,7 @@
                         <!-- Activity Content -->
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center space-x-2 mb-1">
-                                <span class="text-sm font-medium text-gray-900 capitalize">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white capitalize">
                                     {{ activity.type }}
                                 </span>
                                 <span v-if="activity.completed"
@@ -119,16 +119,16 @@
                                 </span>
                             </div>
 
-                            <h3 v-if="activity.subject" class="text-sm font-medium text-gray-900 mb-1">
+                            <h3 v-if="activity.subject" class="text-sm font-medium text-gray-900 dark:text-white mb-1">
                                 {{ activity.subject }}
                             </h3>
 
-                            <p v-if="activity.description" class="text-sm text-gray-600 mb-2 line-clamp-2">
+                            <p v-if="activity.description" class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
                                 {{ activity.description }}
                             </p>
 
                             <!-- Contact/Deal Info -->
-                            <div class="flex items-center space-x-4 text-xs text-gray-500">
+                            <div class="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                                 <span v-if="activity.contact" class="flex items-center">
                                     <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
@@ -204,7 +204,7 @@
                 </div>
                 <div class="flex items-center space-x-2">
                     <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
-                        class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                         Previous
                     </button>
                     <span class="text-sm text-gray-700">
@@ -212,7 +212,7 @@
                     </span>
                     <button @click="currentPage = Math.min(totalPages, currentPage + 1)"
                         :disabled="currentPage === totalPages"
-                        class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                         Next
                     </button>
                 </div>

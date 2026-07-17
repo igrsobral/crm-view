@@ -10,7 +10,7 @@ useAuth()
 </script>
 
 <template>
-  <div id="app" class="min-h-screen bg-gray-50">
+  <div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <RouterView />
     <Toast group="app" class="min-w-80 max-w-md w-auto" />
     <ConfirmDialog />

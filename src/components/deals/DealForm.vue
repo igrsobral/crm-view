@@ -20,7 +20,7 @@
     <form @submit.prevent="handleSubmit" class="py-4 space-y-6">
       <!-- Deal Name -->
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Deal Name <span class="text-red-500">*</span>
         </label>
         <InputText
@@ -31,12 +31,12 @@
           class="w-full"
           fluid
         />
-        <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
+        <p v-if="errors.name" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.name }}</p>
       </div>
 
       <!-- Contact Selection -->
       <div>
-        <label for="contact" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="contact" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Contact <span class="text-red-500">*</span>
         </label>
         <AutoComplete
@@ -52,20 +52,20 @@
         >
           <template #option="{ option }">
             <div>
-              <div class="font-medium text-gray-900">{{ option.name }}</div>
-              <div class="text-sm text-gray-600">
+              <div class="font-medium text-gray-900 dark:text-gray-100">{{ option.name }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">
                 {{ option.email }}
                 <span v-if="option.company"> • {{ option.company }}</span>
               </div>
             </div>
           </template>
         </AutoComplete>
-        <p v-if="errors.contact_id" class="mt-1 text-sm text-red-600">{{ errors.contact_id }}</p>
+        <p v-if="errors.contact_id" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.contact_id }}</p>
       </div>
 
       <!-- Deal Value -->
       <div>
-        <label for="value" class="block text-sm font-medium text-gray-700 mb-2"> Deal Value </label>
+        <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Deal Value </label>
         <InputNumber
           id="value"
           v-model="form.value"
@@ -80,7 +80,7 @@
 
       <!-- Pipeline Stage -->
       <div>
-        <label for="stage" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="stage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Pipeline Stage
         </label>
         <Dropdown
@@ -97,7 +97,7 @@
 
       <!-- Expected Close Date -->
       <div>
-        <label for="expected_close_date" class="block text-sm font-medium text-gray-700 mb-2">
+        <label for="expected_close_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Expected Close Date
         </label>
         <DatePicker
@@ -112,7 +112,7 @@
 
       <!-- Notes -->
       <div>
-        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2"> Notes </label>
+        <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Notes </label>
         <Textarea
           id="notes"
           v-model="form.notes"
@@ -123,7 +123,7 @@
       </div>
 
       <!-- Form Actions -->
-      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         <Button
           type="button"
           @click="$emit('cancel')"

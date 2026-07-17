@@ -11,6 +11,13 @@ const applyTheme = (mode: ThemeMode) => {
   if (mode === 'system') {
     // Remove explicit theme classes and let system preference take over
     html.classList.remove('light', 'dark')
+    // Apply system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    if (prefersDark) {
+      html.classList.add('dark')
+    } else {
+      html.classList.add('light')
+    }
   } else {
     // Remove other theme classes and add the selected one
     html.classList.remove('light', 'dark')
@@ -35,11 +42,12 @@ watch(themeMode, (newMode) => {
 
 // Listen for system theme changes
 const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-mediaQuery.addEventListener('change', () => {
+const handleSystemThemeChange = () => {
   if (themeMode.value === 'system') {
     applyTheme('system')
   }
-})
+}
+mediaQuery.addEventListener('change', handleSystemThemeChange)
 
 export const useTheme = () => {
   return {

@@ -1,21 +1,21 @@
 <template>
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-medium text-gray-900">Deal Pipeline</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Deal Pipeline</h3>
             <div class="flex space-x-2">
                 <button @click="chartType = 'doughnut'" :class="[
                     'px-3 py-1 text-sm rounded-md transition-colors',
                     chartType === 'doughnut'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 ]">
                     Doughnut
                 </button>
                 <button @click="chartType = 'bar'" :class="[
                     'px-3 py-1 text-sm rounded-md transition-colors',
                     chartType === 'bar'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 ]">
                     Bar
                 </button>
@@ -28,8 +28,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No deals yet</h3>
-                <p class="mt-1 text-sm text-gray-500">Get started by creating your first deal.</p>
+                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No deals yet</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first deal.</p>
             </div>
         </div>
 
@@ -42,7 +42,7 @@
         <div class="mt-6 grid grid-cols-2 gap-4" v-if="hasData">
             <div v-for="(stage, index) in stageLabels" :key="stage" class="flex items-center">
                 <div class="w-3 h-3 rounded-full mr-2" :style="{ backgroundColor: stageColors[index] }"></div>
-                <span class="text-sm text-gray-600">
+                <span class="text-sm text-gray-600 dark:text-gray-300">
                     {{ formatStageLabel(stage) }} ({{ dealsByStage[stage] || 0 }})
                 </span>
             </div>
